@@ -8,6 +8,7 @@
 	{{- with .Site.Params.themeColor }}
 	<meta name="theme-color" content="{{.}}">
 	<meta name="msapplication-TileColor" content="{{.}}">
+	<meta name="referrer" content="no-referrer">
 	{{- end }}
 	{{- partial "structured-data.html" . }}
 	{{- partial "favicons.html" }}
