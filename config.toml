@@ -1,0 +1,119 @@
+baseURL = "https://alphapenng.github.io"
+languageCode = "en-us"
+defaultContentLanguage = "zh-hans"
+title = "balabala"
+theme = "hermit"
+# enableGitInfo = true
+pygmentsCodefences  = true
+pygmentsUseClasses  = true
+# hasCJKLanguage = true  # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.
+rssLimit = 10  # Maximum number of items in the RSS feed.
+copyright = "本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 出处链接。" # This message is only used by the RSS template.
+summarylength = 180
+enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/functions/emojify/
+# googleAnalytics = "UA-18275235-2"
+# disqusShortname = "yourdiscussshortname"
+
+[author]
+  name = "alphapenng"
+
+[taxonomies]
+  tag = "tags"
+  categories = "categories"
+
+[params]
+  since = "2021"
+  toc = true
+  
+  dateform        = "Jan 2, 2006"
+  dateformShort   = "Jan 2"
+  dateformNum     = "2006-01-02"
+  dateformNumTime = "2006-01-02 15:04 -0700"
+
+  # Metadata mostly used in document's head
+  description = "alphapenng 的折腾，笔记和随想"
+  # images = [""]
+  themeColor = "#fcfcfc"
+
+  homeSubtitle = "A minimal and fast theme for Hugo."
+  footerCopyright = ' &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+  # bgImg = ""  # Homepage background-image URL
+
+  # Prefix of link to the git commit detail page. GitInfo must be enabled.
+  gitUrl = "https://github.com/alphapenng/alphapenng.github.io/commit/"
+
+  # Toggling this option needs to rebuild SCSS, requires Hugo extended version
+  justifyContent = false  # Set "text-align: justify" to `.content`.
+
+  relatedPosts = true  # Add a related content section to all single posts page
+
+  code_copy_button = true # Turn on/off the code-copy-button for code-fields
+  
+  mainSections = ["posts"]
+  
+  # Add custom css
+  customCSS = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css", "css/styles.css"]
+
+  # Social Icons
+  # Check https://github.com/Track3/hermit#social-icons for more info.
+  #[[params.social]]
+  #  name = "github"
+  #  url = "https://github.com/alphapenng"
+
+[related]
+  includeNewer = true
+  threshold = 80
+  toLower = true
+  
+  [[related.indices]]
+    name = "keywords"
+    weight = 100
+    includeNewer = true
+    toLower = true
+    
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+    includeNewer = true
+    toLower = true
+    
+  [[related.indices]]
+    name = "date"
+    weight = 1
+    
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+    
+[menu]
+
+  [[menu.main]]
+    name = "文章"
+    url = "posts/"
+    weight = 10
+    
+  [[menu.main]]
+    name = "标签"
+    url = "tags/"
+    weight = 10
+
+  [[menu.main]]
+    name = "About"
+    url = "about-hugo/"
+    weight = 20
+    
+  [[menu.nav]]
+    name = "首页"
+    url = "/"
+    weight = 8
+    
+  [[menu.nav]]
+    name = "归档"
+    url = "/posts/"
+    weight = 14
+    
+  [[menu.nav]]
+    name = "关于"
+    url = "about-hugo/"
+    weight = 20
+    

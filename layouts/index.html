@@ -1,0 +1,41 @@
+{{ define "header" }}
+{{ partialCached "header.html" . }}
+{{ end }}
+
+{{ define "main" }}
+		<main class="site-main section-inner thin animated fadeIn faster">
+    {{ $paginator := .Paginate (where .Site.RegularPages "Type" "in" .Site.Params.mainSections) }}
+		{{ range $paginator.Pages }}
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>{{ .Summary }}</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">{{ .Date.Format .Site.Params.dateformNum }}</span>
+                        {{ with .Params.tags }}
+                            {{- range $index, $el := . -}}
+                                <a class="tag"
+                                   href="{{ ( printf "tags/%s/" ( . | urlize ) ) | relLangURL }}">{{ . }}</a>
+                            {{- end -}}
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+				</div>
+    {{ end }}
+    <div class="pagination">
+        {{ template "_internal/pagination.html" . }}
+    </div>
+		</main>
+{{ end }}
+
+
+{{ define "footer" }}
+{{ partialCached "footer.html" . }}
+{{ end }}
