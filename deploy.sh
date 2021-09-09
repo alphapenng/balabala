@@ -9,6 +9,6 @@ cd ../alphapenng.github.io/
 git config user.name “alphapenng”
 git config user.email “barca8best@gmail.com
 
-git add --ignore-removal . && git commit -m 'adjust size of images' && git push -u origin main
+git add --ignore-removal . && git commit -m 'add instruction in Git 入门' && git push -u origin main
 
 cd ../balabala/
