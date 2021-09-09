@@ -6,78 +6,80 @@ toc: true
 isCJKLanguage: true
 tags:
 - 技术
-- 效率
+- Git
 ---
 
 ## 版本管理的需求
 
 ### 时间机器
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwogm56nfj61g00nq0y102.jpg" alt="image-20210319143636709" style="zoom: 40%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoi8o0bjj60n20pcdic02.jpg" alt="image-20210319143720289" style="zoom:50%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwogm56nfj61g00nq0y102.jpg" alt="image-20210319143636709"/><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoi8o0bjj60n20pcdic02.jpg" alt="image-20210319143720289" width=50%/>
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoikyiydj61cu0peafh02.jpg" alt="image-20210319143844561" style="zoom: 40%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoity147j61bi0iejv602-20210828210903625.jpg" alt="image-20210319144100478" style="zoom:40%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoikyiydj61cu0peafh02.jpg" alt="image-20210319143844561" />
+
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoity147j61bi0iejv602-20210828210903625.jpg" alt="image-20210319144100478" />
 
 ### 方案对比
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoj5sln8j61gs0ly77m02.jpg" alt="image-20210319144247197" style="zoom: 35%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwojl19udj61ka0ncgpm02.jpg" alt="image-20210319144501889" style="zoom:33%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoj5sln8j61gs0ly77m02.jpg" alt="image-20210319144247197" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwojl19udj61ka0ncgpm02.jpg" alt="image-20210319144501889" />
 
 ### 版本库
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoju4lixj61fu0pm14t02.jpg" alt="image-20210319151125298" style="zoom:50%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoju4lixj61fu0pm14t02.jpg" alt="image-20210319151125298" />
 
 ### 版本库-文件命名
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwok4mn7oj61jw0jugqm02.jpg" alt="image-20210319151455436" style="zoom:45%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwok4mn7oj61jw0jugqm02.jpg" alt="image-20210319151455436" />
 
 ### SHA-1
 
 
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwok9tnhsj618s0leact02.jpg" alt="image-20210319151603092" style="zoom:50%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwok9tnhsj618s0leact02.jpg" alt="image-20210319151603092" />
 
 **如果文件内容是一样的，那它产生的 SHA-1 值一定是一样的**
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwokky20bj60xs0qidkg02.jpg" alt="image-20210319151908760" style="zoom:30%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwokqrbs6j60xu0kowil02.jpg" alt="image-20210319152053547" style="zoom:30%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwokz8r8qj60x80jsjvb02.jpg" style="zoom:30%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwokky20bj60xs0qidkg02.jpg" alt="image-20210319151908760" width=60%/><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwokqrbs6j60xu0kowil02.jpg" alt="image-20210319152053547" width=60% /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwokz8r8qj60x80jsjvb02.jpg" width=60% />
 
 ## tree结构和暂存区
 
 ### 目录结构和对应关系
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwolafe0cj61cw0msgo802.jpg" alt="image-20210319153027499" style="zoom:30%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwolj0lnxj61k00q442302.jpg" alt="image-20210319153119228" style="zoom:26%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwolafe0cj61cw0msgo802.jpg" alt="image-20210319153027499" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwolj0lnxj61k00q442302.jpg" alt="image-20210319153119228" />
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwon96o70j61oi0r0k3d02.jpg" alt="image-20210319153245165" style="zoom: 45%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwonfposmj61h80pawqz02.jpg" alt="image-20210319153356728" style="zoom:50%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwon96o70j61oi0r0k3d02.jpg" alt="image-20210319153245165" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwonfposmj61h80pawqz02.jpg" alt="image-20210319153356728" />
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwonu4789j61ki0okgqt02.jpg" alt="image-20210319153514004" style="zoom: 30%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoo1ftmfj61k20wyah802.jpg" alt="image-20210319153804470" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwonu4789j61ki0okgqt02.jpg" alt="image-20210319153514004" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoo1ftmfj61k20wyah802.jpg" alt="image-20210319153804470" />
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoow426uj61g40zsjzv02.jpg" alt="image-20210319154016153" style="zoom: 50%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoqvev6wj612c12mn9k02.jpg" alt="image-20210319154204303" style="zoom: 50%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoow426uj61g40zsjzv02.jpg" alt="image-20210319154016153" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwoqvev6wj612c12mn9k02.jpg" alt="image-20210319154204303" />
 
 ### 源代码和版本库的对应关系
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtworkhdazj61co0mgact02.jpg" alt="image-20210319154428244" style="zoom: 25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtworuphcbj61cc0n677702.jpg" alt="image-20210319154533118" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtworkhdazj61co0mgact02.jpg" alt="image-20210319154428244" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtworuphcbj61cc0n677702.jpg" alt="image-20210319154533118" />
 
 ### 暂存区
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwossyeitj61jo0ngn1202.jpg" alt="image-20210319154648154" style="zoom: 25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwot2noemj61jg0mkdjv02.jpg" alt="image-20210319154748607" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwouiws9jj61k20nwn2y02.jpg" alt="image-20210319155246670" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwossyeitj61jo0ngn1202.jpg" alt="image-20210319154648154" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwot2noemj61jg0mkdjv02.jpg" alt="image-20210319154748607" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwouiws9jj61k20nwn2y02.jpg" alt="image-20210319155246670" />
 
 ### 文件状态
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwov024uhj61d20qan2902.jpg" alt="image-20210319154943171" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwougz9evj61e60q8gqw02.jpg" alt="image-20210319155116565" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwov024uhj61d20qan2902.jpg" alt="image-20210319154943171" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwougz9evj61e60q8gqw02.jpg" alt="image-20210319155116565" />
 
 ### 快照链表
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwounjzl7j61ee0hun0b02.jpg" alt="image-20210319155452910" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwouus6h9j61dq0s8afq02.jpg" alt="image-20210319155559690" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwounjzl7j61ee0hun0b02.jpg" alt="image-20210319155452910" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwouus6h9j61dq0s8afq02.jpg" alt="image-20210319155559690" />
 
 ## 协同和分支
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwovj28rbj618i0nygpz02.jpg" alt="image-20210319155813823" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp0kxifjj61940p2gqp02.jpg" alt="image-20210319160631844" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwovj28rbj618i0nygpz02.jpg" alt="image-20210319155813823" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp0kxifjj61940p2gqp02.jpg" alt="image-20210319160631844" />
 
 ### 分布式的版本控制
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp0p4kg9j61by0pmn2902.jpg" alt="image-20210319160811835" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp0p4kg9j61by0pmn2902.jpg" alt="image-20210319160811835" />
 
 ### 冲突和合并
 
-<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp1517isj615q0no0wb02.jpg" alt="image-20210319160859570" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp0wqhv6j616k0rcwjr02.jpg" alt="image-20210319160930326" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp1gbbrdj619i0nu43002-20210828211717113.jpg" alt="image-20210319161009536" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp1vthltj61680reafl02-20210828214441447-20210828214522003.jpg" alt="image-20210319161104284" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/image-20210319161209570.png" alt="image-20210319161104284" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp2tfr35j61fe0nodk702.jpg" alt="image-20210319161243953" style="zoom:25%;" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp32nk1oj61k40nqdk702.jpg" alt="image-20210319161403672" style="zoom:25%;" />
+<img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp1517isj615q0no0wb02.jpg" alt="image-20210319160859570" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp0wqhv6j616k0rcwjr02.jpg" alt="image-20210319160930326" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp1gbbrdj619i0nu43002-20210828211717113.jpg" alt="image-20210319161009536" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp1vthltj61680reafl02-20210828214441447-20210828214522003.jpg" alt="image-20210319161104284" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/image-20210319161209570.png" alt="image-20210319161104284" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp2tfr35j61fe0nodk702.jpg" alt="image-20210319161243953" /><img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/006x9NuVly1gtwp32nk1oj61k40nqdk702.jpg" alt="image-20210319161403672" />
 
 ### 分支
 
