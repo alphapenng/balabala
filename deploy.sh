@@ -9,6 +9,6 @@ cd ../alphapenng.github.io/
 git config user.name “alphapenng”
 git config user.email “barca8best@gmail.com
 
-git add --ignore-removal . && git commit -m 'post new article 「Git 学习笔记」' && git push -u origin main
+git add --ignore-removal . && git commit -m 'edit images of「Git 学习笔记」' && git push -u origin main
 
 cd ../balabala/

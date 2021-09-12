@@ -22,9 +22,9 @@ tags:
 | 3  | Repository  | 本地仓库 | push、checkout    |
 | 4  | Remote      | 远程仓库 | fetch、clone、pull |
 
-![文件的生命周期状态](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_09_11_%E6%88%91%E7%9A%84Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.png)
+![文件的生命周期状态](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_09_12_我的Git学习笔记1.png)
 
-![文件的生命周期状态](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_09_11_%E6%88%91%E7%9A%84Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0~.png)
+![文件的生命周期状态](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_09_12_我的Git学习笔记2.png)
 
 1. Git 增删改查
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
