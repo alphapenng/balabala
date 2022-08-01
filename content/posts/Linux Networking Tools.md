@@ -1,26 +1,10 @@
 ---
-title: "Linux Networking Tools"
-date: 2021-10-10T10:53:35+08:00
-draft: false
-toc: true
-isCJKLanguage: true
-tags:
-- 技术
-- 网络
-- Linux
+2022-08-01 17:10:51
 ---
 
-## Linux Networking Tools
-- ss
-- nmap
-- ping & traceroute
-- ethtool
-- dig
-- netcat
-- socat
-- tcpdump
-- top
-- wireshark
+# Linux Networking Tools
+
+[toc]{type: "ul", level: [2]}
 
 ## ss
 > ss command is a tool that is used for displaying network socket related information on a Linux system.
@@ -97,8 +81,3 @@ Netcat 是强大的网络工具、安全工具或网络监控工具之一。它�
 >  Wireshark 是一个数据包嗅探器和分析工具。它捕获本地网络上的网络流量并存储该数据以供离线分析。
 
 ![wireshark_cheatsheet](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_10_10_wireshark_cheatsheet.jpg)
-
-
-
-
-
