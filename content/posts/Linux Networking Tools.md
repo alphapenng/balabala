@@ -4,7 +4,7 @@
 
 # Linux Networking Tools
 
-[toc]{type: "ul", level: [2]}
+[toc]
 
 ## ss
 > ss command is a tool that is used for displaying network socket related information on a Linux system.

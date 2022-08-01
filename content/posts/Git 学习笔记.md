@@ -4,7 +4,7 @@
 
 # Git Note
 
-[toc]{type: "ul", level: [2]}
+[toc]
 
 ## Git 基本原理介绍
 > 参考来自 [Git 基本原理介绍 | Escape](https://www.escapelife.site/posts/da89563c.html)
