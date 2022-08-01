@@ -1,13 +1,6 @@
----
-title: "Git 学习笔记"
-date: 2021-09-09T16:18:18+08:00
-draft: false
-toc: true
-isCJKLanguage: true
-tags:
-- 技术
-- Git
----
+# Git Note
+
+[toc]{level: [2]}
 
 ## Git 基本原理介绍
 > 参考来自 [Git 基本原理介绍 | Escape](https://www.escapelife.site/posts/da89563c.html)
