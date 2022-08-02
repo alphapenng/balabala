@@ -134,6 +134,7 @@
         * brew cask install eul
         * brew cask install stats
         * brew cask install upic
+        * brew install --cask fig
         * brew install xquartz
         * brew install freerdp
     4. 虚拟机 - Parallels Desktop

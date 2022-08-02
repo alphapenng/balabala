@@ -1,10 +1,12 @@
 ---
-2022-08-01 19:31:10
+title: "Everything You Need to Know About Virtualization VMs Containers Pods Clusters"
+date: 2022-08-02T22:40:50+08:00
+draft: false
+tags: ["develop","docker"]
+categories: ["develop"]
+authors:
+- alphapenng
 ---
-
-# Everything you need to know about Virtualization, VMs , Containers, Pods, Clusters ..
-
-[toc]
 
 ## What is Virtualization?
 > Virtualization is the act of dividing shared computational resources: CPU, RAM, Disk, and Networking into isolated resources that are unaware of the original shared scope.
@@ -142,3 +144,5 @@ So there’s a symbiotic relationship between these terms:Container → Pod → 
     一组相关或不相关的 Pod 在集群上运行。
 3. A cluster can contain many pods, related or unrelated [&] grouped under d tight logical borders called namespaces.
      一个集群可以包含许多 Pod，相关的或不相关的 [&;] 在称为命名空间的紧密逻辑边界下分组。
+
+
