@@ -1,10 +1,12 @@
 ---
-2022-08-01 17:01:41 
+title: "Git学习笔记"
+date: 2022-08-03T09:56:33+08:00
+draft: true
+tags: ["develop","docker"]
+categories: ["develop","git"]
+authors:
+- alphapenng
 ---
-
-# Git Note
-
-[toc]
 
 ## Git 基本原理介绍
 > 参考来自 [Git 基本原理介绍 | Escape](https://www.escapelife.site/posts/da89563c.html)
@@ -410,3 +412,4 @@ $ git archive
     `git stash list`
     `git stash show / drop / clear`
     
+
