@@ -1,7 +1,7 @@
 ---
 title: "Git学习笔记"
 date: 2022-08-03T09:56:33+08:00
-draft: true
+draft: false
 tags: ["develop","docker"]
 categories: ["develop","git"]
 authors:
