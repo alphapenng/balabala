@@ -108,6 +108,7 @@
         * brew install dog
         * brew install gron
         * brew install asciinema
+        * brew install eva
     3. 终端下管理非终端软件 - Homebrew Cask
         * brew cask list
         * brew cask search chrome ==> Partial matches
@@ -137,6 +138,7 @@
         * brew install --cask fig
         * brew install xquartz
         * brew install freerdp
+        * brew install --cask cakebrew
     4. 虚拟机 - Parallels Desktop
     5. 代码编辑器 - CodeRunner
     6. 代码分享 - Carbonize
