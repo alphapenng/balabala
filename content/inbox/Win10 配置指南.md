@@ -27,12 +27,11 @@
 
 2. 升级系统至安装 WSL2 的最低系统版本
 
-    ***查看系统版本：***
+    **_查看系统版本：_**
 
     选择 `Windows_logo_key + R`，键入 `winver`，选择 `OK`。
-    
-    你可以通过选择 **开始 > 设置 > Windows 更新 > 检查更新** 更新系统版本。
 
+    你可以通过选择 **开始 > 设置 > Windows 更新 > 检查更新** 更新系统版本。
 
 #### 安装 WSL 2
 
@@ -52,20 +51,20 @@ wsl --install
 
 若要查看可通过在线商店下载的可用 Linux 发行版列表，请输入：`wsl --list --online 或 wsl -l -o`。
 
-若要在初始安装后安装其他 Linux 发行版，还可使用命令：`wsl --install -d <Distribution Name>`。 
+若要在初始安装后安装其他 Linux 发行版，还可使用命令：`wsl --install -d <Distribution Name>`。
 
 ##### 设置 Linux 用户名和密码
 
 使用 WSL 安装 Linux 发行版的过程完成后，使用 “开始” 菜单打开该发行版（默认情况下为 Ubuntu）。 系统将要求你为 Linux 发行版创建 “用户名” 和 “密码”。
 
-- 此用户名和密码特定于安装的每个单独的 Linux 分发版，与 Windows 用户名无关
-- 创建用户名和密码后，该帐户将是分发版的默认用户，并将在启动时自动登录
-- 此帐户将被视为 Linux 管理员，能够运行 sudo (Super User Do) 管理命令
-- 在 WSL 上运行的每个 Linux 发行版都有其自己的 Linux 用户帐户和密码。 每当添加分发版、重新安装或重置时，都必须配置一个 Linux 用户帐户。
+-   此用户名和密码特定于安装的每个单独的 Linux 分发版，与 Windows 用户名无关
+-   创建用户名和密码后，该帐户将是分发版的默认用户，并将在启动时自动登录
+-   此帐户将被视为 Linux 管理员，能够运行 sudo (Super User Do) 管理命令
+-   在 WSL 上运行的每个 Linux 发行版都有其自己的 Linux 用户帐户和密码。 每当添加分发版、重新安装或重置时，都必须配置一个 Linux 用户帐户。
 
 若要更改或重置密码，请打开 Linux 发行版并输入命令：`passwd`。 系统会要求你输入当前密码，然后要求输入新密码，之后再确认新密码。
 
-***如果忘记了 Linux 分发版的密码：***
+**_如果忘记了 Linux 分发版的密码：_**
 
 请打开 PowerShell，并使用以下命令进入默认 WSL 分发版的根目录：`wsl -u root`
 
@@ -81,7 +80,7 @@ wsl --install
 
 查看 WSL2 系统版本 `lsb_release -a`
 
-更新系统安装源 `sudo apt-get update  && sudo apt-get upgrade`
+更新系统安装源 `sudo apt-get update && sudo apt-get upgrade`
 
 #### 映射你的 Linux 驱动器
 
@@ -107,87 +106,88 @@ wsl --install
 #### 重启 WSL
 
 如果由于某种原因 WSL 停止工作，你可以使用 PowerShell/命令提示符中的以下两个命令重新启动它：
- 
+
 ```
 wsl.exe --shutdown
 wsl.exe
 ```
 
-### 配置Windows PowerShell
+### 配置 Windows PowerShell
 
 1. [powershell github core](https://github.com/PowerShell/PowerShell)
 2. 设置 Windows Terminal 默认启动为 PowerShell7
-3. [安装 oh-my-posh](https://gist.github.com/xiaopeng163/0fe4225a56ff97cd47e25a4b8a6f36ec) 
+3. [安装 oh-my-posh](https://gist.github.com/xiaopeng163/0fe4225a56ff97cd47e25a4b8a6f36ec)
 
-	```
-	Install-Module oh-my-posh -Scope CurrentUser -SkipPublisherCheck
-	Install-Module posh-git -Scope CurrentUser
-	Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
-	```
+    ```
+    Install-Module oh-my-posh -Scope CurrentUser -SkipPublisherCheck
+    Install-Module posh-git -Scope CurrentUser
+    Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
+    ```
 
 4. 引入配置 `notepad.exe $PROFILE`
 
-	```
-	Import-Module posh-git
-	Import-Module oh-my-posh
-	Set-PoshPrompt -Theme dracula
-	```
+    ```
+    Import-Module posh-git
+    Import-Module oh-my-posh
+    Set-PoshPrompt -Theme dracula
+    ```
 
 5. [安装字体](https://ohmyposh.dev/docs/config-fonts)
 6. 安装文件图标库
 
-	```
-	Install-Module -Name Terminal-Icons -Repository PSGallery
-	```
+    ```
+    Install-Module -Name Terminal-Icons -Repository PSGallery
+    ```
 
 7. 使用图标
 
-	```
-	Import-Module -Name Terminal-Icons
-	```
+    ```
+    Import-Module -Name Terminal-Icons
+    ```
 
 8. 命令行自动补全和提示
 
-	```
-	Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-	```
+    ```
+    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+    ```
 
 9. 配置 vim 在 powershell 中打开
 
-	- find vim path
+    - find vim path
 
-		git 是自带vim的`path = C:\Program Files\Git\usr\bin\vim`
+        git 是自带 vim 的`path = C:\Program Files\Git\usr\bin\vim`
 
-	- vimrc 配置
+    - vimrc 配置
 
-		```
-		set encoding=utf-8
-		set termencoding=utf-8
-		set fileencoding=utf-8
-		set fileencodings=ucs-bom,utf-8,chinese,cp936
-		```
-	- ps profile 配置
-	
-		```
-		# There's usually much more than this in my profile!
-		$SCRIPTPATH = "C:\Program Files\Git\usr\bin"
-		$VIMPATH    = $SCRIPTPATH + "\vim.exe"
- 		
-		Set-Alias vi   $VIMPATH
-		Set-Alias vim  $VIMPATH
- 		
-		# for editing your PowerShell profile
-		Function Edit-Profile
-		{
-   			vim $profile
-		}
- 		
-		# for editing your Vim settings
-		Function Edit-Vimrc
-		{
-   			vim $home\_vimrc
-		}
-		```
+        ```
+        set encoding=utf-8
+        set termencoding=utf-8
+        set fileencoding=utf-8
+        set fileencodings=ucs-bom,utf-8,chinese,cp936
+        ```
+
+    - ps profile 配置
+
+        ```
+        # There's usually much more than this in my profile!
+        $SCRIPTPATH = "C:\Program Files\Git\usr\bin"
+        $VIMPATH    = $SCRIPTPATH + "\vim.exe"
+
+        Set-Alias vi   $VIMPATH
+        Set-Alias vim  $VIMPATH
+
+        # for editing your PowerShell profile
+        Function Edit-Profile
+        {
+        	vim $profile
+        }
+
+        # for editing your Vim settings
+        Function Edit-Vimrc
+        {
+        	vim $home\_vimrc
+        }
+        ```
 
 ### Windows 终端
 
@@ -296,7 +296,7 @@ sudo apt install zsh
 
 #### OhMyZsh
 
-到目前为止，最流行的插件框架是 [OhMyZsh](https://ohmyz.sh/)。它预装了大量插件、主题、助手等。它肯定有助于提高生产力，但更重要的是，它看起来😎很酷。
+到目前为止，最流行的插件框架是 [OhMyZsh](https://ohmyz.sh/)。它预装了大量插件、主题、助手等。它肯定有助于提高生产力，但更重要的是，它看起来 😎 很酷。
 
 #### cURL
 
@@ -324,15 +324,15 @@ zsh 的自动建议，它根据历史记录和完成情况在你键入时建议�
 
 1. 将此存储库克隆到 `$ZSH_CUSTOM/plugins`（默认情况下 `~/.oh-my-zsh/custom/plugins`）
 
-	```
-	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-	```
+    ```
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    ```
 
 2. 将插件添加到要加载的 Oh My Zsh 的插件列表中（在 `~/.zshrc` 中）：
 
-	```
-	plugins=(git zsh-autosuggestions)
-	```
+    ```
+    plugins=(git zsh-autosuggestions)
+    ```
 
 3. 开始新的终端会话。
 
@@ -341,16 +341,16 @@ zsh 的自动建议，它根据历史记录和完成情况在你键入时建议�
 此包为 shell zsh 提供语法高亮显示。当命令在 zsh 提示符下输入到交互式终端时，它可以高亮显示命令。这有助于在运行命令之前查看命令，特别是在捕获语法错误方面。
 
 1. 在 oh-my-zsh 的 plugins 目录中克隆此存储库：
- 
-	 ```
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-	 ```
+
+    ```
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    ```
 
 2. 激活 `~/.zshrc` 中的插件：
 
-	 ```
- 	plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
-	 ```
+    ```
+    plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+    ```
 
 3. 开始新的终端会话。
 
@@ -360,15 +360,31 @@ autojump 是为了进行目录快速跳转而准备的，它记录用户的目�
 
 1. autojump 安装
 
- 	```
-	sudo  apt-get install autojump
-	```
+    ```
+    sudo  apt-get install autojump
+    ```
 
 2. 在 zsh 中开启 autojump 插件的支持（所有的插件在 `~/.on-my-zsh/plugins/` 目录中）：
 
-	```
-	plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump)
-	```
+    ```
+    plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump)
+    ```
+
+##### [zsh-vi-mode](https://github.com/jeffreytse/zsh-vi-mode)
+
+1. 将此存储库克隆到 `$ZSH_CUSTOM/plugins`（默认情况下 `~/.oh-my-zsh/custom/plugins`）
+
+    ```
+    git clone https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
+    ```
+
+2. 将插件添加到要加载的 Oh My Zsh 的插件列表中（在 `~/.zshrc` 中）：
+
+    ```
+    plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump zsh-vi-mode)
+    ```
+
+3. 开始新的终端会话。
 
 ### 安装 Python
 
@@ -392,51 +408,51 @@ Node.js 是一个 JavaScript 运行时环境，它在 Web 浏览器之外执行 
 
 1. 打开你的 Ubuntu 命令行并使用以下命令安装 nvm：
 
-	```
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-	```
+    ```
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+    ```
 
-	要验证安装，请输入： `command-v nvm`。这应该返回“nvm”，如果你收到“未找到命令”或根本没有响应，请关闭当前终端，重新打开它，然后重试。
+    要验证安装，请输入： `command-v nvm`。这应该返回“nvm”，如果你收到“未找到命令”或根本没有响应，请关闭当前终端，重新打开它，然后重试。
 
 2. 列出当前安装了哪些版本的 Node（此时应该没有）：
 
-	```
-	nvm ls
-	```
+    ```
+    nvm ls
+    ```
 
 3. 安装当前和稳定的 LTS 版本的 Node.js.
 
-	安装 Node.js 的当前稳定 LTS 版本（推荐用于生产应用）：
+    安装 Node.js 的当前稳定 LTS 版本（推荐用于生产应用）：
 
-	```
-	nvm install --lts
-	```
+    ```
+    nvm install --lts
+    ```
 
-	安装当前版本的 Node.js（用于测试最新的 Node.js 功能和改进，但更有可能出现问题）：
+    安装当前版本的 Node.js（用于测试最新的 Node.js 功能和改进，但更有可能出现问题）：
 
-	```
-	nvm install node
-	```
+    ```
+    nvm install node
+    ```
 
 4. 列出安装了哪些版本的 Node：
 
-	```
-	nvm ls
-	```
+    ```
+    nvm ls
+    ```
 
-	现在你应该看到列出了你刚刚安装的两个版本。
+    现在你应该看到列出了你刚刚安装的两个版本。
 
 5. 验证是否安装了 Node.js 和当前版本：
 
-	```
-	node --version
-	```
+    ```
+    node --version
+    ```
 
-	然后验证你是否也安装了 npm：
+    然后验证你是否也安装了 npm：
 
-	```
-	npm --version
-	```
+    ```
+    npm --version
+    ```
 
 ##### 更改 node 版本
 
@@ -465,19 +481,19 @@ nvm use v8.2.1.
 ### 在 WSL 里安装 Docker
 
 #### 安装 Docker
-  
- 1. [Install Docker Script](https://gist.github.com/xiaopeng163/f3e72bb1990860859076985d5a723cba)
 
- ```
- # install docker
+1.  [Install Docker Script](https://gist.github.com/xiaopeng163/f3e72bb1990860859076985d5a723cba)
+
+```
+# install docker
 curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh
 
 if [ ! $(getent group docker) ];
-then 
-    sudo groupadd docker;
+then
+   sudo groupadd docker;
 else
-    echo "docker user group already exists"
+   echo "docker user group already exists"
 fi
 
 sudo gpasswd -a $USER docker
@@ -486,11 +502,11 @@ sudo service docker restart
 rm -rf get-docker.sh
 ```
 
- 2. 将用户添加进 docker 组：
+2.  将用户添加进 docker 组：
 
-	```
-	sudo usermod -aG docker alphapenng
-	```
+    ```
+    sudo usermod -aG docker alphapenng
+    ```
 
 #### 测试是否安装成功
 
@@ -510,9 +526,9 @@ rm -rf get-docker.sh
 
 2. Run the following command:
 
-	```
-	Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
-	```
+    ```
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+    ```
 
 If the command couldn't be found, make sure you're running PowerShell as Administrator.
 When the installation has completed, reboot.
@@ -531,76 +547,76 @@ When the installation has completed, reboot.
 
 2. 安装 centos/7 虚拟机
 
-	```
-	vagrant init centos/7
-	# 以管理员身份启动 PowerShell 并执行以下命令
-	vagrant up --provider=hyperv
-	```
+    ```
+    vagrant init centos/7
+    # 以管理员身份启动 PowerShell 并执行以下命令
+    vagrant up --provider=hyperv
+    ```
 
 3. 查看虚拟机状态
 
-	```
-	vagrant status
-	```
+    ```
+    vagrant status
+    ```
 
 #### Vagrant 的基本使用
 
-- 启动虚拟机 
+-   启动虚拟机
 
 ```
 vagrant up
 ```
 
-- 查看虚拟机状态 
+-   查看虚拟机状态
 
 ```
 vagrant status
 ```
 
-- 关闭虚拟机 
+-   关闭虚拟机
 
 ```
 vagrant halt
 ```
 
-- 删除虚拟机 
+-   删除虚拟机
 
 ```
 vagrant destroy
 ```
 
-- 连接 default 虚拟机 
+-   连接 default 虚拟机
 
 ```
 vagrant ssh
 ```
 
-- 退出 default 虚拟机  
+-   退出 default 虚拟机
 
 ```
 exit
 ```
 
-- 查看 default host ssh 配置的相关信息 
+-   查看 default host ssh 配置的相关信息
 
 ```
 vagrant ssh-config default
 ```
 
-- 通过 ssh 连接 default 虚拟机 
+-   通过 ssh 连接 default 虚拟机
 
 ```
 ssh vagrant@172.18.51.54  -i "C:/Users/Barca/Documents/vagrant-demo/.vagrant/machines/default/hyperv/private_key"
 ```
 
-- 允许虚拟机通过 ssh 密码登录
+-   允许虚拟机通过 ssh 密码登录
 
     1. `sudo vim /etc/ssh/sshd_config`
 
     2. 添加 `PasswordAuthentication yes` 保存退出
-    
+
     3. 重启 ssh 服务 `sudo service sshd restart`
-    
+
 ### Visual Studio 代码
 
 #### 安装 VS Code
@@ -638,13 +654,13 @@ Chocolatey 是一个类似于 [homebrew](https://brew.sh/) 的包管理器，但
 
 3. 如果返回 `Restricted`，则运行 `Set-ExecutionPolicy AllSigned` 或 `Set-ExecutionPolicy Bypass-Scope Process`
 
-	***使用 PowerShell，你必须确保 Get-ExecutionPolicy 不受限制。我们建议使用 Bypass 绕过策略以安装或 AllSigned 以提高安全性。***
+    **_使用 PowerShell，你必须确保 Get-ExecutionPolicy 不受限制。我们建议使用 Bypass 绕过策略以安装或 AllSigned 以提高安全性。_**
 
 4. 现在运行以下命令：
 
-	```
-	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-	```
+    ```
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    ```
 
 5. 如果你没有看到任何错误，你就可以使用 Chocolatey 了！现在键入 `choco` 或 `choco -?`，或参见 [开始使用](https://docs.chocolatey.org/en-us/getting-started) 了解使用说明
 
@@ -686,16 +702,16 @@ choco upgrade all
 
 以下是一些我最喜欢的（免费）应用程序，用于在 Windows 上提高生产力和开发：
 
-- [Wox](http://www.wox.one/)-功能齐全的启动器
-- [RunJs](https://runjs.app/)-JavaScript 和 TypeScript 游乐场
-- [Responsively](https://responsively.app/)-一个修改后的 Web 浏览器，有助于响应式 Web 开发。
-- [Zeal](https://zealdocs.org/)-Dash 的 Windows 版本
-- [Figma](https://www.figma.com/)-协作 UI 设计工具
-- [draw.io](https://app.diagrams.net/)-流程图制作器和图表软件
-- [GitHub desktop](https://desktop.github.com/)-Git 的 GUI
-- [Postman](https://www.postman.com/)-API 工具
-- [Notion](https://www.notion.so/)-项目管理和笔记软件
-- [微软 PowerToys](https://docs.microsoft.com/en-us/windows/powertoys/?WT.mc_id=twitter-0000-docsmsft)-一组高级用户实用程序
+-   [Wox](http://www.wox.one/)-功能齐全的启动器
+-   [RunJs](https://runjs.app/)-JavaScript 和 TypeScript 游乐场
+-   [Responsively](https://responsively.app/)-一个修改后的 Web 浏览器，有助于响应式 Web 开发。
+-   [Zeal](https://zealdocs.org/)-Dash 的 Windows 版本
+-   [Figma](https://www.figma.com/)-协作 UI 设计工具
+-   [draw.io](https://app.diagrams.net/)-流程图制作器和图表软件
+-   [GitHub desktop](https://desktop.github.com/)-Git 的 GUI
+-   [Postman](https://www.postman.com/)-API 工具
+-   [Notion](https://www.notion.so/)-项目管理和笔记软件
+-   [微软 PowerToys](https://docs.microsoft.com/en-us/windows/powertoys/?WT.mc_id=twitter-0000-docsmsft)-一组高级用户实用程序
 
 你可以在 admin shell 中使用 chocolatey 使用以下命令一次下载所有这些：
 
@@ -714,4 +730,3 @@ choco install wox runjs responsively zeal figma drawio github-desktop postman no
 #### 💾Databases
 
 [开始使用 Windows 子系统上的数据库 Linux](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database)
- 
