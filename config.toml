@@ -170,8 +170,8 @@ defaultContentLanguageInSubdir = true
     url = "category/programming/"
 
   [[languages.zh-cn.menu.main]]
-    name = "极客"
+    name = "折腾"
     weight = 40
     identifier = "geek"
-    url = "cagegory/geek/"
+    url = "category/geek/"
     
