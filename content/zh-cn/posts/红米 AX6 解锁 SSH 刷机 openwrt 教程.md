@@ -8,6 +8,8 @@ authors:
 - alphapenng
 ---
 
+![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_09_nciwhL.png)
+
 红米 AX6 和小米 AX3600 配置基本相同，只是缺少一根智能家居的天线，性价比高的离谱，刷机做软路由转发流量毫无压力，为了在有限的预算内提升家庭网络的体验，前段时间在闲鱼 300 掏了一台红米 AX6，趁着假期跟着别人的教程折腾了一遍所有的刷机方法，也踩了不少坑，记录下来给自己也给别人有个参考，折腾了一遍之后，本人还是采用了直接安装 ShellClash 的方案，目前也就代理流量一个需求，考虑未来可能会根据需求再刷 openwrt。小米路由器目前解锁刷机的方案都已经比较模式了，网上的教程也很多，把它作为家中的主路由刷机再跑软路由是不错的，能够和 AX1800 组 mesh，覆盖和性能都不是问题。
 
 > 本教程是根据 👨‍🎨[卡卡的捣鼓日记](https://b23.tv/OwpIJ7j) 1️⃣ [红米 AX6 Openwrt 刷机教程（解锁步骤 AX6000、AX9000 通用）-哔哩哔哩](https://b23.tv/d1HIfhW) 2️⃣ [玩透红米 AX6 OPENWRT 扩容刷机及 Uboot 刷机-哔哩哔哩](https://b23.tv/iDfgYTq) 👨‍💻 [酱紫表](https://qust.me) 3️⃣ [红米 AX6 解锁 SSH 安装使用 ShellClash 教程](https://qust.me/post/hong-mi-ax6-jie-suo-ssh-an-zhuang-shi-yong-shellclash-jiao-cheng/)学习记录而成
@@ -407,8 +409,8 @@ mtd write /tmp/ax6-uboot.bin /dev/mtd7
 ![刷入正式固件2️⃣](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_08_srHEPi.png)
 等待路由器自动重启完成，蓝灯常亮后，会自动跳转到后台登录界面，或者手动输入后台地址，至此 uboot 刷机的所有操作就完成了。
 
-### 总结
+## 总结
 
 红米 AX6 基本就这些刷机方法，得益于红米 AX6 超强的 CPU + NPU 组合，跑代理速度是真不错。ShellClash 这种方案虽然没有图形化 UI 操作方便，但好在不需要刷麻烦也不稳定的 openwrt 固件，直接小米官方固件也能享受到网络「加速」的福利。所以推荐部署 ShellClash 方案。如果你还有其他更多的需求，那还是得安装 openwrt，推荐扩容刷机里的 uboot 刷机方案，虽然操作有一定风险变砖，但好在刷完以后有图形化界面可供使用，大大降低了再次刷机的难度。
 
-红米 AX6 目前解锁 SSH 稍微有点麻烦，不过胜在性价比高。如果你动手能力强，喜欢折腾，我还是更推荐你购买 AX6， 如果想省点精力也可以看看其他的小米路由器，解锁 SSH 没有 AX6 复杂，性价比也都不错。
+红米 AX6 目前解锁 SSH 稍微有点麻烦，不过胜在性价比高。如果你动手能力强，喜欢折腾，我还是更推荐你购买 A´´X6， 如果想省点精力也可以看看其他的小米路由器，解锁 SSH 没有 AX6 复杂，性价比也都不错。
