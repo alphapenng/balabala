@@ -3,8 +3,8 @@ title: "Tailscale 异地组网实践：Headscale 的部署方法和使用"
 date: 2022-10-10T22:56:20+08:00
 draft: true
 tags: ["geek","homelab"]
-categorjies: ["geek"]
-authjj:
+categories: ["geek"]
+authors:
 - alphapenng
 ---
 
