@@ -1,10 +1,10 @@
 ---
 title: "红米 AX6 解锁 SSH 安装 ShellClash 及刷机 Openwrt 教程"
-date: 2022-10-06 T08:13:14+08:00
+date: 2022-10-06T08:13:14+08:00
 draft: false
 tags: ["geek","homelab"]
-categorjies: ["geek"]
-authjj:
+categories: ["geek"]
+authors:
 - alphapenng
 ---
 

@@ -41,6 +41,7 @@
     27. PDF - MarginNote 3
 
 -   开发环境配置
+
     1. xcode-select -- install
     2. Oh My ZSH!
         - 自动安装 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
@@ -110,6 +111,7 @@
         - brew install asciinema
         - brew install eva
     5. 终端下管理非终端软件 - Homebrew Cask
+
         - brew cask list
         - brew cask search chrome ==> Partial matches
         - brew cask install google-chrome
@@ -140,6 +142,19 @@
         - brew install freerdp
         - brew install --cask cakebrew
         - brew install --cask android-platform-tools
+        - codelite
+
+        ```
+        # we need this part since we bring our own libssh bound to version 0.9.6
+        brew unlink libssh
+
+        brew tap eranif/codelite
+        brew reinstall --cask codelite-official
+
+        # in order to avoid macOS errors about "damaged app can't be opened"...
+        xattr -cr /Applications/codelite.app/
+        ```
+
     6. 虚拟机 - Parallels Desktop
     7. 代码编辑器 - CodeRunner
     8. 代码分享 - Carbonize
