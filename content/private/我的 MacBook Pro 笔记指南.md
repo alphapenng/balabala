@@ -110,6 +110,8 @@
         - brew install gron
         - brew install asciinema
         - brew install eva
+        - brew install atuin
+        - brew install difftastic
     5. 终端下管理非终端软件 - Homebrew Cask
 
         - brew cask list

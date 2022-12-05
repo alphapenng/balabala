@@ -133,7 +133,6 @@ AX6 可解锁 SSH 的固件版本为 `1.0.16`或`1.0.18`。我们以`1.0.18`为�
 
 证明解锁成功。此时我们登录 AX6 的后台，5G 频段 wifi 的密码应该已经改为 SSH 密码了。
 ![ssh密码](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_pg58Oo.png)
-我们也可以通过这个网址 [www.oxygen7.cn/miwifi](www.oxygen7.cn/miwifi) 获取 SSH 密码，在小米路由器后台复制 SN 码，点击 Go，即可弹出密码。
 
 ### 4 验证 SSH 并备份
 
