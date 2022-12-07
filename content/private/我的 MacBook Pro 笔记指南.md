@@ -112,6 +112,7 @@
         - brew install eva
         - brew install atuin
         - brew install difftastic
+        - brew install ttygif
     5. 终端下管理非终端软件 - Homebrew Cask
 
         - brew cask list

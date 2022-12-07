@@ -8,21 +8,13 @@ authors:
 - alphapenng
 ---
 
+![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_12_07_epB5YQ.png)
+
 ## mesh 路由器基本概念
 
 `以一张脑图梳理一下 mesh 路由器的基本概念`
 
--   MESH 路由器{.markmap}
-    -   自动组网
-        -   有线回程（最优方案）
-        -   无线回程
-            -   双频路由器（路由器间通信和接入设备共用一个 5G 频段
-            -   三频路由器（单独一个 5G 频段用于路由器间通信）
-        -   节点之间可组成网状网络
-    -   无缝漫游
-        -   802.11k 协议 快速选择漫游 AP
-        -   802.11v 协议 让节点负载均衡（触发漫游）
-        -   802.11r 协议 减少客户端切换节点的等待时间
+![mesh](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_12_07_OwGgb3.png)
 
 ⚠️ **802.11k/v/r 这三个协议必须是路由器和设备同时支持才可以起作用** ⚠️
 
@@ -30,7 +22,7 @@ authors:
 
 -   另一方面不是必须 802.11k/v/r 这三个协议同时支持才能达到无缝漫游的效果，事实上现在大部分的 mesh 路由器都只支持 K 和 V 这两个协议
 
-## Openwrt 配置 802.11k/v/r 协议实现无缝漫游
+## OpenWrt 配置 802.11k/v/r 协议实现无缝漫游
 
 ![进入lan口修改页面](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_12_04_IXO0rh.png)
 

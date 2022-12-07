@@ -8,10 +8,7 @@ authors:
 - alphapenng
 ---
 
--   EPON 上行 E8 C 家庭网关（烽火 HG220GS） telecomadmin 密码获取及桥接设置{.markmap}
-    -   获取 `telecomadmin` 账户密码
-    -   将光猫设置为桥接模式
-    -   主路由（Openwrt）设置拨号上网
+![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_12_07_0SVVIk.png)
 
 ## 获取 `telecomadmin` 账户密码
 
@@ -80,7 +77,11 @@ authors:
 
     更改完后，点击“保存/应用”按钮，重启路由器。
 
-4. 关闭光猫 dhcp 服务
+4. 关闭光猫 dhcp 服务(可选，如果影响路由器可以选择关闭)
+
+    ⚠️ **关闭之前请先截屏备份，日后需要开启时再恢复设置** ⚠️
+
+    ![截屏备份dhcp服务](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_12_07_1ZUI1B.png)
 
     ![关闭光猫dhcp服务](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_12_05_6eFkIc.png)
 
