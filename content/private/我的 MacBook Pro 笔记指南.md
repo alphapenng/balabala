@@ -113,6 +113,9 @@
         - brew install atuin
         - brew install difftastic
         - brew install ttygif
+        - brew install ipinfo-cli
+        - brew install gh
+        - brew install trzsz-go
     5. 终端下管理非终端软件 - Homebrew Cask
 
         - brew cask list

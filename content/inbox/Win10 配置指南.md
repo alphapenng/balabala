@@ -386,6 +386,37 @@ autojump 是为了进行目录快速跳转而准备的，它记录用户的目�
 
 3. 开始新的终端会话。
 
+##### [zsh_codex](https://github.com/tom-doerr/zsh_codex)
+
+1. Install the OpenAI package.
+
+    ```bash
+    pip3 install openai
+    ```
+
+2. 将此存储库克隆到 `$ZSH_CUSTOM/plugins`（默认情况下 `~/.oh-my-zsh/custom/plugins`）
+
+    ```
+    git clone https://github.com/tom-doerr/zsh_codex.git ~/.oh-my-zsh/custom/plugins/zsh_codex
+    ```
+
+3. 将插件添加到要加载的 Oh My Zsh 的插件列表中（在 `~/.zshrc` 中）：
+
+    ```
+    plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump zsh-vi-mode zsh_codex)
+    bindkey '^X' create_completion
+    ```
+
+4. 在 `~/.config` 目录下创建一个名为 `openaiapirc` 的文件，填入你的 `ORGANIZATION_ID` 和 `SECRET_KEY`。
+
+    ```
+    [openai]
+    organization_id = ...
+    secret_key = ...
+    ```
+
+5. 开始新的终端会话，编写想要 AI 执行的操作或变量名然后按下 `^X`，AI 将执行你的操作。
+
 ### 安装 Python
 
 #### 版本控制
