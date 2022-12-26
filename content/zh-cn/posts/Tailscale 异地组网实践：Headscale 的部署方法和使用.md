@@ -29,20 +29,14 @@ WireGuard 本身只是一个内核级别的模块，只是一个数据平面，�
 Tailscale 是一种基于 WireGuard 的虚拟组网工具，是在用户态实现了 WireGuard 协议，它在功能和易用性上绝对是完爆其他工具：
 
 1. 开箱即用
-
     - 无需配置防火墙
     - 没有额外的配置
-
 2. 高安全性 / 私密性
-
     - 自动密钥轮换
     - 点对点连接
     - 支持用户审查端到端的访问记录
-
 3. 在原有的 ICE、STUN 等 UDP 协议外，实现了 DERP TCP 协议来实现 NAT 穿透
-
 4. 基于公网的控制服务器下发 ACL 和配置，实现节点动态更新
-
 5. 通过第三方（如 Google） SSO 服务生成用户和私钥，实现身份认证
 
 简而言之，我们可以将 Tailscale 看成是更为易用、功能更完善的 WireGuard。
@@ -109,7 +103,7 @@ wget https://github.com/juanfont/headscale/raw/main/config-example.yaml -O /etc/
 -   修改数据库存储路径
     ![db_path](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220137_Xnip2022-12-25_21-32-06.jpg)
 -   如果暂时用不到 DNS 功能，可以先将 `magic_dns` 设为 false
-    ![magic_dns](https://alphapen ng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220319_Xnip2022-12-25_21-32-22.jpg)
+    ![magic_dns](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220319_Xnip2022-12-25_21-32-22.jpg)
 -   修改 `unix_socket`的路径
     ![unix_socket](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220427_Xnip2022-12-25_21-32-29.jpg)
 
@@ -325,9 +319,9 @@ OpenWrt 安装方法参考 [https://github.com/adyanth/openwrt-tailscale-enabler
 
 8.  设置 tailscale 开机自启动
 
-        ```bash
-        /etc/init.d/tailscale enable
-        ```
+    ```bash
+    /etc/init.d/tailscale enable
+    ```
 
     查看是否设置成功
 
