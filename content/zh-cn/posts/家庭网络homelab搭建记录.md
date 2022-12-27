@@ -20,4 +20,4 @@ authors:
 
 3. 两台 AX6 路由器（Openwrt 系统）实现无缝漫游，详情见[OpenWrt 开启 802.11k-v-r 协议实现手机在路由器之间无缝漫游](https://alphapenng.github.io/zh-cn/2022/12/02/openwrt%E5%BC%80%E5%90%AF802.11k-v-r%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%9C%A8%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B9%8B%E9%97%B4%E6%97%A0%E7%BC%9D%E6%BC%AB%E6%B8%B8/)
 
-4. 家庭网络和工作网络及外出移动网络间进行异地组网互访， 详情见[OpenWrt 开启 802.11k-v-r 协议实现手机在路由器之间无缝漫游]()
+4. 家庭网络和工作网络及外出移动网络间进行异地组网互访， 详情见[OpenWrt 开启 802.11k-v-r 协议实现手机在路由器之间无缝漫游](https://alphapenng.github.io/zh-cn/2022/12/02/openwrt%E5%BC%80%E5%90%AF802.11k-v-r%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%9C%A8%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B9%8B%E9%97%B4%E6%97%A0%E7%BC%9D%E6%BC%AB%E6%B8%B8/)

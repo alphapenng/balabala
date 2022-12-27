@@ -1,12 +1,19 @@
----
-2022-08-01 19:56:07
----
+<!--
+ * @Description: 
+ * @Author: alphapenng
+ * @Github: 
+ * @Date: 2021-08-29 20:28:12
+ * @LastEditors: alphapenng
+ * @LastEditTime: 2022-12-27 13:28:09
+ * @FilePath: /balabala/content/private/「Pr 全攻略」Premiere 后期剪辑处理教程.md
+-->
 
 # 「Pr 全攻略」Premiere 后期剪辑处理教程
 
 [toc]
 
 ## 轻松几招告别 Premiere 的卡顿和崩溃
+
 1. 在节目预览窗口把「完整」改成 1/2 或者 1/4，然后点击「扳手」图标，把「高品质回放」关闭
 2. 打开「文件」-「项目设置」-「常规」，将「渲染程序」更改为 「GPU 加速（CUDA）」
 3. 打开「编辑」- 「首选项」-「内存」，在为其他应用程序保留的内存设置的越少越好（是否需要同时开启软件），然后「优化渲染」选择为「性能」

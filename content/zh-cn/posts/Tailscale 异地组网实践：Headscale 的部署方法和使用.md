@@ -88,28 +88,28 @@ touch /var/lib/headscale/db.sqlite
 wget https://github.com/juanfont/headscale/raw/main/config-example.yaml -O /etc/headscale/config.yaml
 ```
 
--   修改配置文件，将 `server_url` 改为公网 IP 或域名。💁 **如果是国内服务器，域名必须要备案。** 没有域名就直接用公网 IP 。
+- 修改配置文件，将 `server_url` 改为公网 IP 或域名。💁 **如果是国内服务器，域名必须要备案。** 没有域名就直接用公网 IP 。
     ![server_url](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225214651_Xnip2022-12-25_16-35-00.jpg)
--   修改监听地址，在所有 ip 上监听
+- 修改监听地址，在所有 ip 上监听
     ![listen_addr](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225214825_Xnip2022-12-25_16-35-09.jpg)
--   修改 grpc 监听地址，在所有 ip 上监听
+- 修改 grpc 监听地址，在所有 ip 上监听
     ![grpc_listen_addr](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225215212_Xnip2022-12-25_21-30-45.jpg)
--   修改 private_key 存储路径
+- 修改 private_key 存储路径
     ![private_key_path](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225215346_Xnip2022-12-25_21-30-56.jpg)
--   修改 noise_private_key 存储路径
+- 修改 noise_private_key 存储路径
     ![noise_private_key](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225215500_Xnip2022-12-25_21-31-16.jpg)
--   可自定义私有网段，也可同时开启 IPv4 和 IPv6
+- 可自定义私有网段，也可同时开启 IPv4 和 IPv6
     ![ip_prefixes](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225215830_Xnip2022-12-25_21-31-32.jpg)
--   修改数据库存储路径
+- 修改数据库存储路径
     ![db_path](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220137_Xnip2022-12-25_21-32-06.jpg)
--   如果暂时用不到 DNS 功能，可以先将 `magic_dns` 设为 false
+- 如果暂时用不到 DNS 功能，可以先将 `magic_dns` 设为 false
     ![magic_dns](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220319_Xnip2022-12-25_21-32-22.jpg)
--   修改 `unix_socket`的路径
+- 修改 `unix_socket`的路径
     ![unix_socket](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220427_Xnip2022-12-25_21-32-29.jpg)
 
 创建 SystemD service 配置文件：
 
-```
+```bash
 # /etc/systemd/system/headscale.service
 [Unit]
 Description=headscale controller
@@ -243,41 +243,41 @@ ping 10.1.0.2
 
 OpenWrt 安装方法参考 [https://github.com/adyanth/openwrt-tailscale-enabler](https://github.com/adyanth/openwrt-tailscale-enabler)
 
-1.  下载安装包 [`openwrt-tailscale-enabler-<tag>.tgz`](https://github.com/adyanth/openwrt-tailscale-enabler/releases)
+1. 下载安装包 [`openwrt-tailscale-enabler-<tag>.tgz`](https://github.com/adyanth/openwrt-tailscale-enabler/releases)
 
-2.  通过 scp 命令将安装包拷贝至 openwrt 的 `/tmp` 目录下
+2. 通过 scp 命令将安装包拷贝至 openwrt 的 `/tmp` 目录下
 
     ```bash
     scp -O openwrt-tailscale-enabler-v1.34.1-f5576b5-autoupdate.tgz root@<openwrt_ip>:/tmp
     ```
 
-3.  解压安装包
+3. 解压安装包
 
     ```bash
     tar x -zvC / -f openwrt-tailscale-enabler-<tag>.tgz
     ```
 
-4.  预安装软件
+4. 预安装软件
 
     ```bash
     opkg update
     opkg install libustream-openssl ca-bundle kmod-tun
     ```
 
-5.  运行 tailscale 初始化
+5. 运行 tailscale 初始化
 
     ```bash
     /etc/init.d/tailscale start
     tailscale up --login-server=<headscale_ip>:8080 --accept-routes=true --accept-dns=false
     ```
 
-6.  复制生成的 URL，并在浏览器中打开
+6. 复制生成的 URL，并在浏览器中打开
 
     ![register_url](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221226073524_3iszn6.png)
 
     ![machine_registration](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225230100_Xnip2022-12-25_23-00-48.jpg)
 
-7.  将红色框内的命令复制粘贴到 headscale 所在机器的终端中，并将 NAMESPACE 替换为前面所创建的 namespace。
+7. 将红色框内的命令复制粘贴到 headscale 所在机器的终端中，并将 NAMESPACE 替换为前面所创建的 namespace。
 
     ```bash
     headscale -n default nodes register --key nodekey:xxxxxx
@@ -317,7 +317,7 @@ OpenWrt 安装方法参考 [https://github.com/adyanth/openwrt-tailscale-enabler
     tailscale ping 10.1.0.1
     ```
 
-8.  设置 tailscale 开机自启动
+8. 设置 tailscale 开机自启动
 
     ```bash
     /etc/init.d/tailscale enable
@@ -331,7 +331,7 @@ OpenWrt 安装方法参考 [https://github.com/adyanth/openwrt-tailscale-enabler
 
     ![tailscale_boot](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221226084534_1PGL1X.png)
 
-9.  以后升级 tailscale，只需从[这里](https://pkgs.tailscale.com/stable/#static)下载最新的安装包，下载的包名是类似 `1.2.10_mips` 这种结构，然后替换掉 `/usr/bin/tailscale` 和 `/usr/bin/tailscaled` 相同路径下的二进制文件。
+9. 以后升级 tailscale，只需从[这里](https://pkgs.tailscale.com/stable/#static)下载最新的安装包，下载的包名是类似 `1.2.10_mips` 这种结构，然后替换掉 `/usr/bin/tailscale` 和 `/usr/bin/tailscaled` 相同路径下的二进制文件。
 
 ## 打通局域网
 

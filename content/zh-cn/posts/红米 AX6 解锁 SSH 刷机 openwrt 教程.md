@@ -53,18 +53,18 @@ authors:
 
 刷机需要准备的软硬件：
 
--   硬件方面：
-    -   需要准备笔记本电脑或带有无线网卡的台式机一台
-    -   网线一根用于连接路由器和电脑
--   软件方面：
+- 硬件方面：
+  - 需要准备笔记本电脑或带有无线网卡的台式机一台
+  - 网线一根用于连接路由器和电脑
+- 软件方面：
     分软件和固件两部分介绍
-    -   软件部分
-        -   虚拟机软件 virtualbox
-        -   文件传输工具 winscp
-        -   远程登录工具使用系统自带的 CMD
-    -   固件部分
-        -   解锁 SSH 用到的官方固件
-        -   要刷入的 OP 固件
+  - 软件部分
+    - 虚拟机软件 virtualbox
+    - 文件传输工具 winscp
+    - 远程登录工具使用系统自带的 CMD
+  - 固件部分
+    - 解锁 SSH 用到的官方固件
+    - 要刷入的 OP 固件
 
 上面提到的所有软件、部分固件以及刷机文档的[下载链接](https://pan.baidu.com/s/168UqNdURVfcmsewKY4swmg)，提取码：02ba。
 
@@ -80,7 +80,7 @@ authors:
 
 ### 1 降级固件
 
-AX6 可解锁 SSH 的固件版本为 `1.0.16`或`1.0.18`。我们以`1.0.18`为例。降级固件操作步骤很简单，登录 AX6 的后台，点击右上角的`系统状态`，点击`系统升级`，`选择固件`，系统建议选择`清除当前所有用户配置`，点击确定即可刷新固件，⚠️ 重启后初始化设置请务必取消勾选路由空闲时为您自动升级固件版本 ⚠️，除非你进行了 `SSH 固化`操作，具体操作见[后文介绍](#5-固化-ssh-（可选）)。
+AX6 可解锁 SSH 的固件版本为 `1.0.16`或`1.0.18`。我们以`1.0.18`为例。降级固件操作步骤很简单，登录 AX6 的后台，点击右上角的`系统状态`，点击`系统升级`，`选择固件`，系统建议选择`清除当前所有用户配置`，点击确定即可刷新固件，⚠️ 重启后初始化设置请务必取消勾选路由空闲时为您自动升级固件版本 ⚠️，除非你进行了 `SSH 固化`操作，具体操作见[后文介绍](#5-固化-ssh-可选)。
 ![登录 AX6 后台](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_05_hGCnSV.png)
 ![点击系统状态](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_05_h6hwUP.png)
 ![点击手动升级](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_05_vy8KGX.png)
@@ -145,7 +145,7 @@ mkdir /tmp/syslogbackup/
 dd if=/dev/mtd9 of=/tmp/syslogbackup/mtd9
 ```
 
-浏览器请求该地址下载备份 http://192.168.31.1/backup/log/mtd9
+浏览器请求该地址下载备份 <http://192.168.31.1/backup/log/mtd9>
 
 ### 5 固化 SSH （可选）
 
@@ -190,7 +190,7 @@ Windows 和 Mac 默认都没有开启 `telnet` 功能，Windows 可以搜索打�
 
 ## 安装使用 ShellClash
 
--   重新通过 SSH 连接上红米 AX6 执行安装（请不要使用 telnet 连接安装 ShellClash，否则会乱码；如果执行提示 ssh 连接不上请检查上一步是否执行了）
+- 重新通过 SSH 连接上红米 AX6 执行安装（请不要使用 telnet 连接安装 ShellClash，否则会乱码；如果执行提示 ssh 连接不上请检查上一步是否执行了）
 
     ```bash
     sh -c "$(curl -kfsSl https://cdn.jsdelivr.net/gh/juewuy/ShellClash@master/install.sh)" && source /etc/profile &> /dev/null
@@ -198,31 +198,31 @@ Windows 和 Mac 默认都没有开启 `telnet` 功能，Windows 可以搜索打�
 
     ![执行脚本](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_3Fsft6.png)
 
--   选择 1 安装到 `/data`，然后再选择 1 确认安装。
+- 选择 1 安装到 `/data`，然后再选择 1 确认安装。
 
     ![步骤1️⃣](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_DpSFpP.png)
 
--   安装好就能使用 `clash` 命令了 ，输入 `clash` 就能进入配置。这里选择 1 让局域网设备都能走代理。
+- 安装好就能使用 `clash` 命令了 ，输入 `clash` 就能进入配置。这里选择 1 让局域网设备都能走代理。
 
     ![步骤2️⃣](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_iLhaPB.png)
 
--   推荐选择不代理 UDP 也就是 1，然后安装 DashBoard 面板也就能网页直接控制了也就是 1 。
+- 推荐选择不代理 UDP 也就是 1，然后安装 DashBoard 面板也就能网页直接控制了也就是 1 。
 
     ![步骤3️⃣](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_BOigNj.png)
 
--   推荐选择 Yacd 面板，界面很好看。选择 3，然后安装目录选择 1 即可。
+- 推荐选择 Yacd 面板，界面很好看。选择 3，然后安装目录选择 1 即可。
 
     ![步骤4️⃣](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_cyDEka.png)
 
     ![步骤5️⃣](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_BqKQUv.png)
 
--   选择导入配置文件。如果你没有 Clash 的配置文件而是 v2ray、ss、trojan 的订阅链接（你的机场会提供），你可以再选择 1 进行「在线生成 Clash 配置文件」；如果有的话可以选择 2 直接导入配置文件。
+- 选择导入配置文件。如果你没有 Clash 的配置文件而是 v2ray、ss、trojan 的订阅链接（你的机场会提供），你可以再选择 1 进行「在线生成 Clash 配置文件」；如果有的话可以选择 2 直接导入配置文件。
 
--   然后粘贴上你的订阅链接（url 链接），再选择 1 开始生成配置文件。生成配置文件后按 0 返回上层菜单即可。
+- 然后粘贴上你的订阅链接（url 链接），再选择 1 开始生成配置文件。生成配置文件后按 0 返回上层菜单即可。
 
--   再按 1 选择立即开启 Clash 的服务即可。
+- 再按 1 选择立即开启 Clash 的服务即可。
 
--   启动后你可以通过 http://192.168.31.1:9999/ui ，进行节点的切换和规则的选择。当然你再按 4 选择开机启动也可以。
+- 启动后你可以通过 <http://192.168.31.1:9999/ui> ，进行节点的切换和规则的选择。当然你再按 4 选择开机启动也可以。
 
 ## 不扩容刷入 openwrt 固件
 
@@ -232,7 +232,7 @@ Windows 和 Mac 默认都没有开启 `telnet` 功能，Windows 可以搜索打�
 ![查看当前分区](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_gpePCp.png)
 这里有一点需要说明一下，以下刷机操作及切换分区的步骤，`仅针对当前分区的查询结果返回数字 0 的情况`，如果你的查询结果返回 1，刷机操作的相关语句会稍有区别，请到附件的步骤详解中查看，不再单作演示了。返回数字 0，也就是当前系统使用分区为 12 分区，同时也意味着降级前的 1.1.4 版本官方固件在 13 分区。我们的理想方式是`保留 13 分区的固件将 OP 刷入到 12 分区替换 1.0.18 版固件`。实现新版官方固件和 OP 双系统并存。但由于 12 分区正在使用，无法刷入固件。所以我们先要手动切换系统分区。输入这四条命令，
 
-```
+```bash
 nvram set flag_last_success=1
 nvram set flag_boot_rootfs=1
 nvram commit
@@ -245,7 +245,7 @@ reboot
 ![上传固件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_PnWBZt.png)
 刷新固件操作很简单。登录 ssh 后，输入这条命令 `ubiformat /dev/mtd12 -y -f /tmp/openwrt-ipq807x-generic-redmi_ax6-squas hfs-nand-factory.ubi` 即可将上传的固件刷入到 12 分区。之后我们输入下面四条命令，
 
-```
+```bash
 nvram set flag_last_success=0
 nvram set flag_boot_rootfs=0
 nvram commit
@@ -261,7 +261,7 @@ reboot
 ![设置 wifi](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_vLLyAG.png)
 如果我们用 OP 系统不太顺手，可以随时切换回官方固件。打开终端，输入 openwrt 的 IP 地址 `192.168.123.1` ，用户名为 `root`，密码 `password` 登录 SSH 后，输入下面的三行命令即可。
 
-```
+```bash
 fw_setenv flag_last_success 1
 fw_setenv flag_boot_rootfs 1
 reboot
@@ -288,7 +288,7 @@ reboot
 ![上传临时 op 固件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_98JaAN.png)
 上传完毕后，我们打开 cmd，输入`ssh root@192.168.31.1`这行命令登录 SSH，密码为解锁 SSH 获取的密码，登录完成后输入以下两行命令，
 
-```
+```bash
 nvram set flag_last_success=0
 nvram set flag_boot_rootfs=0
 nvram commit
@@ -331,8 +331,8 @@ reboot
 
 如果您使用 OP 不太顺手，想刷回官方固件也是可行的。我们需要进行两步操作：
 
--   首先刷入官方固件到 12 分区
--   然后在 1 分区刷回官方分区表（将合并后 13 分区恢复为原始的 13 分区和 14 分区！）
+- 首先刷入官方固件到 12 分区
+- 然后在 1 分区刷回官方分区表（将合并后 13 分区恢复为原始的 13 分区和 14 分区！）
 
 ### 刷回官方固件实操
 
@@ -340,7 +340,7 @@ reboot
 ![上传 ax6 官方固件和官方分区文件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2022_10_06_GyzJPQ.png)
 上传完毕后我们登录 ssh `ssh root@192.168.1.1` 进行刷机操作，如果出现公钥报错，如法炮制，删除 .ssh 文件夹后从重新进行登录。登录完成后，输入这条命令 `ubiformat /dev/mtd12 -y -f /tmp/AX6_1.1.4.ubi` 将刚刚上传的官方固件刷入到 12 分区。之后输入这条命令 `mtd write /tmp/ybmibib.bin /dev/mtd1`，将分区表文件刷入 1 分区。操作完成后，输入下面两条命令，
 
-```
+```bash
 fw_setenv flag_last_success 0
 fw_setenv flag_boot_rootfs 0
 ```
@@ -356,8 +356,8 @@ fw_setenv flag_boot_rootfs 0
 
 Uboot 刷机操作分为两步：
 
--   合并分区
--   刷入引导程序
+- 合并分区
+- 刷入引导程序
 
 `合并分区通过将扩容分区表刷入到 mtd1 分区，从而把 12、13、14 分区进行合并，合并后的系统分区可达 104 兆，这已经是 AX6 128 兆闪存的极限了。`
 
@@ -365,12 +365,12 @@ Uboot 刷机操作分为两步：
 
 刷入改版引导程序有两点好处：
 
--   第一点 改版引导程序具有图形化界面，`可以让我们在 web 端实现刷机操作`，相比前面讲解的命令行刷机方式，大大简化了刷机步骤！
--   第二点 由于引导程序是先于路由器固件启动的，所以在路由器固件出现任何问题时，我们都可以通过引导程序的图形化界面重新刷机，`基本避免了固件原因导致路由器变砖的风险`！
+- 第一点 改版引导程序具有图形化界面，`可以让我们在 web 端实现刷机操作`，相比前面讲解的命令行刷机方式，大大简化了刷机步骤！
+- 第二点 由于引导程序是先于路由器固件启动的，所以在路由器固件出现任何问题时，我们都可以通过引导程序的图形化界面重新刷机，`基本避免了固件原因导致路由器变砖的风险`！
 
 当然 uboot 刷机的缺点也是有的:
 
--   经过实验目前只能通过 ttl 的方式刷回官方固件。对于小白用户来说并不友好，希望未来会有更简便的刷回官方固件的方法。
+- 经过实验目前只能通过 ttl 的方式刷回官方固件。对于小白用户来说并不友好，希望未来会有更简便的刷回官方固件的方法。
 
 ### Uboot 刷机实操（谨慎尝试）
 
@@ -390,7 +390,7 @@ mtd write /tmp/ax6-uboot-mibib.bin /dev/mtd1
 
 擦除 `mtd1` 分区，再写入刚上传的扩容分区表文件。完成后再输入下面两行命令，
 
-```
+```bash
 mtd erase /dev/mtd7
 mtd write /tmp/ax6-uboot.bin /dev/mtd7
 ```

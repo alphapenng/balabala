@@ -9,9 +9,11 @@ authors:
 ---
 
 ## Git 基本原理介绍
+
 > 参考来自 [Git 基本原理介绍 | Escape](https://www.escapelife.site/posts/da89563c.html)
 
 ## 学习 笔记
+
 > 参考来自 [我的 Git 学习笔记 | Escape](https://www.escapelife.site/posts/8f4661c4.html)
 
 | 编号 | 专用名词        | 对应解释 | 相关命令             |
@@ -26,8 +28,10 @@ authors:
 ![文件的生命周期状态](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_09_12_我的Git学习笔记2.png)
 
 1. Git 增删改查
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
-```
+
+```bash
 $ cd learngit
 $ git init  # 初始化Git仓库
 ** create readme.txt
@@ -52,8 +56,10 @@ $ git reset --hard (gitID)  # 回退为指定版本(删除修改)
 $ git reset --soft (gitID)  # 回退为指定版本(不删除回退文件的修改)
 $ git log                   # 查看当前版本及之前版本的id号
 ```
+
 > 参考来自 [learn-git-branching](https://oschina.gitee.io/learn-git-branching/)
-```
+
+```bash
 # Git 仓库创建
 $ git init                 # 将当前目录设为Git代码库
 $ git init [project-name]  # 新建并将其设为Git代码库
@@ -93,10 +99,15 @@ $ git reset --keep [commit]  # 重置当前HEAD为指定commit，但保持暂存
 # 后者的所有变化都将被前者抵消并且应用到当前分支
 $ git revert [commit]
 ```
+
 2. Git 远程仓库
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
-```
+
+```bash
+
 # 注册github.com并创建本机的ssh-key
+
 $ ssh-keygen -t rsa -C "123456789@qq.com"
 
 # 添加ssh-key到秘钥管理里面并关联远程仓库
@@ -111,8 +122,10 @@ $ git push -u origin master
 # 仓库克隆
 $ git clone git@github.com:xxx/gitkills.git
 ```
+
 > 参考来自 [learn-git-branching](https://oschina.gitee.io/learn-git-branching/)
-```
+
+```bash
 # Git远程分支推送
 $ git fetch [remote]          # 下载远程仓库的所有变动
 $ git pull [remote] [branch]  # 取回远程仓库的变化，并与本地分支合并
@@ -125,11 +138,15 @@ $ git remote -v                     # 显示所有远程仓库
 $ git remote show [remote]          # 显示某个远程仓库的信息
 $ git remote add [shortname] [url]  # 增加一个新的远程仓库并命名
 ```
+
 3. Git 分支管理
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
+
 - 在工作区未提交的内容，所有分支都可以看到
 - 提交之后的内容在对应的分支内，切换只能在对应的分支内看到
-```
+
+```bash
 # 查看分支列表，其中*为当前分支
 git branch
 
@@ -151,8 +168,10 @@ git branch -d <name>
 # 强行删除分支
 git branch -D <name>
 ```
+
 > 参考来自 [learn-git-branching](https://oschina.gitee.io/learn-git-branching/)
-```
+
+```bash
 # Git查看分支
 $ git branch     # 列出所有本地分支
 $ git branch -r  # 列出所有远程分支
@@ -172,10 +191,14 @@ $ git branch -dr [remote/branch]          # 删除远程分支
 # 建立追踪关系，在现有分支与指定的远程分支之间
 $ git branch --set-upstream [branch] [remote-branch]
 ```
+
 4. Git 冲突处理
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
+
 - 合并时显示分支冲突先 `merge` 后修改 `<<<<分支1`、`<<<分支2` 之间的冲突内容，然后再提交。当前分支会比被合并的分支，多一次 commit 的提交记录。
-```
+
+```bash
 # 合并指定分支到当前分支
 # 禁用Fast forward功能，不删除分支且合并后保留分支
 git merge --no-ff [branch]
@@ -183,17 +206,22 @@ git merge --no-ff [branch]
 # 选择一个commit并合并进当前分支
 $ git cherry-pick [commit]
 ```
+
 5. Git 比对日志
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
-```
+
+```bash
 # 查看分支情况
 git log --graph --pretty=oneline --abbrev-commit
 git log --graph --decorate --pretty=oneline --abbrev-commit --all
 git log --pretty=fsormat:'%s %C(bold blue)(%an)%Creset' --abbrev-commit
 git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 ```
+
 > 参考来自 [learn-git-branching](https://oschina.gitee.io/learn-git-branching/)
-```
+
+```bash
 # Git日志格式
 
 $ git log                        # 显示当前分支的版本历史
@@ -229,10 +257,14 @@ $ git show [commit]              # 显示某次提交的元数据和内容变化
 $ git show --name-only [commit]  # 显示某次提交发生变化的文件
 $ git show [commit]:[filename]   # 显示某次提交时某个文件的内容
 ```
+
 6. Git 内容存储
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
+
 - 正在 dev 分支工作时，需要修改 bug 并提交。应该先把 dev 当前工作区 stash 储藏起来，修改完 bug 提交后在使用 git stash pop 恢复 dev 的内容到工作区。
-```
+
+```bash
 # 储藏当前工作区
 git stash
 
@@ -249,10 +281,14 @@ git stash drop <stashid>
 # 恢复stash的内容到工作区，并在stash内删除
 git stash pop
 ```
+
 7. Git 标签管理
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
+
 - 标签基本都是发布版本的时候使用的，所以平常很少使用，了解即可。
-```
+
+```bash
 # 新建标签，默认为在HEAD上，也可以指定一个commit id号
 git tag <name>
 
@@ -280,10 +316,14 @@ git push origin --tags
 # 从远程删除标签
 git push origin :refs/tags/<tagname>
 ```
+
 8. Git 配置管理
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
+
 - 主要配置日常使用工具和提交记录相关的配置，需要注意的是，区分全局和本地配置。
-```
+
+```bash
 # 列出配置项
 $ git config --list
 $ git config --global --list
@@ -321,19 +361,26 @@ $ git config --global https.proxy https://127.0.0.1:1080
 $ git config --global --unset http.proxy
 $ git config --global --unset https.proxy
 ```
+
 9. Git  其他操作
+
 > 参考来自 [常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
-```
+
+```bash
 # 生成发布压缩包
 $ git archive
 ```
+
 10. 快捷键总结
+
 > OpenSource：总结的快捷键使用文档！
 
 ![Git Cheat Sheet](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_09_12_GitCheatSheet.png)
 
 ## Git 常用命令实战
+
 > 参考来自 [Git 基础课](https://01.ftqq.com/2021/08/21/git-course/)
+
 1. `gitjk`
 2. 使用 git 初始化命令
 `git init`
@@ -349,7 +396,7 @@ $ git archive
 7. 查看 index 暂存区
 `cd ../ && git ls-files --stage`
 8. 查看 HEAD 文件
-`cat HEAD` 
+`cat HEAD`
 提示：引用文件不存在，因为还没有 commit
 9. 通过 commit 命令提交内容
 `git commit -m 'first version'`
@@ -371,7 +418,7 @@ $ git archive
 17. 编辑 a.txt，添加 make ops great again
 `git add a.txt && git commit -m 'ops'`
 18. 开始合并分支 git merge
-19.  checkout 回 master，然后运行 merge 命令
+19. checkout 回 master，然后运行 merge 命令
 `git checkout master && git merge dev`
 20. 带冲突的分支合并
 21. checkout 回 dev
@@ -399,8 +446,8 @@ $ git archive
     - git push
     - 再改用 github
     - git remote
-    - git remote show <name>
-    - git remote remove <name>
+    - git remote show `<name>`
+    - git remote remove `<name>`
     - git remote add origin url
     - git push
 29. 储藏区
@@ -411,5 +458,3 @@ $ git archive
     `git stash list`
     `git stash list`
     `git stash show / drop / clear`
-    
-
