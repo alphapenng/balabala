@@ -1,9 +1,11 @@
+
+# 2022年了我才开始学 typescript 晚吗？（7.5k 字总结）
+
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [juejin.cn](https://juejin.cn/post/7124117404187099172)
 
-前言
---
+## 前言
 
-![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4dbcdd412ca34ae7941bffa5f11a507d~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp?)
+![typescript](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4dbcdd412ca34ae7941bffa5f11a507d~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp?)
 
 其实早在初学前端时，就有大致了解过 typescript , 但后面工作中基本 vue2 开发为主，所以真正能够接触到 typescript 的机会其实并不多。
 
@@ -17,58 +19,61 @@
 
 拍拍自己的大肚皮，那就从现在开始，就把我那学了又相当于没学的 typescript ，重新整起来吧
 
-什么是 TypeScript
+## 什么是 TypeScript
+
 --------------
 
 TypeScript 是一种由微软开发的自由和开源的编程语言。它是 JavaScript 的一个超集，而且本质上向这个语言添加了可选的静态类型和基于类的面向对象编程。
 
 > 简而言之，TypeScript 是 JavaScript 的超集，具有可选的类型并可以编译为纯 JavaScript。从技术上讲 TypeScript 就是具有静态类型的 JavaScript 。
 
-TypeScript 优缺点
+## TypeScript 优缺点
+
 --------------
 
 ### 优点
 
-*   增强代码的可维护性，尤其在大型项目的时候效果显著
-*   友好地在编辑器里提示错误，编译阶段就能检查类型发现大部分错误
-*   支持最新的 JavaScript 新特特性
-*   周边生态繁荣，vue3 已全面支持 typescript
+* 增强代码的可维护性，尤其在大型项目的时候效果显著
+* 友好地在编辑器里提示错误，编译阶段就能检查类型发现大部分错误
+* 支持最新的 JavaScript 新特特性
+* 周边生态繁荣，vue3 已全面支持 typescript
 
 ### 缺点
 
-*   需要一定的学习成本
-*   和一些插件库的兼容并不是特别完美，如以前在 vue2 项目里使用 typescript 就并不是那么顺畅
-*   增加前期开发的成本，毕竟你需要写更多的代码（但是便于后期的维护）
+* 需要一定的学习成本
+* 和一些插件库的兼容并不是特别完美，如以前在 vue2 项目里使用 typescript 就并不是那么顺畅
+* 增加前期开发的成本，毕竟你需要写更多的代码（但是便于后期的维护）
 
-安装环境
-----
+## 安装环境
+
+--------------
 
 ### 安装 typescript
 
 首先，我们可以新建一个空文件夹，用来学习 ts，例如我在文件夹下新建了个 `helloworld.ts`
 
-```
+```bash
 npm install -g  typescript // 全局安装 ts
 复制代码
 ```
 
 不记得自己是否已经安装过 typescript 的，可以使用以下命令来验证：
 
-```
+```bash
 tsc -v 
 复制代码
 ```
 
 如果出现版本，则说明已经安装成功
 
-```
+```bash
 Version 4.6.3
 复制代码
 ```
 
 生成 tsconfig.json 配置文件
 
-```
+```bash
 tsc --init
 复制代码
 ```
@@ -77,7 +82,7 @@ tsc --init
 
 在我们 `helloworld.ts` 文件中，随便写点什么
 
-```
+```bash
 const s:string = "彼时彼刻，恰如此时此刻";
 console.log(s);
 复制代码
@@ -85,7 +90,7 @@ console.log(s);
 
 控制台执行 `tsc helloworld.ts` 命令，目录下生成了一个同名的 helloworld.js 文件，代码如下
 
-```
+```bash
 var s = "彼时彼刻，恰如此时此刻";
 console.log(s);
 复制代码
@@ -95,21 +100,22 @@ console.log(s);
 
 我们接着执行
 
-```
+```bash
 node helloworld.js
 复制代码
 ```
 
 即可看到输出结果
 
-安装 ts-node
-----------
+## 安装 ts-node
+
+--------------
 
 那么通过我们上面的一通操作，我们知道了运行 tsc 命令就可以编译生成一个 js 文件，但是如果每次改动我们都要手动去执行编译，然后再通过 node 命令才能查看运行结果岂不是太麻烦了。
 
 而 ts-node 正是来解决这个问题的
 
-```
+```bash
 npm i -g ts-node // 全局安装ts-node
 复制代码
 ```
@@ -118,7 +124,7 @@ npm i -g ts-node // 全局安装ts-node
 
 我们试一下
 
-```
+```bash
 ts-node helloworld.ts
 复制代码
 ```
@@ -129,26 +135,27 @@ ts-node helloworld.ts
 
 接下来我们就可以正式进入到 typescript 的学习之旅了
 
-TypeScript 基础类型
----------------
+## TypeScript 基础类型
+
+--------------
 
 ### Boolean 类型
 
-```
+```bash
 const flag: boolean = true;
 复制代码
 ```
 
 ### Number 类型
 
-```
+```bash
 const count: number = 10;
 复制代码
 ```
 
 ### String 类型
 
-```
+```bash
 let name: string = "树哥";
 复制代码
 ```
@@ -157,11 +164,11 @@ let name: string = "树哥";
 
 枚举类型用于定义数值集合，使用枚举我们可以定义一些带名字的常量。 使用枚举可以清晰地表达意图或创建一组有区别的用例。，如周一到周日，方位上下左右等
 
-*   普通枚举
+* 普通枚举
 
 初始值默认为 0 其余的成员会会按顺序自动增长 可以理解为数组下标
 
-```
+```bash
 enum Color {
   RED,
   PINK,
@@ -173,9 +180,9 @@ console.log(red); // 0
 复制代码
 ```
 
-*   设置初始值
+* 设置初始值
 
-```
+```bash
 enum Color {
   RED = 2,
   PINK,
@@ -186,9 +193,9 @@ console.log(pink); // 3
 复制代码
 ```
 
-*   字符串枚举
+* 字符串枚举
 
-```
+```bash
 enum Color {
   RED = "红色",
   PINK = "粉色",
@@ -200,11 +207,11 @@ console.log(pink); // 粉色
 复制代码
 ```
 
-*   常量枚举
+* 常量枚举
 
 使用 const 关键字修饰的枚举，常量枚举与普通枚举的区别是，整个枚举会在编译阶段被删除 我们可以看下编译之后的效果
 
-```
+```bash
 const enum Color {
   RED,
   PINK,
@@ -224,7 +231,7 @@ var color = [0 /* RED */, 1 /* PINK */, 2 /* BLUE */];
 
 对数组类型的定义有两种方式:
 
-```
+```bash
 const arr: number[] = [1,2,3];
   const arr2: Array<number> = [1,2,3];
 复制代码
@@ -236,7 +243,7 @@ const arr: number[] = [1,2,3];
 
 元组（ Tuple ）表示一个已知数量和类型的数组，可以理解为他是一种特殊的数组
 
-```
+```bash
 const tuple: [number, string] = [1, "zhangmazi"];
 复制代码
 ```
@@ -247,7 +254,7 @@ const tuple: [number, string] = [1, "zhangmazi"];
 
 默认情况下 null 和 undefined 是所有类型的子类型。 也就是说你可以把 null 和 undefined 赋值给其他类型。
 
-```
+```bash
 let a: undefined = undefined;
   let b: null = null;
 
@@ -259,7 +266,7 @@ let a: undefined = undefined;
 
 如果你在 tsconfig.json 指定了 "strictNullChecks":true ，即开启严格模式后， ~null 和 undefined 只能赋值给 void 和它们各自的类型。~ （这里感谢评论区指出） null 和 undefined 只能给它们自己的类型赋值
 
-```
+```bash
 // 启用 --strictNullChecks
 let x: number;
 x = 1; // 编译正确
@@ -305,8 +312,8 @@ never 类型表示的是那些永不存在的值的类型。 例如 never 类型
 
 值会永不存在的两种情况：
 
-*   1 如果一个函数执行时抛出了异常，那么这个函数永远不存在返回值（因为抛出异常会直接中断程序运行，这使得程序运行不到返回值那一步，即具有不可达的终点，也就永不存在返回了）
-*   2 函数中执行无限循环的代码（死循环），使得程序永远无法运行到函数返回值那一步，永不存在返回。
+* 1 如果一个函数执行时抛出了异常，那么这个函数永远不存在返回值（因为抛出异常会直接中断程序运行，这使得程序运行不到返回值那一步，即具有不可达的终点，也就永不存在返回了）
+* 2 函数中执行无限循环的代码（死循环），使得程序永远无法运行到函数返回值那一步，永不存在返回。
 
 ```
 // 异常
@@ -343,7 +350,7 @@ unknown 与 any 的最大区别是：
 
 ### object, Object 和 {} 类型
 
-*   object object 类型用于表示所有的非原始类型，即我们不能把 number、string、boolean、symbol 等 原始类型赋值给 object。在严格模式下，null 和 undefined 类型也不能赋给 object。
+* object object 类型用于表示所有的非原始类型，即我们不能把 number、string、boolean、symbol 等 原始类型赋值给 object。在严格模式下，null 和 undefined 类型也不能赋给 object。
 
 ```
 let object: object;
@@ -356,7 +363,7 @@ object = {}; // 编译正确
 复制代码
 ```
 
-*   Object
+* Object
 
 大 Object 代表所有拥有 toString、hasOwnProperty 方法的类型 所以所有原始类型、非原始类型都可以赋给 Object (严格模式下 null 和 undefined 不可以)
 
@@ -371,7 +378,7 @@ ObjectCase = {}; // ok
 复制代码
 ```
 
-*   {}
+* {}
 
 {} 空对象类型和大 Object 一样 也是表示原始类型和非原始类型的集合
 
@@ -520,7 +527,7 @@ x = true; // 编译正确
 
 类型断言有两种方式
 
-*   尖括号写法
+* 尖括号写法
 
 ```
 let str: any = "to be or not to be";
@@ -528,7 +535,7 @@ let strLength: number = (<string>str).length;
 复制代码
 ```
 
-*   as 写法
+* as 写法
 
 ```
 let str: any = "to be or not to be";
@@ -641,7 +648,7 @@ testAndFn({name: "黄老爷"}) // error TS2322: Type 'string' is not assignable 
 
 目前主要有四种的方式来实现类型保护：
 
-*   1、in 关键字
+* 1、in 关键字
 
 ```
 interface InObj1 {
@@ -663,7 +670,7 @@ isIn({a:1, y:'yyy'});
 复制代码
 ```
 
-*   2、typeof 关键字
+* 2、typeof 关键字
 
 ```
 function isTypeof( val: string | number) {
@@ -676,7 +683,7 @@ function isTypeof( val: string | number) {
 
 > typeof 只支持：typeof 'x' === 'typeName' 和 typeof 'x' !== 'typeName'，x 必须是 'number', 'string', 'boolean', 'symbol'。
 
-*   3、instanceof
+* 3、instanceof
 
 ```
 function creatDate(date: Date | string){
@@ -690,7 +697,7 @@ function creatDate(date: Date | string){
 复制代码
 ```
 
-*   4、自定义类型保护的类型谓词
+* 4、自定义类型保护的类型谓词
 
 ```
 function isNumber(num: any): num is number {
@@ -737,10 +744,9 @@ interface Person {
 复制代码
 ```
 
-*   可选属性，我们最常见的使用情况是，不确定这个参数是否会传，或者存在。
-    
-*   只读属性用于限制只能在对象刚刚创建的时候修改其值。此外 TypeScript 还提供了 ReadonlyArray 类型，它与 Array 相似，只是把所有可变方法去掉了，因此可以确保数组创建后再也不能被修改。
-    
+* 可选属性，我们最常见的使用情况是，不确定这个参数是否会传，或者存在。
+
+* 只读属性用于限制只能在对象刚刚创建的时候修改其值。此外 TypeScript 还提供了 ReadonlyArray 类型，它与 Array 相似，只是把所有可变方法去掉了，因此可以确保数组创建后再也不能被修改。
 
 ### 索引签名
 
@@ -788,7 +794,7 @@ interface MyInterface {
 
 **都允许扩展**
 
-*   interface 用 `extends` 来实现扩展
+* interface 用 `extends` 来实现扩展
 
 ```
 interface MyInterface {
@@ -810,7 +816,7 @@ let person:MyInterface2 = {
 复制代码
 ```
 
-*   type 使用 `&` 实现扩展
+* type 使用 `&` 实现扩展
 
 ```
 type MyType = {
@@ -832,7 +838,7 @@ let value: MyType2 = {
 
 ### 不同点
 
-*   type 可以声明基本数据类型别名 / 联合类型 / 元组等，而 interface 不行
+* type 可以声明基本数据类型别名 / 联合类型 / 元组等，而 interface 不行
 
 ```
 // 基本类型别名
@@ -844,7 +850,7 @@ type List = [string, boolean, number];
 复制代码
 ```
 
-*   interface 能够合并声明，而 type 不行
+* interface 能够合并声明，而 type 不行
 
 ```
 interface Person {
@@ -920,14 +926,14 @@ function getValue<T>(arg:T):T  {
 
 我们有两种方式来使用：
 
-*   1.  定义要使用的类型，比如：
+* 1.  定义要使用的类型，比如：
 
 ```
 getValue<string>('树哥'); // 定义 T 为 string 类型
 复制代码
 ```
 
-*   2.  利用 typescript 的类型推断，比如：
+* 2.  利用 typescript 的类型推断，比如：
 
 ```
 getValue('树哥') // 自动推导类型为 string
@@ -1053,7 +1059,7 @@ function createArray<T = string>(length: number, value: T): Array<T> {
 
 ### 泛型工具类型
 
-*   typeof
+* typeof
 
 关键词除了做类型保护，还可以从实现推出类型，
 
@@ -1072,7 +1078,7 @@ getName(p1);
 复制代码
 ```
 
-*   keyof
+* keyof
 
 可以用来获取一个对象接口中的所有 key 值
 
@@ -1093,7 +1099,7 @@ console.log(val); // 树哥
 复制代码
 ```
 
-*   in
+* in
 
 用来遍历枚举类型：
 
@@ -1106,7 +1112,7 @@ type Obj =  {
 复制代码
 ```
 
-*   infer
+* infer
 
 在条件类型语句中，可以用 infer 声明一个类型变量并且对它进行使用。
 
@@ -1119,7 +1125,7 @@ type ReturnType<T> = T extends (
 
 infer R 就是声明一个变量来承载传入函数签名的返回值类型，简单说就是用它取到函数返回值的类型方便之后使用。
 
-*   extends
+* extends
 
 有时候我们定义的泛型不想过于灵活或者说想继承某些类等，可以通过 extends 关键字添加泛型约束。
 
@@ -1149,7 +1155,7 @@ loggingIdentity({length: 10, name: '张麻子'}); // 编译正确
 复制代码
 ```
 
-*   索引访问操作符
+* 索引访问操作符
 
 使用 `[]` 操作符可以进行索引访问：
 
@@ -1165,7 +1171,7 @@ type x = Person["name"]; // x is string
 
 ### 内置工具类型
 
-1.  Required
+1. Required
 
 将类型的属性变成必选
 
@@ -1184,7 +1190,7 @@ const user: Required<Person> = {
 复制代码
 ```
 
-2.  Partial
+2. Partial
 
 与 Required 相反，将所有属性转换为可选属性
 
@@ -1213,7 +1219,7 @@ const shuge: User={
 复制代码
 ```
 
-3.  Exclude
+3. Exclude
 
 `Exclude<T, U>` 的作用是将某个类型中属于另一个的类型移除掉，剩余的属性构成新的类型
 
@@ -1224,7 +1230,7 @@ type T2 = Exclude<string | number | (() => void), Function>; // string | number
 复制代码
 ```
 
-4.  Extract
+4. Extract
 
 和 Exclude 相反，`Extract<T,U>` 从 T 中提取出 U。
 
@@ -1236,7 +1242,7 @@ type T1 = Extract<string | number | (() => void), Function>; // () =>void
 
 > 适用于：并集类型
 
-5.  Readonly
+5. Readonly
 
 把数组或对象的所有属性值转换为只读的，这就意味着这些属性不能被重新赋值。
 
@@ -1256,7 +1262,7 @@ p.age = 11; // error  Cannot assign to 'age' because it is a read-only property.
 复制代码
 ```
 
-6.  Record
+6. Record
 
 Record<K extends keyof any, T> 的作用是将 K 中所有的属性的值转化为 T 类型。
 
@@ -1271,7 +1277,7 @@ const p: Person = {
 复制代码
 ```
 
-7.  Pick
+7. Pick
 
 从某个类型中挑出一些属性出来
 
@@ -1291,7 +1297,7 @@ const user:P1={
 复制代码
 ```
 
-8.  Omit
+8. Omit
 
 与 Pick 相反，`Omit<T,K>` 从 T 中取出除去 K 的其他所有属性。
 
@@ -1308,7 +1314,7 @@ const user:P1  = {
 复制代码
 ```
 
-9.  NonNullable
+9. NonNullable
 
 去除类型中的 `null` 和 `undefined`
 
@@ -1318,7 +1324,7 @@ type P2 = NonNullable<string[] | null | undefined>; // string[]
 复制代码
 ```
 
-10.  ReturnType
+10. ReturnType
 
 用来得到一个函数的返回值类型
 
@@ -1328,7 +1334,7 @@ const test: ReturnType<Func> = "1";
 复制代码
 ```
 
-11.  Parameters
+11. Parameters
 
 用于获得函数的参数类型所组成的元组类型。
 
@@ -1337,7 +1343,7 @@ type P1 = Parameters<(a: number, b: string) => void>; // [number, string]
 复制代码
 ```
 
-12.  InstanceType
+12. InstanceType
 
 返回构造函数类型 T 的实例类型
 
@@ -1362,10 +1368,10 @@ tsconfig.json 包含 TypeScript 编译的相关配置，通过更改编译配置
 
 ### 重要字段
 
-*   files - 设置要编译的文件的名称；
-*   include - 设置需要进行编译的文件，支持路径模式匹配；
-*   exclude - 设置无需进行编译的文件，支持路径模式匹配；
-*   compilerOptions - 设置与编译流程相关的选项。
+* files - 设置要编译的文件的名称；
+* include - 设置需要进行编译的文件，支持路径模式匹配；
+* exclude - 设置无需进行编译的文件，支持路径模式匹配；
+* compilerOptions - 设置与编译流程相关的选项。
 
 ### compilerOptions 选项
 
