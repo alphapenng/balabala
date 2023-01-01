@@ -10,6 +10,8 @@ authors:
 
 ---
 
+![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230101203240_ezEtmN.png)
+
 ## OmniEdge 是什么？
 
 打开 OmniEdge的官网 [https://omniedge.io/](https://omniedge.io/) 可以看到它的 slogan：
@@ -143,7 +145,7 @@ windows 客户端安装相对简单。
 
 待更新。。。
 
-## 测试节点联通情况
+## 测试节点连通情况
 
 回到 mac，我们打开终端，测试一下与 windows 的连通情况，输入以下命令：
 
