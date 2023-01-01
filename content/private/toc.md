@@ -4,26 +4,46 @@
  * @Github: 
  * @Date: 2023-01-01 20:27:18
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-01 20:31:39
+ * @LastEditTime: 2023-01-01 20:49:41
  * @FilePath: /balabala/content/private/toc.md
 -->
 
-# OmniEdge 异地组网部署
+# 红米 AX6 解锁 SSH 安装 ShellClash 及刷机 Openwrt 教程
 
-## OmniEdge 是什么
+## 前言
 
-## 为什么选择 OmniEdge
+## 刷机类型
 
-## Supernode 部署
+## 准备工作
 
-## 安装 OmniEdge 客户端
+## 解锁 SSH
 
-### 注册 OmniEdge， 添加虚拟网络
+### 降级固件
 
-### 安装 macOS 客户端
+### 通过虚拟机实现一台 openwrt 系统的无线路由器
 
-### 安装 windows 客户端
+### 解锁 SSH
 
-### 安装 openwrt 客户端
+### 验证 SSH 并备份
 
-## 测试节点连通情况
+### 固化 SSH
+
+## 安装使用 ShellClash
+
+## 不扩容刷入 openwrt 固件
+
+## 扩容刷入 openwrt 固件
+
+### 扩容刷机原理
+
+### 扩容刷机实操
+
+### 刷回官方固件原理
+
+### 刷回官方固件实操
+
+### Uboot 刷机原理
+
+### Uboot 刷机实操
+
+## 总结
