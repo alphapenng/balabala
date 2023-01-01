@@ -189,7 +189,7 @@ headscale namespaces create default
 headscale namespaces list
 ```
 
-![headscale_namespace](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225222030_3ZXzRp.png)
+![headscale_namespace-m](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225222030_3ZXzRp.png)
 
 ## Tailscale 客户端接入
 
@@ -329,7 +329,7 @@ OpenWrt 安装方法参考 [https://github.com/adyanth/openwrt-tailscale-enabler
     ls /etc/rc.d/S*tailscale*
     ```
 
-    ![tailscale_boot](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221226084534_1PGL1X.png)
+    ![tailscale_boot-m](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221226084534_1PGL1X.png)
 
 9. 以后升级 tailscale，只需从[这里](https://pkgs.tailscale.com/stable/#static)下载最新的安装包，下载的包名是类似 `1.2.10_mips` 这种结构，然后替换掉 `/usr/bin/tailscale` 和 `/usr/bin/tailscaled` 相同路径下的二进制文件。
 
