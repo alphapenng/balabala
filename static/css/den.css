@@ -360,6 +360,14 @@ h4:after {
   margin-bottom: 45px;
 }
 
+.content img[alt$="-m"] {
+  width: 50%;
+}
+
+.content img[alt$="-s"] {
+  width: 30%;
+}
+
 .content.highlight pre {
   padding-left: -40px;
   padding-right: -40px;

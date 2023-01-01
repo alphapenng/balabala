@@ -5,14 +5,16 @@ draft: false
 tags: ["geek","homelab","omniedge","vpn"]
 categories: ["geek"]
 authors:
+
 - alphapenng
+
 ---
 
 ## OmniEdge 是什么？
 
 打开 OmniEdge的官网 [https://omniedge.io/](https://omniedge.io/) 可以看到它的 slogan：
 
-> **连接 任何设备 到局域网**
+> **连接任何设备到局域网。**
 > 使用 OmniEdge 的下一代异地组网 Mesh VPN，将局域网架设到网上，将任何地方的任何设备连接到局域网，实现快速的访问。
 
 OmniEdge 的功能其实跟 WireGuard 类似，是一个 VPN 软件，可以实现远程 Mesh 互连, 组建「大」局域网。
@@ -27,7 +29,7 @@ OmniEdge 的功能其实跟 WireGuard 类似，是一个 VPN 软件，可以实�
 
 云主机我是有一台，在腾讯云上买的轻量应用服务器，享受的新用户首单特惠 88 元一年。
 
-<div align="center"> <img src="https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230101000839_c4gT7e.png" alt="lighthouse" width="50%" /> </div>
+![lighthouse-m](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230101000839_c4gT7e.png)
 
 但没有申请域名，想着申请域名要花钱还要备案，就果断放弃了。
 
@@ -89,12 +91,16 @@ OmniEdge 的功能其实跟 WireGuard 类似，是一个 VPN 软件，可以实�
 
 1. 安装 Tun/Tap 驱动
 
-   - 下载驱动文件，[https://sourceforge.net/projects/tuntaposx/files/latest/download](https://sourceforge.net/projects/tuntaposx/files/latest/download)
-   - 解压 `tuntap_20150118.tar.gz` 后双击 `tuntap_20150118.pkg` 进行安装
-   - 在终端下运行 `sudo kextload /Library/Extensions/tap.kext`
+    - 下载驱动文件：[https://sourceforge.net/projects/tuntaposx/files/latest/download](https://sourceforge.net/projects/tuntaposx/files/latest/download)
+
+    - 解压 `tuntap_20150118.tar.gz` 后双击 `tuntap_20150118.pkg` 进行安装
+
+    - 在终端下运行 `sudo kextload /Library/Extensions/tap.kext`
 
 2. 安装命令行客户端
+
     - 通过脚本安装：`curl https://omniedge.io/install/omniedge-install.sh | bash`
+
     - 然后在此页面 [https://omniedge.io/dashboard](https://omniedge.io/dashboard) 创建安全码
 
         ![secret-key](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230101013508_UYY8u8.png)
@@ -104,7 +110,9 @@ OmniEdge 的功能其实跟 WireGuard 类似，是一个 VPN 软件，可以实�
         ![list-key](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230101014146_BzZ8zB.png)
 
     - 通过刚才创建的安全码进行登录：`omniedge login -s <yoursecuritykey>`
+
     - 加入你创建的虚拟网络：`sudo omniedge join`
+
         ![join_virtual_network](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230101092947_yPzu61.png)
 
 至此，macOS 命令行客户端安装完成，接着我们安装 windows 客户端
@@ -137,7 +145,7 @@ windows 客户端安装相对简单。
 
 ## 测试节点联通情况
 
-回到 mac，我们打开终端，测试一下与 windows 的连通情况，输入一下命令：
+回到 mac，我们打开终端，测试一下与 windows 的连通情况，输入以下命令：
 
 ```bash
 # 10.1.0.1 为 windows 客户端的虚拟网络 ip
