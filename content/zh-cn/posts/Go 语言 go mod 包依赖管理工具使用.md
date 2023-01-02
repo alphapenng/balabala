@@ -8,13 +8,15 @@ authors:
 - alphapenng
 ---
 
+![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230102212930_vYigVu.png)
+
 💁 参考文档：[Go 语言 go mod 包依赖管理工具使用详解](http://c.biancheng.net/view/5712.html)
 
 最早的时候，Go 语言所依赖的所有的第三方库都放在 GOPATH 这个目录下面，这就导致了同一个库只能保存一个版本的代码。如果不同的项目依赖同一个第三方的库的不同版本，应该怎么解决？
 
 go module 是 Go 语言从 1.11 版本之后官方推出的版本管理工具，并且从 Go1.13 版本开始，go module 成为了 Go 语言默认的依赖管理工具。
 
-## 如何使用 Modules？
+## 如何使用 Modules
 
 ### GO111MODULE
 
