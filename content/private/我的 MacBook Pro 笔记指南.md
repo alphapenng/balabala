@@ -116,6 +116,7 @@
     - brew install trzsz-go
     - brew install tesseract
     - brew install pngpaste
+    - brew install xclip
 5. 终端下管理非终端软件 - Homebrew Cask
 
     - brew cask list
