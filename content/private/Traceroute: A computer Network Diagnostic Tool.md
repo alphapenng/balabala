@@ -1,29 +1,51 @@
----
-2022-08-01 19:45:13
----
+<!--
+ * @Description: 
+ * @Author: alphapenng
+ * @Github: 
+ * @Date: 2021-10-28 11:39:22
+ * @LastEditors: alphapenng
+ * @LastEditTime: 2023-01-15 21:58:41
+ * @FilePath: /balabala/content/private/Traceroute: A computer Network Diagnostic Tool.md
+-->
 
 # Traceroute: A computer Network Diagnostic Tool
 
-[toc]
+- [Traceroute: A computer Network Diagnostic Tool](#traceroute-a-computer-network-diagnostic-tool)
+  - [Traceroute: A computer Network Diagnostic Tool](#traceroute-a-computer-network-diagnostic-tool-1)
+  - [What is traceroute ?](#what-is-traceroute-)
+  - [The syntax](#the-syntax)
+  - [How does it work?](#how-does-it-work)
+  - [Time-To-Live](#time-to-live)
+  - [Let’s look at an example](#lets-look-at-an-example)
+  - [Time Outs](#time-outs)
+  - [traceroute cmd](#traceroute-cmd)
+    - [In Windows the command name is - tracert](#in-windows-the-command-name-is---tracert)
+    - [The traceroute cmd on Linux](#the-traceroute-cmd-on-linux)
+  - [RTT](#rtt)
+  - [Asterisks(\*）](#asterisks)
 
-## Traceroute: A computer Network Diagnostic Tool 
+## Traceroute: A computer Network Diagnostic Tool
+
 - How does it work! 🤔
 - Ping works fine but not traceroute! 🤨
 - What are the stars in traceroute output! ***
 
 ## What is traceroute ?
-> traceroute tracks the route packets take across an IP network on their way to a given host. 
+>
+> traceroute tracks the route packets take across an IP network on their way to a given host.
 It assists you in troubleshooting nw connectivity issues from your Destination to a Remote destination by using echo packets (ICMP) to visually trace the route.
 
  traceroute 跟踪数据包在到达给定主机的途中通过 IP 网络的路由。
 它通过使用回显数据包 (ICMP) 直观地跟踪路由，帮助您解决从目标到远程目标的网络连接问题。
 
 ## The syntax
+>
 > The cmd traceroute <x> (x here being an IP or hostname) is d most basic version & it will begin to send packets to d designated target. This result will allow u to trace d path of d packets sent from ur machine to each of d systems b/n u & ur desired destination.
 
 traceroute <X> （x 在这里是 IP 或主机名）是 最基本的版本，它将开始向指定目标发送数据包。这个结果将允许你跟踪从你的机器发送到每个系统 b/n 和你想要的目的地的数据包的路径。
 
 ## How does it work?
+>
 > Traceroute uses TTL (Time to Live) field in d IP pkt header. TTL is used to prevent pkts from being forwarded forever when der is a routing loop. Whenever an IP pkt is forwarded by a router, d TTL is decreased by 1. When d TTL is 0, d IP pkt  will be discarded.
 
 Traceroute 使用在 IP 数据包标头中 TTL（生存时间）字段。当目的地址为环路时，TTL用于防止数据包永远转发。每当路由器转发一个IP 数据包时，TTL 值减1。当 TTL 值为0 时， IP 数据包将被丢弃。
@@ -31,13 +53,15 @@ Traceroute 使用在 IP 数据包标头中 TTL（生存时间）字段。当目�
 ![IP 头字段](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_10_28_IP%20%E5%A4%B4%E5%AD%97%E6%AE%B5.png)
 
 ## Time-To-Live
-> As the packet hops from one router to router through to get to its destination, each router is required to decrement the echo packets TTL by a minimum of 1 before proceeding to forward the packet to the next router. 
+>
+> As the packet hops from one router to router through to get to its destination, each router is required to decrement the echo packets TTL by a minimum of 1 before proceeding to forward the packet to the next router.
 In other words, Time-To-Live is a Hop Counter by design.
 
 当数据包从一个路由器跳到另一个路由器以到达其目的地时，在继续将数据包转发到下一个路由器之前，每个路由器都需要将回声数据包 TTL 递减至少 1。
 换句话说，Time-To-Live 是一个跳数计数器。
 
-## Let’s look at an example. 
+## Let’s look at an example
+
 1. Let’s say that from H1 (192.168.1.1) we send a trace to S1 (192.168.3.1). The first IP packet that H1 sends, will have a TTL of 1:
     假设我们从 H1 (192.168.1.1) 向 S1 (192.168.3.1) 发送跟踪。 H1 发送的第一个 IP 数据包的 TTL 为 1：
     ![](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_10_28_ZG00AP.jpg)
@@ -56,20 +80,24 @@ In other words, Time-To-Live is a Hop Counter by design.
     我们发送的每个 IP 数据包都称为探测。 Traceroute 可用于 ICMP、UDP 和 TCP，具体取决于您的操作系统。
 
 ## Time Outs
+
 1. Time Outs - The most likely problem that you'll encounter when you use tracert is a timeout during one of the hops. Timeouts are indicated by asterisks where you'd expect to see a time.
     超时 - 使用 tracert 时最可能遇到的问题是其中一个跃点期间的超时。超时用星号取代了时间数值。
 2. Possible Reason - Sometimes, timeouts are caused by temporary problems, so you should try the tracert again to see if the problem persists. If you keep getting timeouts at the same router, the router could be having a genuine problem.
     可能的原因 - 有时，超时是由临时问题引起的，因此您应该再次尝试 tracert 以查看问题是否仍然存在。如果您一直在同一路由器上超时，则路由器可能存在真正的问题。
 
 ## traceroute cmd
+
 ### In Windows the command name is - tracert
-> To use tracert, type the tracert command followed by the host name of the computer to which you want to trace the route.    
+>
+> To use tracert, type the tracert command followed by the host name of the computer to which you want to trace the route.
 
 要使用 tracert，请键入 tracert 命令，后跟要跟踪路由的计算机的主机名。
  ![](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/2021_10_28_sf28k2.jpg)
- 
- ### The traceroute cmd on Linux 
- > The traceroute cmd on Linux works similar to Windows. One important difference is that it doesn’t use ICMP but UDP. It also allows u to specify the no of IP pkts (probes) you want to send. 
+
+### The traceroute cmd on Linux
+ >
+ > The traceroute cmd on Linux works similar to Windows. One important difference is that it doesn’t use ICMP but UDP. It also allows u to specify the no of IP pkts (probes) you want to send.
 For e.g.
 `# traceroute -N 1 -q 1 192.168.3.1`
 Where -q sets d  no. of probe pkts per hop.
@@ -84,6 +112,7 @@ Linux 上的 traceroute 命令的工作方式类似于 Windows。一个重要的
 默认情况下，Traceroute 测量 60 字节数据包的 30 跳。
 
 ## RTT
+>
 > You can tell here where hop one actually landed, and then there are three numerical values. These are known as the Round-Trip Time (RTT), which refers to the amount of time that a given packet takes to reach its destination and route back an ICMP message to the source.
 
 你可以在前三个数值这里知晓每一跳实际到达的时间。这些被称为往返时间 (RTT)，它指的是给定数据包到达其目的地并将 ICMP 消息路由回源所花费的时间。
@@ -94,11 +123,12 @@ Linux 上的 traceroute 命令的工作方式类似于 Windows。一个重要的
 当每个数据包到达网络上的设备时，它会将 ICMP 错误消息路由回源。此操作允许 traceroute 确定该数据包的 RTT，并且不一定指示错误。
 
 ## Asterisks(*）
+>
 > Sometimes We see only stars (*).
 What does that mean?
-What do these stars (asterisks) mean? 
-Were the packets dropped? 
-Are they timed out? 
+What do these stars (asterisks) mean?
+Were the packets dropped?
+Are they timed out?
 The same time ping works fine. What could be the reason!
 
 有时我们只看到星星 (*).
@@ -108,7 +138,7 @@ The same time ping works fine. What could be the reason!
 他们超时了吗？
 同时 ping 工作正常。可能是什么原因！
 
-> Let me explain. 
+> Let me explain.
 There r two possibilities -
 1st, ICMP/UDP may not be configured. If d traceroute cmd completes successfully & u see these stars, most likely d device dat was hit wasnt configured to reply to ICMP/UDP traffic. This result doesnt mean that d traffic wasn't passed.
 
@@ -120,7 +150,7 @@ There r two possibilities -
 
 第二种可能性是数据包由于网络问题而被丢弃。这些结果通常是数据包超时，或者流量已被防火墙阻止。
 
-> In the traceroute cmd output few additional annotation can be printed: 
+> In the traceroute cmd output few additional annotation can be printed:
 !H, !N, !P (host, nw or protocol unreachable)
 !S (source route failed)
 !F (fragmentation needed)
@@ -136,5 +166,3 @@ There r two possibilities -
  !X（行政上禁止通信）
  !V（主机优先级冲突）
  !C（有效的优先级截止）
-
-

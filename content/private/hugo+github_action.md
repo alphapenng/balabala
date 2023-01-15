@@ -4,7 +4,22 @@
 
 # hugo+github_action
 
-[toc]{type: "ul", level: [2,3,4]}
+- [hugo+github\_action](#hugogithub_action)
+  - [使用 Hugo 搭建博客](#使用-hugo-搭建博客)
+    - [安装 Hugo](#安装-hugo)
+    - [创建 Hugo 网站](#创建-hugo-网站)
+    - [配置主题](#配置主题)
+      - [关联主题仓库](#关联主题仓库)
+      - [更新主题](#更新主题)
+      - [初始化主题配置及发布](#初始化主题配置及发布)
+      - [本地调试站点](#本地调试站点)
+    - [使用 GitHub Pages 前期准备](#使用-github-pages-前期准备)
+      - [GitHub Pages 仓库](#github-pages-仓库)
+      - [域名解析](#域名解析)
+    - [GitHub Pages 发布博客](#github-pages-发布博客)
+      - [手动发布](#手动发布)
+      - [自动发布](#自动发布)
+  - [总结](#总结)
 
 ## 使用 Hugo 搭建博客
 
@@ -110,7 +125,7 @@ git commit -m "add test"
 
 配置在仓库目录 `.github/workflows` 下，以 `.yml` 为后缀。我的 GitHub Action 配置为 `alphapenng/balabala deploy.yml`，自动发布示例配置如下：
 
-```
+```yaml
 name: deploy
 
 on:

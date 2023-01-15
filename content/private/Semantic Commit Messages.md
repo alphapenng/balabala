@@ -1,6 +1,12 @@
----
-2022-11-25 14:59:59
----
+<!--
+ * @Description: 
+ * @Author: alphapenng
+ * @Github: 
+ * @Date: 2022-11-25 14:59:33
+ * @LastEditors: alphapenng
+ * @LastEditTime: 2023-01-15 21:53:41
+ * @FilePath: /balabala/content/private/Semantic Commit Messages.md
+-->
 
 # Semantic Commit Messages
 
@@ -12,7 +18,7 @@ Format: `<type>(<scope>): <subject>`
 
 ## Example
 
-```
+```bash
 feat: add hat wobble
 ^--^  ^------------^
 |     |
@@ -23,16 +29,16 @@ feat: add hat wobble
 
 More Examples:
 
--   `feat`: (new feature for the user, not a new feature for build script)
--   `fix`: (bug fix for the user, not a fix to a build script)
--   `docs`: (changes to the documentation)
--   `style`: (formatting, missing semi colons, etc; no production code change)
--   `refactor`: (refactoring production code, eg. renaming a variable)
--   `test`: (adding missing tests, refactoring tests; no production code change)
--   `chore`: (updating grunt tasks etc; no production code change)
+- `feat`: (new feature for the user, not a new feature for build script)
+- `fix`: (bug fix for the user, not a fix to a build script)
+- `docs`: (changes to the documentation)
+- `style`: (formatting, missing semi colons, etc; no production code change)
+- `refactor`: (refactoring production code, eg. renaming a variable)
+- `test`: (adding missing tests, refactoring tests; no production code change)
+- `chore`: (updating grunt tasks etc; no production code change)
 
 References:
 
--   https://www.conventionalcommits.org/
--   https://seesparkbox.com/foundry/semantic_commit_messages
--   http://karma-runner.github.io/1.0/dev/git-commit-msg.html
+- <https://www.conventionalcommits.org/>
+- <https://seesparkbox.com/foundry/semantic_commit_messages>
+- <http://karma-runner.github.io/1.0/dev/git-commit-msg.html>

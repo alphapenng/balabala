@@ -4,9 +4,9 @@
 
 # axt1800 手动安装 openclash
 
--   客户端 ipk 下载 [前往下载](https://github.com/vernesong/OpenClash/releases)
--   内核下载，同步开发分支，下载解压后请上传至 `/etc/openclash/core/clash` 并给权限 [前往下载](https://github.com/vernesong/OpenClash/releases/tag/Clash)
--   IPK 文件安装步骤
+- 客户端 ipk 下载 [前往下载](https://github.com/vernesong/OpenClash/releases)
+- 内核下载，同步开发分支，下载解压后请上传至 `/etc/openclash/core/clash` 并给权限 [前往下载](https://github.com/vernesong/OpenClash/releases/tag/Clash)
+- IPK 文件安装步骤
 
 ```bash
 #安装依赖

@@ -3,8 +3,58 @@
 ---
 
 # Data Structures & Algorithms in Python Notes
- 
-[toc]{type: "ul", level: [2,3]}
+
+- [Data Structures \& Algorithms in Python Notes](#data-structures--algorithms-in-python-notes)
+  - [第 1 章 Python 入门](#第-1-章-python-入门)
+    - [1.1 Python 概述](#11-python-概述)
+      - [1.1.2 Python 程序预览](#112-python-程序预览)
+    - [1.5 函数](#15-函数)
+      - [1.5.1 信息传递](#151-信息传递)
+    - [1.6 简单的输入和输出](#16-简单的输入和输出)
+      - [1.6.1 控制台输入和输出](#161-控制台输入和输出)
+    - [1.7 异常处理](#17-异常处理)
+      - [1.7.1 抛出异常](#171-抛出异常)
+      - [1.7.2 捕捉异常](#172-捕捉异常)
+    - [1.8 生成器和迭代器](#18-生成器和迭代器)
+      - [生成器](#生成器)
+    - [1.9 Python 的其他便利特点](#19-python-的其他便利特点)
+      - [1.9.3 序列类型的打包和解包](#193-序列类型的打包和解包)
+  - [第 2 章 面向对象编程](#第-2-章-面向对象编程)
+    - [2.3 类定义](#23-类定义)
+      - [2.3.1 例子：CreditCard 类](#231-例子creditcard-类)
+      - [2.3.3 例子：多维向量类](#233-例子多维向量类)
+      - [2.3.4 迭代器](#234-迭代器)
+      - [2.3.5 例子：Range 类](#235-例子range-类)
+    - [2.4 继承](#24-继承)
+      - [2.4.1 扩展 CreditCard 类](#241-扩展-creditcard-类)
+      - [2.4.2 数列的层次图](#242-数列的层次图)
+      - [2.4.3 抽象基类](#243-抽象基类)
+  - [第 3 章 算法分析](#第-3-章-算法分析)
+    - [3.3 渐进分析](#33-渐进分析)
+      - [3.3.3 算法分析示例](#333-算法分析示例)
+  - [第 4 章 递归](#第-4-章-递归)
+    - [4.1 说明性的例子](#41-说明性的例子)
+      - [4.1.1 阶乘函数](#411-阶乘函数)
+      - [4.1.2 绘制英式标尺](#412-绘制英式标尺)
+      - [4.1.3 二分查找](#413-二分查找)
+      - [4.1.4 文件系统](#414-文件系统)
+    - [4.3 递归算法的不足](#43-递归算法的不足)
+    - [4.4 递归的其他例子](#44-递归的其他例子)
+      - [4.4.1 线性递归](#441-线性递归)
+      - [4.4.2 二路递归](#442-二路递归)
+    - [4.6 消除尾递归](#46-消除尾递归)
+  - [第 5 章 基于数组的序列](#第-5-章-基于数组的序列)
+    - [5.3 动态数组和摊销](#53-动态数组和摊销)
+      - [5.3.1 实现动态数组](#531-实现动态数组)
+      - [5.3.3 Python 列表类](#533-python-列表类)
+    - [5.4 Python 序列类型的效率](#54-python-序列类型的效率)
+      - [5.4.1 Python 的列表和元组类](#541-python-的列表和元组类)
+    - [5.5 使用基于数组的序列](#55-使用基于数组的序列)
+      - [5.5.1 为游戏存储高分](#551-为游戏存储高分)
+      - [5.5.2 为序列排序](#552-为序列排序)
+      - [5.5.3 简单密码技术](#553-简单密码技术)
+    - [5.6 多维数据集](#56-多维数据集)
+  - [第 6 章 栈、队列和双端队列](#第-6-章-栈队列和双端队列)
 
 ## 第 1 章 Python 入门
 
@@ -633,6 +683,7 @@ def find_max(data):
 #### 3.3.3 算法分析示例
 
 - 二次 - 时间算法
+
 ```python
 def prefix_average1(S):
   """Return list such that, for all j, A[j] equals average of S[0], ..., S[j]."""
@@ -657,6 +708,7 @@ def prefix_average2(S):
 ```
 
 - 线性 - 时间算法
+
 ```python
 def prefix_average3(S):
   """Return list such that, for all j, A[j] equals average of S[0], ..., S[j]."""
@@ -670,6 +722,7 @@ def prefix_average3(S):
 ```
 
 - 三集不相交
+
 ```python
 def disjoint1(A, B, C):
   """Return True if there is no element common to all three lists."""
@@ -694,6 +747,7 @@ def disjoint2(A, B, C):
 ```
 
 - 元素唯一性
+
 ```python
 def unique1(S):
   """Return True if there are no duplicate elements in sequence S."""
@@ -824,6 +878,7 @@ def good_fibonacci(n):
 #### 4.4.1 线性递归
 
 - 元素序列的递归求和
+
 ```python
 def linear_sum(S, n):
   """Return the sum of the first n numbers of sequence S."""
@@ -834,6 +889,7 @@ def linear_sum(S, n):
 ```
 
 - 使用递归逆序序列
+
 ```python
 def reverse(S, start, stop):
   """Reverse elements in implicit slice S[start:stop]."""
@@ -841,9 +897,11 @@ def reverse(S, start, stop):
     S[start], S[stop-1] = S[stop-1], S[start]  # swap first and last
     reverse(S, start+1, stop-1)                # recur on rest
 ```
+
 - 用于计算幂的递归算法
 
-    - 用简单的递归计算幂函数
+  - 用简单的递归计算幂函数
+
     ```python
     def power(x, n):
       """Compute the value x**n for integer n."""
@@ -853,7 +911,8 @@ def reverse(S, start, stop):
         return x * power(x, n-1)
     ```
 
-    - 使用重复的平方计算幂函数
+  - 使用重复的平方计算幂函数
+
     ```python
     def power(x, n):
       """Compute the value x**n for integer n."""
@@ -884,6 +943,7 @@ def binary_sum(S, start, stop):
 ### 4.6 消除尾递归
 
 - 二分查找算法的非递归实现
+
 ```python
 def binary_search_iterative(data, target):
   """Return True if target is found in the given Python list."""
@@ -901,6 +961,7 @@ def binary_search_iterative(data, target):
 ```
 
 - 使用迭代逆置一个序列的元素
+
 ```python
 def reverse_iterative(S):
   """Reverse elements in sequence S."""
@@ -1000,6 +1061,7 @@ class DynamicArray:
 #### 5.3.3 Python 列表类
 
 - 测量 Python 列表类增添操作的摊销花费
+
 ```python
 import sys
 from time import time
@@ -1030,6 +1092,7 @@ while n <= maxN:
 #### 5.4.1 Python 的列表和元组类
 
 - 向列表中增添元素
+
 ```python
   def insert(self, k, value):
     """Insert value at index k, shifting subsequent values rightward."""
@@ -1043,6 +1106,7 @@ while n <= maxN:
 ```
 
 - 从列表中删除元素
+
 ```python
   def remove(self, value):
     """Remove first occurrence of value (or raise ValueError)."""
@@ -1136,6 +1200,7 @@ if __name__ == '__main__':
 #### 5.5.2 为序列排序
 
 - 插入排序算法
+
 ```python
 def insertion_sort(A):
   """Sort list of comparable elements into nondecreasing order."""
@@ -1189,9 +1254,11 @@ if __name__ == '__main__':
   answer = cipher.decrypt(coded)
   print('Message:', answer)
 ```
+
 ### 5.6 多维数据集
 
 - 二维数组和位置型游戏
+
 ```python
 class TicTacToe:
   """Management of a Tic-Tac-Toe game (does not do strategy)."""

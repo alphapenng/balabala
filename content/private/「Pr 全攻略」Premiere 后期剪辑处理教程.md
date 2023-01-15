@@ -4,13 +4,14 @@
  * @Github: 
  * @Date: 2021-08-29 20:28:12
  * @LastEditors: alphapenng
- * @LastEditTime: 2022-12-27 13:28:09
+ * @LastEditTime: 2023-01-15 20:58:40
  * @FilePath: /balabala/content/private/「Pr 全攻略」Premiere 后期剪辑处理教程.md
 -->
 
 # 「Pr 全攻略」Premiere 后期剪辑处理教程
 
-[toc]
+- [「Pr 全攻略」Premiere 后期剪辑处理教程](#pr-全攻略premiere-后期剪辑处理教程)
+  - [轻松几招告别 Premiere 的卡顿和崩溃](#轻松几招告别-premiere-的卡顿和崩溃)
 
 ## 轻松几招告别 Premiere 的卡顿和崩溃
 

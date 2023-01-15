@@ -1,8 +1,19 @@
----
-2022-08-01 21:08:44
----
+<!--
+ * @Description: 
+ * @Author: alphapenng
+ * @Github: 
+ * @Date: 2022-08-01 06:13:30
+ * @LastEditors: alphapenng
+ * @LastEditTime: 2023-01-15 21:06:26
+ * @FilePath: /balabala/content/private/我的 MacBook Pro 笔记指南.md
+-->
 
 # 我的 MacBook Pro 笔记指南
+
+- [我的 MacBook Pro 笔记指南](#我的-macbook-pro-笔记指南)
+  - [系统设置](#系统设置)
+  - [日常软件](#日常软件)
+  - [开发环境配置](#开发环境配置)
 
 ## 系统设置
 

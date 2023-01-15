@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-15 20:31:51
+ * @LastEditTime: 2023-01-15 21:59:22
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -232,7 +232,7 @@ Ubuntu 系统的默认用户名是 ubuntu，并在安装过程中默认不设置
         tshark -i ens33
         ```
 
-    **Uninstall TShark**
+    💁 **Uninstall TShark**
 
     1. If you wish to completely remove TShark and all related dependencies, execute the following command:
 

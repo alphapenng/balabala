@@ -4,7 +4,17 @@
 
 # Linux Networking Tools
 
-[toc]
+- [Linux Networking Tools](#linux-networking-tools)
+  - [ss](#ss)
+  - [nmap](#nmap)
+  - [ping \& traceroute](#ping--traceroute)
+  - [ethtool](#ethtool)
+  - [dig](#dig)
+  - [netcat](#netcat)
+  - [socat](#socat)
+  - [tcpdump](#tcpdump)
+  - [top](#top)
+  - [wireshark](#wireshark)
 
 ## ss
 
