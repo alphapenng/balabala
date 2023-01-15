@@ -4,13 +4,18 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-14 11:30:43
+ * @LastEditTime: 2023-01-15 20:31:51
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
 # Ubuntu 配置指南
 
-[toc]
+- [Ubuntu 配置指南](#ubuntu-配置指南)
+  - [Ubuntu 系统如何使用 root 用户登录实例](#ubuntu-系统如何使用-root-用户登录实例)
+  - [Ubuntu 环境配置](#ubuntu-环境配置)
+    - [设置或更改时区](#设置或更改时区)
+    - [软件安装](#软件安装)
+  - [Ubuntu 运维监控](#ubuntu-运维监控)
 
 ## Ubuntu 系统如何使用 root 用户登录实例
 
