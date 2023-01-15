@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2022-12-31 21:53:10
+ * @LastEditTime: 2023-01-14 11:30:43
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -62,9 +62,55 @@ Ubuntu 系统的默认用户名是 ubuntu，并在安装过程中默认不设置
 
 ## Ubuntu 环境配置
 
+### 设置或更改时区
+
+1. 系统时区
+
+    以下 `timedatectl` 命令将会打印系统的时区和所在时区的当前时间。并显示系统时钟服务同步以及 NTP 服务的状态：
+
+    ```bash
+    timedatectl
+    ```
+
+    ```bash
+                    Local time: Sat 2023-01-14 11:18:13 CST
+            Universal time: Sat 2023-01-14 03:18:13 UTC
+                    RTC time: Sat 2023-01-14 03:18:13    
+                    Time zone: Asia/Shanghai (CST, +0800) 
+    System clock synchronized: yes                        
+                NTP service: active                     
+            RTC in local TZ: no       
+    ```
+
+2. 更改时区
+
+    以下 `timedatectl` 命令打印所有时区，然后通过管道传递 grep 命令不区分大小写搜索包含括 `shang` 关键词的时区：
+
+    ```bash
+    timedatectl list-timezones | grep -i shang
+    ```
+
+    该命令将打印以下输出：
+
+    ```bash
+    Asia/Shanghai
+    ```
+
+    使用 `timedatectl` 的 `set-timezone` 选项设置系统的时区，并在 `set-timezone` 选项之后传递长时区名称。
+
+    ```bash
+    sudo timedatectl set-timezone Asia/Shanghai
+    ```
+
+    至此，我们已将系统时区设置为 `Asia/Shanghai`。如你需要验证系统时区是否设置成功。再次不带任何选项参数调用 `timedatectl` 命令，打印系统当前设置的时区即可：
+
+    ```bash
+    timedatectl
+    ```
+
 ### 软件安装
 
-- trzsz-go
+- `trzsz-go`
     trzsz 是一款远端文件上传下载工具，类似 lrzsz。
 
     1. installation
@@ -130,3 +176,78 @@ Ubuntu 系统的默认用户名是 ubuntu，并在安装过程中默认不设置
             -t N, --timeout N  timeout ( N seconds ) for each buffer chunk.
                                 N <= 0 means never timeout. (default: 20)
         ```
+
+- `tshark`
+
+    **Install TShark**
+
+    1. Add the Wireshark and TShark repository:
+
+        ```bash
+        sudo add-apt-repository -y ppa:wireshark-dev/stable
+        ```
+
+    2. Install TShark:
+
+        ```bash
+        sudo apt install -y tshark
+        ```
+
+    3. During installation, you will be asked if you want to allow non-root users to be able to capture packets. Select the "Yes" option. It will add the `wireshark` group and anyone who is a member of this group will be able to capture packets without being root user.
+
+        Run the following command to add the current user to a `wireshark` group:
+
+        ```bash
+        sudo usermod -a -G wireshark $USER
+        ```
+
+        To make changes to take effect, logout and login to your machine. After reconnection, you can check TShark version:
+
+        ```bash
+        tshark --version
+        ```
+
+    4. Execute `tshark` command without any arguments to start capturing packets on default network interface:
+
+        ```bash
+        tshark
+        ```
+
+        We can find network interfaces which are available to the TShark with command:
+
+        ```bash
+        tshark -D
+        ```
+
+        The `-i` option allows capturing packets on a specific network interface.
+
+        ```bash
+        tshark -i ens33
+        ```
+
+    **Uninstall TShark**
+
+    1. If you wish to completely remove TShark and all related dependencies, execute the following command:
+
+        ```bash
+        sudo apt purge --autoremove -y tshark
+        ```
+
+    2. Remove GPG key and repository:
+
+        ```bash
+        sudo rm -rf /etc/apt/trusted.gpg.d/wireshark-dev-ubuntu-stable.gpg*
+        sudo rm -rf /etc/apt/sources.list.d/wireshark-dev-ubuntu-stable-jammy.list
+        ```
+
+## Ubuntu 运维监控
+
+- Linux 下系统状态都能通过文件获取，你甚至可以用 shell 来写类 top 工具：
+
+  - CPU: `/proc/stat`
+  - MEM: `/proc/meminfo`
+  - SWAP: `/proc/swaps`
+  - IO: `/proc/diskstats`
+  - PROC: `/proc/${pid}/`
+  - NET: `/sys/class/net/${dev}/statistics`
+  - Battery:`/sys/class/power_supply/`
