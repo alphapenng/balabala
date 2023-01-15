@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-15 20:31:51
+ * @LastEditTime: 2023-01-15 20:36:02
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -45,9 +45,11 @@ Ubuntu 系统的默认用户名是 ubuntu，并在安装过程中默认不设置
     ```
 
 6. 按 i 切换至编辑模式，找到 `#Authentication`，将 `PermitRootLogin` 参数修改为 `yes`。如果 `PermitRootLogin` 参数被注释，请去掉首行的注释符号（`#`）。如下图所示：
+
     ![PermitRootLogin](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221221123754_qOYn6U.jpg)
 
 7. 找到 `#Authentication`，将 `PasswordAuthentication` 参数修改为 yes。如下图所示：
+
     ![PasswordAuthentication](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221221124207_SxqgHR.jpg)
 
     > 说明
