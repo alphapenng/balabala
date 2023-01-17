@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-15 21:59:22
+ * @LastEditTime: 2023-01-17 09:14:11
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -14,6 +14,7 @@
   - [Ubuntu 系统如何使用 root 用户登录实例](#ubuntu-系统如何使用-root-用户登录实例)
   - [Ubuntu 环境配置](#ubuntu-环境配置)
     - [设置或更改时区](#设置或更改时区)
+    - [内网穿透](#内网穿透)
     - [软件安装](#软件安装)
   - [Ubuntu 运维监控](#ubuntu-运维监控)
 
@@ -114,6 +115,14 @@ Ubuntu 系统的默认用户名是 ubuntu，并在安装过程中默认不设置
     ```bash
     timedatectl
     ```
+
+### 内网穿透
+
+- `omniedge`
+
+    安装指引：[Installing on Linux](https://omniedge.io/docs/article/install/cli)
+
+    作为服务后台自动运行：[Run OmniEdge as a Service](https://omniedge.io/docs/article/install/autostart-omniedge)
 
 ### 软件安装
 
