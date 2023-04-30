@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2021-11-16 18:58:09
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-15 21:48:21
+ * @LastEditTime: 2023-02-06 08:54:35
  * @FilePath: /balabala/content/private/Python 版本管理 & 虚拟环境的那些事.md
 -->
 
@@ -46,15 +46,22 @@
     `pyenv` 的原理就是在 PATH 的最前面加了一层 shims (垫片)，所以当你在执行 python 命令时会自动切换至对应的版本。
 
 3. **切换 python 版本**
-   优先级：shell > local > global 1. `pyenv shell`：`$PYENV_VERSION` 环境变量，**代表 current shell session!** 2. `pyenv local`： local `.python-version` 文件 (向上搜索 recursively), **代表 current directory (project)** 3.`pyenv global`：`$(pyenv root)/version`, **代表系统默认的 python 版本**
+   优先级：shell > local > global 
+
+      1. `pyenv shell`：`$PYENV_VERSION` 环境变量，**代表 current shell session!** 
+      2. `pyenv local`： local `.python-version` 文件 (向上搜索 recursively), **代表 current directory (project)** 
+      3. `pyenv global`：`$(pyenv root)/version`, **代表系统默认的 python 版本**
 
 4. **Demo**
 
 ```bash
+➜  unswco git:(develope) ✗ pyenv -v
+➜  unswco git:(develope) ✗ pyenv install -l
 ➜  unswco git:(develope) ✗ pyenv install 3.7.0
 ➜  unswco git:(develope) ✗ pyenv versions
 ➜  unswco git:(develope) ✗ pyenv global 3.7.0
 ➜  unswco git:(develope) ✗ pyenv which python
+➜  unswco git:(develope) ✗ pyenv uninstall 3.7.0
 /Users/henry/.pyenv/versions/3.7.0/bin/python
 ```
 

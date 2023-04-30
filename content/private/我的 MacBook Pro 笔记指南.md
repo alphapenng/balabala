@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-08-01 06:13:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-01-15 21:06:26
+ * @LastEditTime: 2023-02-12 09:17:13
  * @FilePath: /balabala/content/private/我的 MacBook Pro 笔记指南.md
 -->
 
@@ -128,6 +128,8 @@
     - brew install tesseract
     - brew install pngpaste
     - brew install xclip
+    - brew install gitui
+    - brew install zurawiki/brews/gptcommit
 5. 终端下管理非终端软件 - Homebrew Cask
 
     - brew cask list
