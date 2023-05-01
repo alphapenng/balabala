@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-04-23 20:25:56
+ * @LastEditTime: 2023-05-01 07:57:07
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -25,7 +25,7 @@
     - [安装 docker](#安装-docker)
     - [Rustdesk 中继服务器部署](#rustdesk-中继服务器部署)
     - [使用 unbound + redis + mosdns + clash + yacd 搭建 dns 服务器](#使用-unbound--redis--mosdns--clash--yacd-搭建-dns-服务器)
-    - [生成免费证书](#生成免费证书)
+    - [acme.sh 生成免费证书（不推荐，推荐使用 nginx proxy manager 来生成证书）](#acmesh-生成免费证书不推荐推荐使用-nginx-proxy-manager-来生成证书)
     - [部署 chatgpt\_academic](#部署-chatgpt_academic)
   - [Ubuntu 运维监控](#ubuntu-运维监控)
 
@@ -667,7 +667,7 @@ git clone https://github.com/hezhijie0327/CMA_DNS.git
     CleanupExpiredImage
     ```
 
-### 生成免费证书
+### acme.sh 生成免费证书（不推荐，推荐使用 nginx proxy manager 来生成证书）
 
 1. 安装 acme.sh
 
