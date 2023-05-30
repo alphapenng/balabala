@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-05-01 07:57:07
+ * @LastEditTime: 2023-05-09 23:29:32
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -22,7 +22,13 @@
     - [Python 环境配置](#python-环境配置)
   - [服务器部署](#服务器部署)
     - [开启 samba 服务](#开启-samba-服务)
-    - [安装 docker](#安装-docker)
+    - [docker 命令](#docker-命令)
+      - [安装 docker 环境](#安装-docker-环境)
+      - [修改 Docker 配置（可选）](#修改-docker-配置可选)
+      - [docker 项目更新](#docker-项目更新)
+      - [docker 项目迁移](#docker-项目迁移)
+      - [docker 项目卸载（包括卸载 Docker、docker-compose）](#docker-项目卸载包括卸载-dockerdocker-compose)
+      - [composerize 命令](#composerize-命令)
     - [Rustdesk 中继服务器部署](#rustdesk-中继服务器部署)
     - [使用 unbound + redis + mosdns + clash + yacd 搭建 dns 服务器](#使用-unbound--redis--mosdns--clash--yacd-搭建-dns-服务器)
     - [acme.sh 生成免费证书（不推荐，推荐使用 nginx proxy manager 来生成证书）](#acmesh-生成免费证书不推荐推荐使用-nginx-proxy-manager-来生成证书)
@@ -576,11 +582,189 @@ sudo apt update && sudo apt upgrade -y
         sudo chmod 777 -R  /opt/smb/data
         ```
 
-### 安装 docker
+### docker 命令
 
-- 安装 docker 环境
+#### 安装 docker 环境
 
+- 官方安装
     我的云主机系统是 `Ubuntu 20.04.5 LTS (Focal Fossa)`的，可以参考 docker 官方文档，按照 [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) 指引，按步骤执行即可，最后通过 `sudo docker run hello-world` 测试是否安装成功
+
+- 通过脚本安装
+
+    ```bash
+    # 更新、安装必备软件
+    apt-get update && apt-get install -y wget vim
+    ```
+
+    海外服务器（非大陆）
+
+    ```bash
+    # 安装 docker
+    wget -qO- get.docker.com | bash
+    # 查看 docker 版本
+    docker -v
+    # 设置开机自动启动
+    systemctl enable docker
+    # docker-compose 安装
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    # 查看 docker-compose 版本
+    docker-compose --version
+    # 卸载 docker
+    sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    sudo rm -rf /var/lib/docker
+    sudo rm -rf /var/lib/containerd
+    # 卸载 docker-compose
+    cd /usr/local/bin/
+    rm -rf docker-compose
+
+    ```
+
+    大陆服务器（国内）
+
+    ```bash
+    # 安装 docker
+    curl -sSL https://get.daocloud.io/docker | sh
+    # 查看 docker 版本
+    docker -v
+    # 设置开机自动启动
+    systemctl enable docker
+    # 安装 docker-compose
+    curl -L https://get.daocloud.io/docker/compose/releases/download/v2.1.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    # 卸咋 docker
+    sudo apt-get remove docker docker-engine
+    rm -fr /var/lib/docker/
+    ```
+
+#### 修改 Docker 配置（可选）
+
+以下配置会增加一段自定义内网 IPv6 地址，开启容器的 IPv6 功能，以及限制日志文件大小，防止 Docker 日志塞满硬盘
+
+```bash
+cat > /etc/docker/daemon.json <<EOF
+{
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "20m",
+        "max-file": "3"
+    },
+    "ipv6": true,
+    "fixed-cidr-v6": "fd00:dead:beef:c0::/80",
+    "experimental":true,
+    "ip6tables":true
+}
+EOF
+```
+
+然后重启 docker 服务：
+
+```bash
+systemctl restart docker
+```
+
+#### docker 项目更新
+
+- docker 命令搭建的常用更新方法
+
+    1. 升级镜像到最新版
+
+        ```bash
+        docker pull your-own-image
+        ```
+
+    2. 备份旧容器
+
+        ```bash
+        docker stop mycontainer
+        docker rename mycontainer mycontainer_bak
+        ```
+
+    3. 使用最新版的镜像运行
+
+        ```bash
+        docker run ... # 之前的命令重新运行一遍...
+        ```
+
+    4. 确认运行正常后删除旧的备份
+
+        ```bash
+        docker rm mycontainer_bak
+        ```
+
+- docker-compose 搭建的更新方法
+
+    1. 以更新 Nginx Proxy Manager 为例
+
+        ```bash
+        cd /root/data/docker_data/npm
+
+        docker-compose down 
+
+        cp -r /root/data/docker_data/npm /root/data/docker_data/npm.archive  # 万事先备份，以防万一
+
+        docker-compose pull
+
+        docker-compose up -d    # 请不要使用 docker-compose stop 来停止容器，因为这么做需要额外的时间等待容器停止；docker-compose up -d 直接升级容器时会自动停止并立刻重建新的容器，完全没有必要浪费那些时间。
+
+        docker image prune  # prune 命令用来删除不再使用的 docker 对象。删除所有未被 tag 标记和未被容器使用的镜像
+        ```
+
+#### docker 项目迁移
+
+- 命令行迁移
+
+    1. 以 Halo 博客的迁移为例
+
+        ```bash
+        tar -czvf .halo.tar.gz .halo.archive
+
+        scp -P 22 -r .halo.tar.gz root@192.248.190.156:/root  # scp -P 端口 -r /root/backup/backup.tar 你的用户名@你的IP:/root/data/docker_data/
+
+        tar -zxvf .halo.tar.gz
+
+        mv .halo.archive .halo   #把.halo.archive重命名成.halo
+        ```
+
+#### docker 项目卸载（包括卸载 Docker、docker-compose）
+
+- docker 命令搭建的常用卸载方法
+
+    ```bash
+    docker ps -a
+    docker stop 容器名字
+    docker rm -f 容器名字
+    rm -rf 映射出来的路径
+    ```
+
+- docker-compose 搭建的卸载方法
+
+    ```bash
+    # 卸载 nginx proxy manager
+    cd /root/data/docker_data/npm
+    docker-compose down 
+    rm -rf /root/data/docker_data/npm  # 完全删除映射到本地的数据
+    ```
+
+#### composerize 命令
+
+项目站点：<https://www.composerize.com/>
+
+GitHub 地址：<https://github.com/magicmark/composerize>
+
+- 自建
+
+    ```bash
+    apt update -y 
+    sudo apt install npm -y 
+    npm install composerize -g  # -g 表示全局安装
+    ```
+
+    **使用方法**
+
+    ```bash
+    composerize docker run -d --name tinypin -p 3030:3000 -v "$(pwd)/data:/data" --restart=unless-stopped slynn1324/tinypin
+    ```
 
 ### Rustdesk 中继服务器部署
 
