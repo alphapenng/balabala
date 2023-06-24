@@ -49,7 +49,9 @@
       - [NVM](#nvm)
         - [安装 NVM](#安装-nvm)
         - [更改 node 版本](#更改-node-版本)
-      - [安装 n，node.js 的另一个版本管理工具](#安装-nnodejs-的另一个版本管理工具)
+      - [n，node.js 的另一个版本管理工具](#nnodejs-的另一个版本管理工具)
+        - [n 安装](#n-安装)
+        - [n 命令详情](#n-命令详情)
     - [在 WSL 里安装 Docker](#在-wsl-里安装-docker)
       - [安装 Docker](#安装-docker)
       - [测试是否安装成功](#测试是否安装成功)
@@ -101,7 +103,7 @@
 
 现在，可以在管理员 PowerShell 或 Windows 命令提示符中输入此命令，然后重启计算机来安装运行适用于 Linux 的 Windows 子系统 (WSL) 所需的全部内容。
 
-```
+```bash
 wsl --install
 ```
 
@@ -121,10 +123,10 @@ wsl --install
 
 使用 WSL 安装 Linux 发行版的过程完成后，使用 “开始” 菜单打开该发行版（默认情况下为 Ubuntu）。 系统将要求你为 Linux 发行版创建 “用户名” 和 “密码”。
 
--   此用户名和密码特定于安装的每个单独的 Linux 分发版，与 Windows 用户名无关
--   创建用户名和密码后，该帐户将是分发版的默认用户，并将在启动时自动登录
--   此帐户将被视为 Linux 管理员，能够运行 sudo (Super User Do) 管理命令
--   在 WSL 上运行的每个 Linux 发行版都有其自己的 Linux 用户帐户和密码。 每当添加分发版、重新安装或重置时，都必须配置一个 Linux 用户帐户。
+- 此用户名和密码特定于安装的每个单独的 Linux 分发版，与 Windows 用户名无关
+- 创建用户名和密码后，该帐户将是分发版的默认用户，并将在启动时自动登录
+- 此帐户将被视为 Linux 管理员，能够运行 sudo (Super User Do) 管理命令
+- 在 WSL 上运行的每个 Linux 发行版都有其自己的 Linux 用户帐户和密码。 每当添加分发版、重新安装或重置时，都必须配置一个 Linux 用户帐户。
 
 若要更改或重置密码，请打开 Linux 发行版并输入命令：`passwd`。 系统会要求你输入当前密码，然后要求输入新密码，之后再确认新密码。
 
@@ -171,7 +173,7 @@ wsl --install
 
 如果由于某种原因 WSL 停止工作，你可以使用 PowerShell/命令提示符中的以下两个命令重新启动它：
 
-```
+```bash
 wsl.exe --shutdown
 wsl.exe
 ```
@@ -182,7 +184,7 @@ wsl.exe
 2. 设置 Windows Terminal 默认启动为 PowerShell7
 3. [安装 oh-my-posh](https://gist.github.com/xiaopeng163/0fe4225a56ff97cd47e25a4b8a6f36ec)
 
-    ```
+    ```powershell
     Install-Module oh-my-posh -Scope CurrentUser -SkipPublisherCheck
     Install-Module posh-git -Scope CurrentUser
     Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
@@ -190,7 +192,7 @@ wsl.exe
 
 4. 引入配置 `notepad.exe $PROFILE`
 
-    ```
+    ```powershell
     Import-Module posh-git
     Import-Module oh-my-posh
     Set-PoshPrompt -Theme dracula
@@ -199,19 +201,19 @@ wsl.exe
 5. [安装字体](https://ohmyposh.dev/docs/config-fonts)
 6. 安装文件图标库
 
-    ```
+    ```powershell
     Install-Module -Name Terminal-Icons -Repository PSGallery
     ```
 
 7. 使用图标
 
-    ```
+    ```powershell
     Import-Module -Name Terminal-Icons
     ```
 
 8. 命令行自动补全和提示
 
-    ```
+    ```powershell
     Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
     ```
 
@@ -223,7 +225,7 @@ wsl.exe
 
     - vimrc 配置
 
-        ```
+        ```powershell
         set encoding=utf-8
         set termencoding=utf-8
         set fileencoding=utf-8
@@ -232,7 +234,7 @@ wsl.exe
 
     - ps profile 配置
 
-        ```
+        ```powershell
         # There's usually much more than this in my profile!
         $SCRIPTPATH = "C:\Program Files\Git\usr\bin"
         $VIMPATH    = $SCRIPTPATH + "\vim.exe"
@@ -288,7 +290,7 @@ Windows 终端默认启动时会打开 PowerShell 或命令提示符 shell，以
 
 Git 应该预装在大多数（如果不是所有的话）WSL Linux 发行版上。为确保你拥有最新版本，请在基于 Ubuntu 或 Debian 的发行版中使用以下命令：
 
-```
+```bash
 sudo apt install git
 ```
 
@@ -296,7 +298,7 @@ sudo apt install git
 
 要设置你的 Git 配置文件，请打开 WSL 命令行并使用此命令设置你的姓名（将“你的姓名”替换为你的首选用户名）：
 
-```
+```bash
 git config --global user.name "Your Name"
 ```
 
@@ -304,7 +306,7 @@ git config --global user.name "Your Name"
 
 使用此命令设置你的电子邮件（将“youremail@domain.com”替换为你喜欢的电子邮件）：
 
-```
+```bash
 git config --global user.email "youremail@domain.com"
 ```
 
@@ -312,7 +314,7 @@ git config --global user.email "youremail@domain.com"
 
 最后，添加你的 GitHub 用户名以将其链接到 git（区分大小写！）：
 
-```
+```bash
 git config --global user.username "GitHub username"
 ```
 
@@ -326,7 +328,7 @@ git config --global user.username "GitHub username"
 
 GitHub 已删除在远程存储库中工作时使用传统密码的功能。你现在需要创建个人访问令牌。
 
-> 当使用 [GitHub API](https://docs.github.com/en/rest/overview/other-authentication-methods#via-oauth-and-personal-access-tokens) 或 [命令行](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#using-a-token-on-the-command-line) 时，个人访问令牌（PAT）是使用密码对 GitHub 进行身份验证的替代方案。
+> 当使用 [GitHub API](https://docs.github.com/en/rest/overview/other-authentication-methods#via-oauth-and-personal-access-tokens)powershellpwoersheowershellpwowershellpowershell 或 [命令行](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#using-a-token-on-the-command-line) 时，个人访问令牌（PAT）是使用密码对 GitHub 进行身份验证的替代方案。
 
 按照 [these docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) 获取有关创建个人令牌的分步说明。
 
@@ -342,7 +344,7 @@ GitHub 已删除在远程存储库中工作时使用传统密码的功能。你�
 
 安装 Git Credential Manager 后，你可以将其设置为与 WSL 一起使用。打开你的 WSL 终端并输入以下命令：
 
-```
+```bash
 git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
 ```
 
@@ -352,7 +354,7 @@ Z shell 的工作原理几乎与默认 Linux 安装中的标准 BASH shell 相�
 
 #### 安装 Zsh
 
-```
+```bash
 sudo apt install zsh
 ```
 
@@ -366,7 +368,7 @@ sudo apt install zsh
 
 首先，我们需要确保安装了 [cURL](https://curl.se/)。“客户端 URL”的缩写，它是一种从命令行传输数据的方法，这就是我们下载 OhMyZsh 的方式。
 
-```
+```bash
 sudo apt install curl
 ```
 
@@ -374,7 +376,7 @@ sudo apt install curl
 
 在你的终端中输入以下命令以安装 OhMyZsh：
 
-```
+```bash
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
@@ -388,13 +390,13 @@ zsh 的自动建议，它根据历史记录和完成情况在你键入时建议�
 
 1. 将此存储库克隆到 `$ZSH_CUSTOM/plugins`（默认情况下 `~/.oh-my-zsh/custom/plugins`）
 
-    ```
+    ```bash
     git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
     ```
 
 2. 将插件添加到要加载的 Oh My Zsh 的插件列表中（在 `~/.zshrc` 中）：
 
-    ```
+    ```bash
     plugins=(git zsh-autosuggestions)
     ```
 
@@ -406,13 +408,13 @@ zsh 的自动建议，它根据历史记录和完成情况在你键入时建议�
 
 1. 在 oh-my-zsh 的 plugins 目录中克隆此存储库：
 
-    ```
+    ```bash
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
     ```
 
 2. 激活 `~/.zshrc` 中的插件：
 
-    ```
+    ```bash
     plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
     ```
 
@@ -424,13 +426,13 @@ autojump 是为了进行目录快速跳转而准备的，它记录用户的目�
 
 1. autojump 安装
 
-    ```
+    ```bash
     sudo  apt-get install autojump
     ```
 
 2. 在 zsh 中开启 autojump 插件的支持（所有的插件在 `~/.on-my-zsh/plugins/` 目录中）：
 
-    ```
+    ```bash
     plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump)
     ```
 
@@ -438,13 +440,13 @@ autojump 是为了进行目录快速跳转而准备的，它记录用户的目�
 
 1. 将此存储库克隆到 `$ZSH_CUSTOM/plugins`（默认情况下 `~/.oh-my-zsh/custom/plugins`）
 
-    ```
+    ```bash
     git clone https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
     ```
 
 2. 将插件添加到要加载的 Oh My Zsh 的插件列表中（在 `~/.zshrc` 中）：
 
-    ```
+    ```bash
     plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump zsh-vi-mode)
     ```
 
@@ -460,20 +462,20 @@ autojump 是为了进行目录快速跳转而准备的，它记录用户的目�
 
 2. 将此存储库克隆到 `$ZSH_CUSTOM/plugins`（默认情况下 `~/.oh-my-zsh/custom/plugins`）
 
-    ```
+    ```bash
     git clone https://github.com/tom-doerr/zsh_codex.git ~/.oh-my-zsh/custom/plugins/zsh_codex
     ```
 
 3. 将插件添加到要加载的 Oh My Zsh 的插件列表中（在 `~/.zshrc` 中）：
 
-    ```
+    ```basj
     plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump zsh-vi-mode zsh_codex)
     bindkey '^X' create_completion
     ```
 
 4. 在 `~/.config` 目录下创建一个名为 `openaiapirc` 的文件，填入你的 `ORGANIZATION_ID` 和 `SECRET_KEY`。
 
-    ```
+    ```bash
     [openai]
     organization_id = ...
     secret_key = ...
@@ -503,7 +505,7 @@ Node.js 是一个 JavaScript 运行时环境，它在 Web 浏览器之外执行 
 
 1. 打开你的 Ubuntu 命令行并使用以下命令安装 nvm：
 
-    ```
+    ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
     ```
 
@@ -511,7 +513,7 @@ Node.js 是一个 JavaScript 运行时环境，它在 Web 浏览器之外执行 
 
 2. 列出当前安装了哪些版本的 Node（此时应该没有）：
 
-    ```
+    ```bash
     nvm ls
     ```
 
@@ -519,19 +521,19 @@ Node.js 是一个 JavaScript 运行时环境，它在 Web 浏览器之外执行 
 
     安装 Node.js 的当前稳定 LTS 版本（推荐用于生产应用）：
 
-    ```
+    ```bash
     nvm install --lts
     ```
 
     安装当前版本的 Node.js（用于测试最新的 Node.js 功能和改进，但更有可能出现问题）：
 
-    ```
+    ```bash
     nvm install node
     ```
 
 4. 列出安装了哪些版本的 Node：
 
-    ```
+    ```bash
     nvm ls
     ```
 
@@ -539,13 +541,13 @@ Node.js 是一个 JavaScript 运行时环境，它在 Web 浏览器之外执行 
 
 5. 验证是否安装了 Node.js 和当前版本：
 
-    ```
+    ```bash
     node --version
     ```
 
     然后验证你是否也安装了 npm：
 
-    ```
+    ```bash
     npm --version
     ```
 
@@ -555,55 +557,97 @@ Node.js 是一个 JavaScript 运行时环境，它在 Web 浏览器之外执行 
 
 要切换到当前版本：
 
-```
+```bash
 nvm use node
 ```
 
 要切换到 LTS 版本：
 
-```
+```bash
 nvm use --lts
 ```
 
 你还可以将特定编号用于你安装的任何其他版本：
 
-```
+```bash
 nvm use v8.2.1.
 ```
 
 要列出所有可用的 Node.js 版本，请使用命令： `nvm ls-remote`。
 
-#### 安装 n，node.js 的另一个版本管理工具
+#### n，node.js 的另一个版本管理工具
 
+##### n 安装
 
+1. npm/yarn 安装：
+
+    ```bash
+    npm i n -g
+    # 或
+    yarn global add n
+    ```
+
+2. `macos` 使用 `brew` 安装：
+
+    ```bash
+    brew install n
+    ```
+
+##### n 命令详情
+
+仅说明常用命令，其他的命令童鞋们自己去研究一波。
+
+|命令|命令作用|
+|---|---|
+|n lsr|查看 Node.js 远程版本|
+|n i 版本|安装指定版本|
+|n list|查看本地已安装的 Node.js 版本|
+|n|交互式切换 Node.js 版本|
+|n rm 版本|删除指定版本|
+
+`n lsr` 查看远程版本，默认 20 条数据，想查看所有的版本使用 `n lsr —-all`。
+
+![安装指定版本](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230624153601_JR3W1N.jpg)
+
+安装指定版本 `n i 版本`，直接安装最新版本 `n i 20.1.0` 。
+
+![安装指定版本续](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230624153939_t524dE.jpg)
+
+`n list` 查看到 `v20.1.0` 已安装至本地。
+
+![查看本地安装版本](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230624154119_6erO2d.jpg)
+
+`n` 交互式允许我们选择想要的 Node.js 版本。
+
+![选择版本](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230624154221_HHN2ar.jpg)
 
 ### 在 WSL 里安装 Docker
 
 #### 安装 Docker
 
-1.  [Install Docker Script](https://gist.github.com/xiaopeng163/f3e72bb1990860859076985d5a723cba)
+1. [Install Docker Script](https://gist.github.com/xiaopeng163/f3e72bb1990860859076985d5a723cba)
 
-```
-# install docker
-curl -fsSL get.docker.com -o get-docker.sh
-sh get-docker.sh
+    ```bash
+    # install docker
+    curl -fsSL get.docker.com -o get-docker.sh
+    sh get-docker.sh
 
-if [ ! $(getent group docker) ];
-then
-   sudo groupadd docker;
-else
-   echo "docker user group already exists"
-fi
+    if [ ! $(getent group docker) ];
+    then
+    sudo groupadd docker;
+    else
+    echo "docker user group already exists"
+    fi
 
-sudo gpasswd -a $USER docker
-sudo service docker restart
+    sudo gpasswd -a $USER docker
+    sudo service docker restart
 
-rm -rf get-docker.sh
-```
-
-2.  将用户添加进 docker 组：
-
+    rm -rf get-docker.sh
     ```
+
+2. 将用户添加进 docker 组：
+
+    ```bash
     sudo usermod -aG docker alphapenng
     ```
 
@@ -625,7 +669,7 @@ rm -rf get-docker.sh
 
 2. Run the following command:
 
-    ```
+    ```powershell
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
     ```
 
@@ -646,7 +690,7 @@ When the installation has completed, reboot.
 
 2. 安装 centos/7 虚拟机
 
-    ```
+    ```bash
     vagrant init centos/7
     # 以管理员身份启动 PowerShell 并执行以下命令
     vagrant up --provider=hyperv
@@ -654,61 +698,61 @@ When the installation has completed, reboot.
 
 3. 查看虚拟机状态
 
-    ```
+    ```bash
     vagrant status
     ```
 
 #### Vagrant 的基本使用
 
--   启动虚拟机
+- 启动虚拟机
 
-```
+```bash
 vagrant up
 ```
 
--   查看虚拟机状态
+- 查看虚拟机状态
 
-```
+```bash
 vagrant status
 ```
 
--   关闭虚拟机
+- 关闭虚拟机
 
-```
+```bash
 vagrant halt
 ```
 
--   删除虚拟机
+- 删除虚拟机
 
-```
+```bash
 vagrant destroy
 ```
 
--   连接 default 虚拟机
+- 连接 default 虚拟机
 
-```
+```bash
 vagrant ssh
 ```
 
--   退出 default 虚拟机
+- 退出 default 虚拟机
 
-```
+```bash
 exit
 ```
 
--   查看 default host ssh 配置的相关信息
+- 查看 default host ssh 配置的相关信息
 
-```
+```bash
 vagrant ssh-config default
 ```
 
--   通过 ssh 连接 default 虚拟机
+- 通过 ssh 连接 default 虚拟机
 
-```
+```bash
 ssh vagrant@172.18.51.54  -i "C:/Users/Barca/Documents/vagrant-demo/.vagrant/machines/default/hyperv/private_key"
 ```
 
--   允许虚拟机通过 ssh 密码登录
+- 允许虚拟机通过 ssh 密码登录
 
     1. `sudo vim /etc/ssh/sshd_config`
 
@@ -732,7 +776,7 @@ VS Code 在 Windows、macOS 和 Linux 上可用。你可以下载最新的 Windo
 
 如果我在我的存储库的根目录中，我会使用 `code.` 在 VS Code 中启动整个目录。
 
-```
+```bash
 cd my-project
 code .
 ```
@@ -757,7 +801,7 @@ Chocolatey 是一个类似于 [homebrew](https://brew.sh/) 的包管理器，但
 
 4. 现在运行以下命令：
 
-    ```
+    ```powershell
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     ```
 
@@ -769,31 +813,31 @@ Chocolatey 是一个类似于 [homebrew](https://brew.sh/) 的包管理器，但
 
 安装一个新包：
 
-```
+```bash
 choco install filename
 ```
 
 删除包：
 
-```
+```bash
 choco uninstall filename
 ```
 
 列出所有已安装的软件包：
 
-```
+```bash
 choco list
 ```
 
 更新：
 
-```
+```bash
 choco upgrade filename
 ```
 
 或一次更新所有内容：
 
-```
+```bash
 choco upgrade all
 ```
 
@@ -801,20 +845,20 @@ choco upgrade all
 
 以下是一些我最喜欢的（免费）应用程序，用于在 Windows 上提高生产力和开发：
 
--   [Wox](http://www.wox.one/)-功能齐全的启动器
--   [RunJs](https://runjs.app/)-JavaScript 和 TypeScript 游乐场
--   [Responsively](https://responsively.app/)-一个修改后的 Web 浏览器，有助于响应式 Web 开发。
--   [Zeal](https://zealdocs.org/)-Dash 的 Windows 版本
--   [Figma](https://www.figma.com/)-协作 UI 设计工具
--   [draw.io](https://app.diagrams.net/)-流程图制作器和图表软件
--   [GitHub desktop](https://desktop.github.com/)-Git 的 GUI
--   [Postman](https://www.postman.com/)-API 工具
--   [Notion](https://www.notion.so/)-项目管理和笔记软件
--   [微软 PowerToys](https://docs.microsoft.com/en-us/windows/powertoys/?WT.mc_id=twitter-0000-docsmsft)-一组高级用户实用程序
+- [Wox](http://www.wox.one/)-功能齐全的启动器
+- [RunJs](https://runjs.app/)-JavaScript 和 TypeScript 游乐场
+- [Responsively](https://responsively.app/)-一个修改后的 Web 浏览器，有助于响应式 Web 开发。
+- [Zeal](https://zealdocs.org/)-Dash 的 Windows 版本
+- [Figma](https://www.figma.com/)-协作 UI 设计工具
+- [draw.io](https://app.diagrams.net/)-流程图制作器和图表软件
+- [GitHub desktop](https://desktop.github.com/)-Git 的 GUI
+- [Postman](https://www.postman.com/)-API 工具
+- [Notion](https://www.notion.so/)-项目管理和笔记软件
+- [微软 PowerToys](https://docs.microsoft.com/en-us/windows/powertoys/?WT.mc_id=twitter-0000-docsmsft)-一组高级用户实用程序
 
 你可以在 admin shell 中使用 chocolatey 使用以下命令一次下载所有这些：
 
-```
+```bashbashbasjhbashbashbash
 choco install wox runjs responsively zeal figma drawio github-desktop postman notion powertoys -y
 ```
 
