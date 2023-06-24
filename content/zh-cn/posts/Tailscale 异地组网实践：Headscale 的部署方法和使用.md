@@ -1,16 +1,29 @@
----
-title: "Tailscale 异地组网实践：Headscale 的部署方法和使用"
-date: 2022-10-10T22:56:20+08:00
-draft: false
-tags: ["geek","wireguard","homelab"]
-categories: ["geek"]
-authors:
-- alphapenng
----
+<!--
+ * @Description: 
+ * @Author: alphapenng
+ * @Github: 
+ * @Date: 2022-10-10 22:56:20
+ * @LastEditors: alphapenng
+ * @LastEditTime: 2023-06-24 19:58:12
+ * @FilePath: /balabala/content/zh-cn/posts/Tailscale 异地组网实践：Headscale 的部署方法和使用.md
+-->
+
+# Tailscale 异地组网实践：Headscale 的部署方法和使用
 
 ![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221226163600_ha9Q2A.png)
 
 此篇文章是参考了 👨‍💻[云原生实验室](https://icloudnative.io/)关于`WireGuard` 的[Tailscale 基础教程：Headscale 的部署方法和使用教程](https://icloudnative.io/posts/how-to-set-up-or-migrate-headscale)，再根据自己的异地组网需求，在搭建自己的家庭网络后总结记录而成，也给喜欢折腾并且有同样需求的朋友提供一个参考。
+
+- [Tailscale 异地组网实践：Headscale 的部署方法和使用](#tailscale-异地组网实践headscale-的部署方法和使用)
+  - [前言](#前言)
+  - [为什么选择 WireGuard](#为什么选择-wireguard)
+  - [Tailscale 是什么](#tailscale-是什么)
+  - [Headscale 是什么](#headscale-是什么)
+  - [Headscale 部署](#headscale-部署)
+  - [Tailscale 客户端接入](#tailscale-客户端接入)
+    - [macOS](#macos)
+    - [OpenWrt](#openwrt)
+  - [打通局域网](#打通局域网)
 
 ## 前言
 
