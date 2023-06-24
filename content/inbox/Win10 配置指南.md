@@ -49,6 +49,7 @@
       - [NVM](#nvm)
         - [安装 NVM](#安装-nvm)
         - [更改 node 版本](#更改-node-版本)
+      - [安装 n，node.js 的另一个版本管理工具](#安装-nnodejs-的另一个版本管理工具)
     - [在 WSL 里安装 Docker](#在-wsl-里安装-docker)
       - [安装 Docker](#安装-docker)
       - [测试是否安装成功](#测试是否安装成功)
@@ -571,6 +572,10 @@ nvm use v8.2.1.
 ```
 
 要列出所有可用的 Node.js 版本，请使用命令： `nvm ls-remote`。
+
+#### 安装 n，node.js 的另一个版本管理工具
+
+
 
 ### 在 WSL 里安装 Docker
 
