@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-06-24 16:01:01
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-06-24 19:48:01
+ * @LastEditTime: 2023-06-24 20:17:08
  * @FilePath: /balabala/content/private/all about docker.md
 -->
 
@@ -93,6 +93,12 @@ cat > /etc/docker/daemon.json <<EOF
     "ip6tables":true
 }
 EOF
+```
+
+然后重启 Docker 服务：
+
+```bash
+systemctl restart docker
 ```
 
 ## docker 项目

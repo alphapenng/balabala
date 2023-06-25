@@ -4,13 +4,11 @@
  * @Github: 
  * @Date: 2022-10-10 22:56:20
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-06-24 20:00:08
+ * @LastEditTime: 2023-06-25 09:45:56
  * @FilePath: /balabala/content/zh-cn/posts/Tailscale 异地组网实践：Headscale 的部署方法和使用.md
 -->
 
 # Tailscale 异地组网实践：Headscale 的部署方法和使用
-
-![toc](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221226163600_ha9Q2A.png)
 
 此篇文章是参考了 👨‍💻[云原生实验室](https://icloudnative.io/)关于`WireGuard` 的[Tailscale 基础教程：Headscale 的部署方法和使用教程](https://icloudnative.io/posts/how-to-set-up-or-migrate-headscale)，再根据自己的异地组网需求，在搭建自己的家庭网络后总结记录而成，也给喜欢折腾并且有同样需求的朋友提供一个参考。
 
@@ -21,7 +19,10 @@
   - [Headscale 是什么](#headscale-是什么)
   - [Headscale 部署](#headscale-部署)
   - [Tailscale 客户端接入](#tailscale-客户端接入)
+    - [Linux](#linux)
     - [macOS](#macos)
+    - [iOS](#ios)
+    - [Windows](#windows)
     - [OpenWrt](#openwrt)
   - [打通局域网](#打通局域网)
 
@@ -120,6 +121,8 @@ wget https://github.com/juanfont/headscale/raw/main/config-example.yaml -O /etc/
 - 修改 `unix_socket`的路径
     ![unix_socket](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225220427_Xnip2022-12-25_21-32-29.jpg)
 
+⚠️ 最新版本已不需要创建 `systemd service` 文件，简化安装步骤，详情请参考官方[安装教程](https://headscale.net/running-headscale-linux/#installation)
+
 创建 SystemD service 配置文件：
 
 ```bash
@@ -193,18 +196,98 @@ ss -tulnp|grep headscale
 Tailscale 中有一个概念叫 tailnet，你可以理解成租户，租户与租户之间是相互隔离的，详情见 Tailscale 的官方文档： [What is a tailnet](https://tailscale.com/kb/1136/tailnet/)。Headscale 也有类似的实现叫 namespace，即命名空间。我们需要先创建一个 namespace，以便后续客户端接入，例如：
 
 ```bash
+# 新版本创建命令，同时兼容老版本
+headscale users create default
+# 老版本创建命令
 headscale namespaces create default
 ```
 
 查看命名空间：
 
 ```bash
+headscale users list
+# 或者
 headscale namespaces list
 ```
 
 ![headscale_namespace-m](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225222030_3ZXzRp.png)
 
 ## Tailscale 客户端接入
+
+### Linux
+
+- 脚本安装
+
+    Tailscale [官方下载页](https://tailscale.com/download/linux/static) 提供了 Linux 的安装脚本：
+
+    ```bash
+    curl -fsSL https://tailscale.com/install.sh | sh
+    ```
+
+    通过脚步安装需要 Linux 客户端能够科学上网，如无法满足，请手动安装
+
+- 手动安装
+
+    也是到 Tailscale [官方下载页](https://tailscale.com/download/linux/static) 下载自己客户端发行版的安装包，并按照提示进行安装。
+
+- 验证
+
+    启动 tailscaled.service 并设置开机自启：
+
+    ```bash
+    systemctl enable --now tailscaled
+    ```
+
+    查看服务状态
+
+    ```bash
+    systemctl status tailscaled
+    ```
+
+- 接入 Headscale：
+
+    ```bash
+    # 将 <HEADSCALE_PUB_IP> 换成你的 Headscale 公网 IP 或域名
+    $ tailscale up --login-server=http://<HEADSCALE_PUB_IP>:8080 --accept-routes=true --accept-dns=false
+    ```
+
+    这里推荐将 DNS 功能关闭，因为它会覆盖系统的默认 DNS。
+
+    执行完上面的命令后，会出现下面的信息：
+
+    ```bash
+    To authenticate, visit:
+
+    http://x.x.x.x:8080/register/nodekey:xxxxxx
+    ```
+
+    在浏览器中打开该链接，就会出现如下的界面：
+
+    ![注册页面](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625071947_Jk38FS.png)
+
+    将其中的命令复制粘贴到 headscale 所在机器的终端中，并将 USERNAME 替换为前面所创建的 username。
+
+    ```bash
+    headscale nodes register --user default --key nodekey:xxxxxx
+    ```
+
+    注册成功，查看注册的节点：
+
+    ```bash
+    headscale nodes list
+    ```
+
+    回到 Tailscale 客户端所在的 Linux 主机，可以看到 Tailscale 会自动创建相关的路由表和 iptables 规则。路由表可通过以下命令查看：
+
+    ```bash
+    ip route show table 52
+    ```
+
+    查看 iptables 规则：
+
+    ```bash
+    iptables -S
+    ```
 
 ### macOS
 
@@ -218,39 +301,99 @@ macOS 有 3 种安装方法：
 
 这里我直接通过第 2 种方式下载安装包进行安装。安装完应用后还需要做一些操作，才能让 Tailscale 使用 Headscale 作为控制服务器。当然，Headscale 已经给我们提供了详细的操作步骤，你只需要在浏览器中打开 URL：`http://<HEADSCALE_PUB_IP>:8080/apple`，其中`<HEADSCALE_PUB_IP>`就是你部署 Headscale 的公网 ip，便会出现如下的界面：
 
-![Img](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225224403_E9Y7VH.png)
+- `1.34.0` 及以上版本
 
-修改完成后重启 Tailscale 客户端，在 macOS 顶部状态栏中找到 Tailscale 并点击，然后再点击 `Log in`。
+    ![提示界面](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625010134_zOyQHn.png)
 
-然后立马就会跳转到浏览器并打开一个页面。
+    ![注册](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625010217_DOmXpx.png)
 
-![machine_registration](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225230100_Xnip2022-12-25_23-00-48.jpg)
+    ```bash
+    headscale nodes register --user default --key nodekey:xxxxxx
+    ```
 
-将红色框内的命令复制粘贴到 headscale 所在机器的终端中，并将 NAMESPACE 替换为前面所创建的 namespace。
+- `1.32.0` 及以下版本
 
-```bash
-headscale -n default nodes register --key nodekey:xxxxxx
-```
+    ![Img](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225224403_E9Y7VH.png)
 
-注册成功，查看注册的节点：
+    修改完成后重启 Tailscale 客户端，在 macOS 顶部状态栏中找到 Tailscale 并点击，然后再点击 `Log in`。
 
-```bash
-headscale nodes list
-```
+    然后立马就会跳转到浏览器并打开一个页面。
 
-![nodes_list](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225231053_SOSmsv.png)
+    ![machine_registration](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225230100_Xnip2022-12-25_23-00-48.jpg)
 
-回到 macOS，测试是否能 ping 通对端节点：
+    将红色框内的命令复制粘贴到 headscale 所在机器的终端中，并将 NAMESPACE 替换为前面所创建的 namespace。
 
-```bash
-ping 10.1.0.2
-```
+    ```bash
+    headscale -n default nodes register --key nodekey:xxxxxx
+    ```
 
-也可以使用 Tailscale CLI 来测试：
+- 验证
 
-```bash
-/Applications/Tailscale.app/Contents/MacOS/Tailscale ping 10.1.0.2
-```
+    注册成功，查看注册的节点：
+
+    ```bash
+    headscale nodes list
+    ```
+
+    ![nodes_list](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20221225231053_SOSmsv.png)
+
+    回到 macOS，测试是否能 ping 通对端节点：
+
+    ```bash
+    ping 10.1.0.2
+    ```
+
+    也可以使用 Tailscale CLI 来测试：
+
+    ```bash
+    /Applications/Tailscale.app/Contents/MacOS/Tailscale ping 10.1.0.2
+    ```
+
+### iOS
+
+在浏览器中打开 URL：`http://<HEADSCALE_PUB_IP>:8080/apple`，其中`<HEADSCALE_PUB_IP>`就是你部署 Headscale 的公网 ip，便会出现 iOS 的配置方法：
+
+![提示](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625081155_y5pdly.png)
+
+按照以上步骤操作便能成功注册。
+
+### Windows
+
+- 安装
+
+    到 tailscale [官方下载页](https://tailscale.com/download/windows)下载 windows 安装包并安装。
+
+- 注册
+
+    Windows Tailscale 客户端想要使用 Headscale 作为控制服务器，只需在浏览器中打开 URL：http://<HEADSCALE_PUB_IP>:8080/windows，便会出现如下的界面：
+
+    ![提示](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625085259_BjlC5T.png)
+
+    按照提示打开 windows 命令行，并输入红框命令：
+
+    ```powershell
+    tailscale login --login-server http://x.x.x.x:8080
+    ```
+
+    执行完上面的命令后，会出现下面的信息：
+
+    ![认证](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625090002_bVRpzg.png)
+
+    在浏览器中打开该链接，就会出现如下的界面：
+
+    ![注册](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230625091723_xa48mP.png)
+
+    将其中的命令复制粘贴到 headscale 所在机器的终端中，并将 USERNAME 替换为前面所创建的 username。
+
+    ```bash
+    headscale nodes register --user default --key nodekey:xxxxxx
+    ```
+
+    注册成功，查看注册的节点：
+
+    ```bash
+    headscale nodes list
+    ```
 
 ### OpenWrt
 
