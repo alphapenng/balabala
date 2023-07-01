@@ -13,6 +13,7 @@
       - [用户配置](#用户配置)
         - [更改默认安装的 Linux 发行版](#更改默认安装的-linux-发行版)
         - [设置 Linux 用户名和密码](#设置-linux-用户名和密码)
+        - [wsl 在开启防火墙的情况下使用主机代理](#wsl-在开启防火墙的情况下使用主机代理)
       - [更新 Linux](#更新-linux)
         - [查看更新 Linux 系统相关信息](#查看更新-linux-系统相关信息)
       - [映射你的 Linux 驱动器](#映射你的-linux-驱动器)
@@ -139,6 +140,14 @@ wsl --install
 在 PowerShell 内的根级别打开 WSL 发行版后，可使用此命令更新密码：`passwd <username>`，其中 `<username>` 是发行版中帐户的用户名，而你忘记了它的密码。
 
 系统将提示你输入新的 UNIX 密码，然后确认该密码。 在被告知密码已成功更新后，请使用以下命令在 PowerShell 内关闭 WSL：`exit`。
+
+##### wsl 在开启防火墙的情况下使用主机代理
+
+在宿主机 PowerShell 内运行：
+
+```powershell
+New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
+```
 
 #### 更新 Linux
 
@@ -649,6 +658,19 @@ nvm use v8.2.1.
 
     ```bash
     sudo usermod -aG docker alphapenng
+    ```
+
+3. 确保 docker 服务在 WSL2 中运行：
+
+    将以下配置添加至您的 `~/.proile` 或者 `.zprofile` 中：
+
+    ```bash
+    if grep -q "microsoft" /proc/version > /dev/null 2>&1; then
+        if service docker status 2>&1 | grep -q "is not running"; then
+            wsl.exe --distribution "${WSL_DISTRO_NAME}" --user root \
+                --exec /usr/sbin/service docker start > /dev/null 2>&1
+        fi
+    fi
     ```
 
 #### 测试是否安装成功

@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2022-12-21 12:31:30
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-05-09 23:29:32
+ * @LastEditTime: 2023-06-26 07:16:38
  * @FilePath: /balabala/content/private/Ubuntu 系统配置指南.md
 -->
 
@@ -31,7 +31,6 @@
       - [composerize 命令](#composerize-命令)
     - [Rustdesk 中继服务器部署](#rustdesk-中继服务器部署)
     - [使用 unbound + redis + mosdns + clash + yacd 搭建 dns 服务器](#使用-unbound--redis--mosdns--clash--yacd-搭建-dns-服务器)
-    - [acme.sh 生成免费证书（不推荐，推荐使用 nginx proxy manager 来生成证书）](#acmesh-生成免费证书不推荐推荐使用-nginx-proxy-manager-来生成证书)
     - [部署 chatgpt\_academic](#部署-chatgpt_academic)
   - [Ubuntu 运维监控](#ubuntu-运维监控)
 
@@ -850,81 +849,6 @@ git clone https://github.com/hezhijie0327/CMA_DNS.git
     # Call CleanupExpiredImage
     CleanupExpiredImage
     ```
-
-### acme.sh 生成免费证书（不推荐，推荐使用 nginx proxy manager 来生成证书）
-
-1. 安装 acme.sh
-
-    If you need root, please su to root first, and then install acme.sh and use it.
-
-    ```bash
-    #uninstall for current user
-    acme.sh --uninstall
-
-    #change to root
-    sudo su
-
-    #install again for root user
-    curl https://get.acme.sh | sh -s email=my@example.com
-
-    #use it
-    bash
-    acme.sh --issue -d .....
-    ```
-
-    尽量使用 root 用户安装使用. 安装过程进行了以下几步:
-
-    1. 把 acme.sh 安装到你的 home 目录下:
-
-        ```bash
-        ~/.acme.sh/
-        ```
-
-        并创建 一个 shell 的 alias, 例如 .bashrc，方便你的使用: `alias acme.sh=~/.acme.sh/acme.sh`
-
-    2. 自动为你创建 cronjob, 每天 0:00 点自动检测所有的证书，如果快过期了，需要更新，则会自动更新证书.
-
-        更高级的安装选项请参考: <https://github.com/Neilpang/acme.sh/wiki/How-to-install>
-
-        **安装过程不会污染已有的系统任何功能和文件 ,** 所有的修改都限制在安装目录中: `~/.acme.sh/`
-
-2. 生成证书
-
-    如果你还没有运行任何 web 服务，80 端口是空闲的，那么 acme.sh 还能假装自己是一个 webserver, 临时听在 80 端口，完成验证:
-
-    ```bash
-    acme.sh --issue -d www.loveshare.club --standalone
-    ```
-
-3. copy / 安装证书
-
-    前面证书生成以后，接下来需要把证书 copy 到真正需要用它的地方.
-
-    注意，默认生成的证书都放在安装目录下: `~/.acme.sh/`, 请不要直接使用此目录下的文件，例如：不要直接让 nginx/apache 的配置文件使用这下面的文件。这里面的文件都是内部使用，而且目录结构可能会变化.
-
-    正确的使用方法是使用 `--install-cert` 命令，并指定目标位置，然后证书文件会被 copy 到相应的位置， 例如:
-
-    ```bash
-    acme.sh --install-cert -d www.loveshare.club --key-file /docker/ssl/www.loveshare.club.key --fullchain-file /docker/ssl/fullchain.cer --reloadcmd "docker container restart unbound"
-    ```
-
-4. 查看已安装证书信息
-
-    ```bash
-    acme.sh --info -d www.loveshare.club
-    ```
-
-5. 出错怎么办？
-
-    如果出错，请添加 debug log：
-
-    `acme.sh --issue  .....  --debug`
-
-    或者：
-
-    `acme.sh --issue  .....  --debug  2`
-
-    请参考： <https://github.com/Neilpang/acme.sh/wiki/How-to-debug-acme.sh>
 
 ### 部署 chatgpt_academic
 

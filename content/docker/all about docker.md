@@ -4,8 +4,8 @@
  * @Github: 
  * @Date: 2023-06-24 16:01:01
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-06-24 20:17:08
- * @FilePath: /balabala/content/private/all about docker.md
+ * @LastEditTime: 2023-07-01 22:37:42
+ * @FilePath: /balabala/content/docker/all about docker.md
 -->
 
 # All about docker
@@ -15,7 +15,10 @@
     - [非大陆服务器](#非大陆服务器)
     - [国内服务器](#国内服务器)
     - [修改 Docker 配置](#修改-docker-配置)
-  - [docker 项目](#docker-项目)
+  - [docker 容器升级](#docker-容器升级)
+  - [docker 容器迁移](#docker-容器迁移)
+  - [卸载 docker](#卸载-docker)
+  - [部署的 docker 项目](#部署的-docker-项目)
 
 ## 安装 docker 环境
 
@@ -101,7 +104,56 @@ EOF
 systemctl restart docker
 ```
 
-## docker 项目
+## docker 容器升级
+
+1. 升级镜像到最新版
+
+    ```bash
+    docker pull <image:latest>
+    ```
+
+2. 备份旧容器
+
+    ```bash
+    docker stop <old_container>
+    docker rename <old_container> <old_container_bak>
+    ```
+
+3. 使用最新版的镜像运行
+
+    ```bash
+    docker run ...之前的命令重新运行一遍...
+    ```
+
+    如果你找不到以前的命令了，有两种方式
+
+    - 按 `Ctrl-R` 快捷键进入搜索历史模式，依次敲入 `docker run` 看到以前的命令后按 `→`，确认无误回车执行
+    - 一直按 `↑` ，直到看到以前的 `docker run ...` 命令，确认无误后回车执行
+
+4. 确认运行正常后删除旧的备份
+
+    ```bash
+    docker rm <old_container_bak>
+    ```
+
+## docker 容器迁移
+
+```bash
+tar -zcvf .halo.tar.gz .halo.archive
+scp -P 22 -r .halo.tar.gz root@192.248.190.156:/root
+tar -zxvf .halo.tar.gz
+mv .halo.archive .halo
+```
+
+## 卸载 docker
+
+```bash
+sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo rm -rf /var/lib/docker
+sudo rm -rf /var/lib/containerd
+```
+
+## 部署的 docker 项目
 
 - OpenCat for Team
 - NginxProxyManager
