@@ -4,8 +4,8 @@
  * @Github: 
  * @Date: 2023-06-26 07:16:18
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-07-01 09:57:01
- * @FilePath: /balabala/content/linux/使用 acme.sh 申请免费证书.md
+ * @LastEditTime: 2023-07-05 23:01:27
+ * @FilePath: \balabala\content\linux\使用 acme.sh 申请免费证书.md
 -->
 
 # 使用 acme.sh 申请免费证书
@@ -14,6 +14,14 @@
   - [准备工作](#准备工作)
   - [部署步骤](#部署步骤)
     - [安装 acme.sh 证书申请脚本(请使用 root 用户安装)](#安装-acmesh-证书申请脚本请使用-root-用户安装)
+    - [使用 Standalone 模式申请 SSL 证书](#使用-standalone-模式申请-ssl-证书)
+    - [使用 CloudFlare API Key 申请 SSL 证书](#使用-cloudflare-api-key-申请-ssl-证书)
+    - [安装域名证书](#安装域名证书)
+    - [查看目前申请的证书](#查看目前申请的证书)
+    - [撤销目前申请的证书](#撤销目前申请的证书)
+    - [手动续期证书](#手动续期证书)
+    - [卸载 Acme.sh 脚本](#卸载-acmesh-脚本)
+    - [出错怎么办？](#出错怎么办)
 
 ## 准备工作
 
@@ -50,54 +58,132 @@
         acme.sh --set-default-ca --server letsencrypt
         ```
 
+    - ZeroSSL （稳定、但部分情况无法签发）
+
+        ```bash
+        bash ~/.acme.sh/acme.sh --set-default-ca --server zerossl
+        ```
+
+    - Buypass（没试过）
+
+        ```bash
+        bash ~/.acme.sh/acme.sh --set-default-ca --server buypass
+        ```
+
+3. 设置 Acme.sh 自动更新，始终与官方保持一致
+
+    ```bash
+    bash ~/.acme.sh/acme.sh --upgrade --auto-upgrade
+    ```
+
+### 使用 Standalone 模式申请 SSL 证书
+
+💁 此方法使用之前请确保 80 端口畅通，并且域名已经事先解析到 VPS 的 IP
+
+域名解析至 IPv4：
+
+```bash
+bash ~/.acme.sh/acme.sh --issue -d "域名" --standalone -k ec-256
 ```
-#use it
-bash
-acme.sh --issue -d .....
+
+域名已解析至 IPv6：
+
+```bash
+bash ~/.acme.sh/acme.sh --issue -d "域名" --standalone -k ec-256 --listen-v6
 ```
 
+### 使用 CloudFlare API Key 申请 SSL 证书
 
-    1. 自动为你创建 cronjob, 每天 0:00 点自动检测所有的证书，如果快过期了，需要更新，则会自动更新证书.
+💁 此方法可以使用泛域名、无需 DNS 解析，但由于受到 CF API 限制，不可适用于 Freenom 系列的免费域名
 
-        更高级的安装选项请参考: <https://github.com/Neilpang/acme.sh/wiki/How-to-install>
-
-        **安装过程不会污染已有的系统任何功能和文件 ,** 所有的修改都限制在安装目录中: `~/.acme.sh/`
-
-1. 生成证书
-
-    如果你还没有运行任何 web 服务，80 端口是空闲的，那么 acme.sh 还能假装自己是一个 webserver, 临时听在 80 端口，完成验证:
+1. 设置 CloudFlare Global API Key 和登录邮箱
 
     ```bash
-    acme.sh --issue -d www.loveshare.club --standalone
+    export CF_Key="你自己的CloudFlare Global API Key"
+    export CF_Email="你自己的CloudFlare账户登录邮箱"
     ```
 
-2. copy / 安装证书
+2. 运行一下命令
 
-    前面证书生成以后，接下来需要把证书 copy 到真正需要用它的地方.
+    - **单域名**
 
-    注意，默认生成的证书都放在安装目录下: `~/.acme.sh/`, 请不要直接使用此目录下的文件，例如：不要直接让 nginx/apache 的配置文件使用这下面的文件。这里面的文件都是内部使用，而且目录结构可能会变化.
+        IPv4 或原生双栈 VPS
 
-    正确的使用方法是使用 `--install-cert` 命令，并指定目标位置，然后证书文件会被 copy 到相应的位置， 例如:
+        ```bash
+        bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "域名" -k ec-256
+        ```
 
-    ```bash
-    acme.sh --install-cert -d www.loveshare.club --key-file /docker/ssl/www.loveshare.club.key --fullchain-file /docker/ssl/fullchain.cer --reloadcmd "docker container restart unbound"
-    ```
+        IPv6
 
-3. 查看已安装证书信息
+        ```bash
+        bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "域名" -k ec-256 --listen-v6
+        ```
 
-    ```bash
-    acme.sh --info -d www.loveshare.club
-    ```
+    - **泛域名**
 
-4. 出错怎么办？
+        IPv4 或原生双栈 VPS
 
-    如果出错，请添加 debug log：
+        ```bash
+        bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "*.域名" -d "域名" -k ec-256
+        ```
 
-    `acme.sh --issue  .....  --debug`
+        IPv6
 
-    或者：
+        ```bash
+        bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "*.域名" -d "域名" -k ec-256 --listen-v6
+        ```
 
-    `acme.sh --issue  .....  --debug  2`
+### 安装域名证书
 
-    请参考： <https://github.com/Neilpang/acme.sh/wiki/How-to-debug-acme.sh>
-    
+💁 由于 acme.sh 的证书不能直接使用，因此我们需要安装证书
+
+单域名
+
+```bash
+bash ~/.acme.sh/acme.sh --install-cert -d "域名" --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
+```
+
+泛域名
+
+```bash
+bash ~/.acme.sh/acme.sh --install-cert -d "*.域名" --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
+```
+
+> 运行此命令后，证书 crt 路径为 /root/cert.crt，私钥 key 路径为 /root/private.key，可自行修改
+
+### 查看目前申请的证书
+
+```bash
+bash ~/.acme.sh/acme.sh --list
+```
+
+### 撤销目前申请的证书
+
+```bash
+bash ~/.acme.sh/acme.sh --revoke -d "域名" --ecc
+bash ~/.acme.sh/acme.sh --remove -d "域名" --ecc
+```
+
+### 手动续期证书
+
+```bash
+bash ~/.acme.sh/acme.sh --renew -d "域名" --force --ecc
+```
+
+### 卸载 Acme.sh 脚本
+
+```bash
+bash ~/.acme.sh/acme.sh --uninstall
+```
+
+### 出错怎么办？
+
+如果出错，请添加 debug log：
+
+`acme.sh --issue  .....  --debug`
+
+或者：
+
+`acme.sh --issue  .....  --debug  2`
+
+请参考： <https://github.com/Neilpang/acme.sh/wiki/How-to-debug-acme.sh>
