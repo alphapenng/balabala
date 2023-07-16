@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-06-24 16:01:01
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-07-07 22:55:37
+ * @LastEditTime: 2023-07-16 15:31:18
  * @FilePath: /balabala/content/docker/all about docker.md
 -->
 
@@ -161,5 +161,5 @@ sudo rm -rf /var/lib/containerd
 - UptimeKuma—— 网站监控
 - Sshwifty—— 一款专为 Web 设计的 SSH 和 Telnet 连接器
 - [docker-flare](https://github.com/soulteary/docker-flare)—— 个人导航页
-- [CMA_DNS(Clash+Mosdns+Unbound+AdGuardHome)](https://github.com/hezhijie0327/CMA_DNS)—— 个人dns服务器
 - Rustdesk—— 远程桌面
+- Hasty Paste—— 快速小巧的粘贴应用程序
