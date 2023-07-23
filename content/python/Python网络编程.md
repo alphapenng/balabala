@@ -4,8 +4,8 @@
  * @Github: 
  * @Date: 2023-07-16 16:44:14
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-07-18 23:01:50
- * @FilePath: /balabala/content/code/Python网络编程.md
+ * @LastEditTime: 2023-07-23 10:14:39
+ * @FilePath: /balabala/content/python/Python网络编程.md
 -->
 
 # Python 网络编程
@@ -202,3 +202,63 @@ s.close()
 ```
 
 ## UDP 编程
+
+TCP 是建立可靠连接，并且通信双方都可以以流（stream）的形式发送数据，相对于 TCP ，UDP 则是面向无连接的协议
+
+使用 UDP 协议时，不需要建立连接，只需要知道对方的 IP 地址和端口号就可以直接发送数据包
+
+虽然用 UDP 传输数据不可靠，但它的优点是和 TCP 比，速度快，对于不要求可靠到达的数据，就可以使用 UDP 协议
+
+![UDP](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20230723100207_9cv5QF.jpg)
+
+首先编写一个 `server 程序`
+
+创建一个 socket 对象，SOCK_DGRAM 指定使用面向流的 UDP 协议
+
+```python
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+```
+
+绑定端口 8888，也可以绑定 9999
+
+💁 服务器绑定 UDP 端口和 TCP 端口互不冲突，也就是说，UDP 的 9999 端口与 TCP 的 9999 端口可以各自绑定
+
+```python
+s.bind(('127.0.0.1', 8888))
+```
+
+与 TCP 不同的是，UDP 不需要监听端口，而是直接接收来自 client 的数据
+
+```python
+print(' Bind UDP on 8888........ ')
+while True:
+    # recvfrom 接收数据，返回(data, address)
+    data, addr = s.recvfrom(1024)
+    print('Received from %s:%s.' % addr)
+    #sendto 发送数据， 发送形式是(data, address)
+    s.sendto(b'Hello, %s!' % data, addr)
+
+# 关闭套接字
+s.close()
+```
+
+然后编写一个 `client 程序`
+
+创建一个 socket 对象，SOCK_DGRAM 指定使用面向流的 UDP 协议
+
+```python
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+```
+
+client 使用 UDP 时，首先仍然创建基于 UDP 的 Socket，然后，不需要调用 connect ()，直接通过 sendto () 给 server 发数据
+
+```python
+for data in [b'Edison', b'Kanye', b'Kendrick']:
+    # 发送数据：
+    s.sendto(data, ('127.0.0.1', 9999))
+    # 接收数据：
+    print(s.recv(1024).decode('utf-8'))
+    
+# 关闭套接字
+s.close()
+```
