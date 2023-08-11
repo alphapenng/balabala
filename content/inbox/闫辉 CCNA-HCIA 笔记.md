@@ -1188,7 +1188,7 @@
     [eth-trunk34]trunkport g0/0/4 to g0/0/5
     [eth-trunk34]port link-type trunk
     [eth-trunk34]port trunk allow-pass vlan 10 20 30 40
-    []dis etc-trunk 34
+    []dis eth-trunk 34
     []dis port vlan
     []vlan batch 10 20 30 40
     []dis vlan
@@ -1271,7 +1271,7 @@
     [eth-trunk34]trunkport g0/0/4 to g0/0/5
     [eth-trunk34]port link-type trunk
     [eth-trunk34]port trunk allow-pass vlan 10 20 30 40
-    []dis etc-trunk 34
+    []dis eth-trunk 34
     []dis port vlan
     []vlan batch 10 20 30 40
     []dis vlan
