@@ -1,10 +1,26 @@
----
-2022-08-01 19:49:40
----
-
 # 闫辉 CCNP/HCNP 笔记
 
-[toc]
+- [闫辉 CCNP/HCNP 笔记](#闫辉-ccnphcnp-笔记)
+  - [OSPF](#ospf)
+  - [组播](#组播)
+  - [BGP](#bgp)
+  - [路由选择工具](#路由选择工具)
+  - [路由策略](#路由策略)
+  - [MPLS](#mpls)
+  - [MPLS IP VPN](#mpls-ip-vpn)
+  - [VLAN](#vlan)
+  - [QinQ](#qinq)
+  - [STP](#stp)
+  - [802.1x原理与配置](#8021x原理与配置)
+  - [USG防火墙产品基本功能特性与配置](#usg防火墙产品基本功能特性与配置)
+  - [USG防火墙攻击防范业务特性与配置](#usg防火墙攻击防范业务特性与配置)
+  - [USG防火墙双机热备业务特性与配置](#usg防火墙双机热备业务特性与配置)
+  - [IP QoS概述](#ip-qos概述)
+  - [流量分类与标记](#流量分类与标记)
+  - [流量监管与整形](#流量监管与整形)
+  - [拥塞管理与拥塞避免](#拥塞管理与拥塞避免)
+  - [IS-IS](#is-is)
+
 
 ## OSPF
 - Preference 0-255
@@ -194,18 +210,18 @@
     - `一对多：VoIP（电话会议）、VOD（封装：Audio-表示层：G.7xx,PCM（解码器）➡️RTP/RTCP➡️UDP➡️IP；Video：表示层：H.261，MPEG➡️RTP/RTCP➡️UDP➡️IP）`
     - 多到多：视频会议、共享白板
     - 多对一：监控
-* 组播服务架构-组播环境划分为3⃣️大块
+* 组播服务架构-组播环境划分为 3 大块
     - 第一跳路由器：`First-hop` routers forward data
     - 最后一跳路由器：`Last-hop(leaf)` routers communicate group membership to the network
-    - 第1⃣️大块：Source segment
-    - 第2⃣️大块：Multicast distribution tree-`PIM(Protocol Independent Multicast)组播动态路由选择协议`
+    - 第1大块 ：Source segment
+    - 第2大块：Multicast distribution tree-`PIM(Protocol Independent Multicast)组播动态路由选择协议`
         1. `第一跳路由器收到报文后如何转发？`
         2. `转发机制是什么？`
         3. 使用什么路径进行转发？树形or环形
         4. 组播动态路由选择协议
             - IGP：DVMRP,PIM,MOSPF,CBT
             - EGP：`MBGP`/`MSDP`
-    - 第3⃣️大块：Receiver segment-`IGMP`
+    - 第3大块：Receiver segment-`IGMP`
         1. `让最后一跳路由器知道下游有哪些PC想要接收发往哪个组播组流量`
         2. `让下游PC得知我想要接收组播组流量时我把消息发给哪台路由器告知它这点`
 * 组播地址
