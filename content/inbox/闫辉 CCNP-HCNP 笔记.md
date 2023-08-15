@@ -1344,7 +1344,7 @@
 
 ## MPLS IP VPN
 - basic concepts and principles of mpls vpn
-    - a vpn has tow characteristics
+    - a vpn has two characteristics
         - virtual and dedicated
     - a type of Layer 3 VPN(L3VPN)
         - consists of four parts - BGP, MPLS, IP and VPN
