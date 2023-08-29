@@ -9,6 +9,8 @@
     - [Vuex 核心概念和底层原理](#vuex-核心概念和底层原理)
       - [核心概念](#核心概念)
       - [底层原理](#底层原理)
+    - [Vuex 最佳实践](#vuex-最佳实践)
+    - [提升开发效率和体验的常用工具：Vetur、ESLint、Prettier、vue-devtools](#提升开发效率和体验的常用工具vetureslintprettiervue-devtools)
   - [开发基于 Vue 的 Ant Design Pro](#开发基于-vue-的-ant-design-pro)
   - [Vue 3.0 相关知识介绍](#vue-30-相关知识介绍)
 
@@ -91,7 +93,7 @@
       {{count}}
       <br>
       {{$store.getters.doubleCount}}
-      <button @click="$store.commit('increment', 2)">count++</button>
+      <button @click="$store.commit('increment')">count++</button>
       <button @click="$store.dispatch('increment')">count++</button>
     </div>
   </template>
@@ -117,10 +119,10 @@
 
 #### 核心概念
 
-- State —— this.$store.state.xxx 的值
-- Getter —— this.$store.getters.xxx 的值
-- Mutation —— this.$store.commit("xxx") 赋值
-- Action —— this.$store.disapatch("xxx") 赋值
+- State —— this.$store.state.xxx —— mapState 取值
+- Getter —— this.$store.getters.xxx —— mapGetters 取值
+- Mutation —— this.$store.commit("xxx") —— mapMutations 赋值
+- Action —— this.$store.disapatch("xxx") —— mapActions 赋值
 - Module
 
 #### 底层原理
@@ -130,6 +132,39 @@
 - Mutation：更改 state 方法
 - Action：触发 mutation 方法
 - Module： Vue.set 动态添加 state 到响应式数据中
+
+### Vuex 最佳实践
+
+**Module**
+
+- 开启命名空间 namespaced: true
+- 嵌套模块不要过深，尽量扁平化
+- 灵活应用 createNamespacedHelpers
+
+### 提升开发效率和体验的常用工具：Vetur、ESLint、Prettier、vue-devtools
+
+**Vetur**
+
+- 语法高亮
+- 标签补全、模板生成
+- Lint检查
+- 格式化
+
+**ESLint**
+
+- 代码规范
+- 错误检查
+
+**Prettier**
+
+- 格式化
+
+**Vue Devtools**
+
+- 集成 Vuex
+- 可远程调试
+- 性能分析
+
 
 ## 开发基于 Vue 的 Ant Design Pro
 
