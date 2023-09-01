@@ -11,8 +11,11 @@
       - [底层原理](#底层原理)
     - [Vuex 最佳实践](#vuex-最佳实践)
     - [提升开发效率和体验的常用工具：Vetur、ESLint、Prettier、vue-devtools](#提升开发效率和体验的常用工具vetureslintprettiervue-devtools)
+    - [单元测试的重要性及其使用](#单元测试的重要性及其使用)
   - [开发基于 Vue 的 Ant Design Pro](#开发基于-vue-的-ant-design-pro)
-  - [Vue 3.0 相关知识介绍](#vue-30-相关知识介绍)
+    - [使用 Vue CLI3 快速创建项目](#使用-vue-cli3-快速创建项目)
+    - [如何自定义 Webpack 和 Babel 配置](#如何自定义-webpack-和-babel-配置)
+    - [如何设计一个高扩展性的路由](#如何设计一个高扩展性的路由)
 
 ## Vue 核心知识点
 
@@ -165,8 +168,105 @@
 - 可远程调试
 - 性能分析
 
+### 单元测试的重要性及其使用
+
+**使用方式**
+
+- jest 或 mocha
+- @vue/test-utils
+- sinon
 
 ## 开发基于 Vue 的 Ant Design Pro
 
-## Vue 3.0 相关知识介绍
+### 使用 Vue CLI3 快速创建项目
 
+```bash
+npm i ant-design-vue@1.7.2 moment
+```
+
+### 如何自定义 Webpack 和 Babel 配置
+
+**使用 ant-design-pro**
+
+修改 main.js 入口文件：
+
+```javascript
+import Vue from "vue";
+import Antd from "ant-design-vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import "ant-design-vue/dist/antd.less";
+//import { Button } from "ant-design-vue";
+//import { Button } from "ant-design-vue/lib/button";
+//import "ant-design-vue/lib/button/style";
+
+Vue.config.productionTip = false;
+
+Vue.use(Antd);
+//Vue.use(Button);
+
+new Vue({
+  router,
+  store,
+  render: (h) => h(App),
+}).$mount("#app");
+```
+
+修改 vue.config.js：
+
+```javascript
+const { defineConfig } = require("@vue/cli-service");
+module.exports = defineConfig({
+  transpileDependencies: true,
+  css: {
+    loaderOptions: {
+      less: {
+        lessOptions: {
+          javascriptEnabled: true,
+        },
+      },
+    },
+  },
+});
+```
+
+**按需加载**
+
+`npm i --save-dev babel-plugin-import`
+
+在 `babel.config.js` 中修改：
+
+```javascript
+module.exports = {
+  presets: ["@vue/cli-plugin-babel/preset"],
+  plugins: [
+    [
+      "import",
+      { libraryName: "ant-design-vue", libraryDirectory: "es", style: true },
+    ], // `style: true` 会加载 less 文件
+  ],
+};
+```
+
+### 如何设计一个高扩展性的路由
+
+```bash
+npm i nprogress
+```
+
+在 router/index.js 中使用:
+
+```javascript
+import NProgress from "nprogress"
+import "nprogress/nprogress.css"
+
+router.beforeEach((to, from, next) => {
+  NProgress.start();
+  next();
+});
+
+router.afterEach(() => {
+  NProgress.done();
+});
+```
