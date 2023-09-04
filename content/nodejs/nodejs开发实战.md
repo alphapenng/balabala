@@ -263,7 +263,7 @@
 
 - Node.js 架构
 
-  ![nodejs架构](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/202309041244609.webp)
+  ![nodejs_arch](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/202309041244609.webp)
 
 - EventEmitter
   - 观察者模式
