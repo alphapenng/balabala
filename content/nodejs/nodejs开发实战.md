@@ -15,6 +15,13 @@
     - [异步：事件循环](#异步事件循环)
     - [异步：异步编程之 Promise](#异步异步编程之-promise)
     - [异步： 异步编程之 async/await](#异步-异步编程之-asyncawait)
+    - [HTTP：简单实现一个 HTTP 服务器](#http简单实现一个-http-服务器)
+    - [HTTP：实现网页版石头剪刀布](#http实现网页版石头剪刀布)
+    - [HTTP：用express优化石头剪刀布游戏](#http用express优化石头剪刀布游戏)
+    - [HTTP：用koa优化石头剪刀布游戏](#http用koa优化石头剪刀布游戏)
+    - [RPC 调用：什么是RPC调用](#rpc-调用什么是rpc调用)
+    - [RPC 调用：Node.js Buffer 编解码二进制数据包](#rpc-调用nodejs-buffer-编解码二进制数据包)
+    - [RPC 调用：Node.js net 建立多路复用的 RPC 通道](#rpc-调用nodejs-net-建立多路复用的-rpc-通道)
 
 ## 课程介绍
 
@@ -551,4 +558,749 @@
 
 ### 异步： 异步编程之 async/await
 
+- async/await
+  - async function 是 Promise 的语法糖封装
+  - 异步编程的终极方案——以同步的方式写异步
+    - await 关键字可以 “暂停” async function 的执行
+    - await 关键字可以以同步的写法获取 Promise 的执行结果
+    - try-catch 可以获取 await 所得到的错误
 
+  ```javascript
+  const result = (async () => {
+    let content = await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(6);
+      }, 500);
+    });
+
+    console.log(content);
+    return 4;
+  })();
+
+  setTimeout(() => {
+    console.log(result);
+  }, 800);
+
+  /* 输出结果
+  6
+  Promise { 4 }
+  */
+  ```
+
+  ```javascript
+  const result = (async () => {
+    let content;
+    try {
+      content = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject(new Error("8"));
+        }, 500);
+      });
+    } catch (e) {
+      console.log("error", e.message);
+    }
+
+    console.log(content);
+    return 4;
+  })();
+
+  setTimeout(() => {
+    console.log(result);
+  }, 800);
+  
+  /*输出结果
+  error 8
+  undefined
+  Promise { 4 }
+  */
+  ```
+
+  ```javascript
+  (async () => {
+    try {
+      await interview(1);
+      await interview(2);
+      await interview(3);
+    } catch (e) {
+      return console.log("cry at " + e.round);
+    }
+    console.log("smile");
+  })();
+
+  function interview(round) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (Math.random() > 0.2) {
+          resolve("success");
+        } else {
+          let error = new Error("fail");
+          error.round = round;
+          reject(error);
+        }
+      }, 500);
+    });
+  }
+  ```
+
+  ```javascript
+  (async () => {
+    try {
+      await Promise.all([interview(1), interview(2), interview(3)]);
+    } catch (e) {
+      return console.log("cry at " + e.round);
+    }
+    console.log("smile");
+  })();
+
+  function interview(round) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (Math.random() > 0.2) {
+          resolve("success");
+        } else {
+          let error = new Error("fail");
+          error.round = round;
+          reject(error);
+        }
+      }, 500);
+    });
+  }
+  ```
+
+  - 一个穿越事件循环存在的 function
+
+### HTTP：简单实现一个 HTTP 服务器
+
+- `npm install -g httpserver`
+
+### HTTP：实现网页版石头剪刀布
+
+- `index.html`
+
+  ```html
+  <html>
+
+    <head>
+        <meta charset="utf-8">
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+    
+            button {
+                display: inline-block
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id="output" style="height: 400px; width: 600px; background: #eee">
+        </div>
+        <button id="rock" style="height: 40px; width: 80px">石头</button>
+        <button id="scissor" style="height: 40px; width: 80px">剪刀</button>
+        <button id="paper" style="height: 40px; width: 80px">布</button>
+    </body>
+    <script>
+        const $button = {
+            "石頭": document.getElementById('rock'),
+            "剪刀": document.getElementById('scissor'),
+            "布": document.getElementById('paper')
+        }
+    
+        const $output = document.getElementById('output')
+    
+        Object.keys($button).forEach(key => {
+            $button[key].addEventListener('click', function () {
+                fetch(`http://${location.host}/game?action=${key}`)
+                    .then((res) => {
+                        return res.text()
+                    })
+                    .then((text) => {
+                        $output.innerHTML += text + '<br/>';
+                    })
+            })
+        })
+    </script>
+    
+  </html>
+  ```
+
+- `game.js`
+
+  ```javascript
+  module.exports = function (playerAction) {
+    if (["石頭", "剪刀", "布"].indexOf(playerAction) === -1) {
+      throw new Error("invalid playerAction");
+    }
+
+    let random = Math.random() * 3;
+    let computerAction;
+
+    if (random < 1) {
+      console.log("电脑出拳:剪刀");
+      computerAction = "剪刀";
+    } else if (random < 2) {
+      console.log("电脑出拳:石頭");
+      computerAction = "石頭";
+    } else {
+      console.log("电脑出拳:布");
+      computerAction = "布";
+    }
+
+    if (computerAction === playerAction) {
+      console.log("平手");
+      return 0;
+    } else if (
+      (computerAction === "剪刀" && playerAction === "石頭") ||
+      (computerAction === "石頭" && playerAction === "布") ||
+      (computerAction === "布" && playerAction === "剪刀")
+    ) {
+      console.log("玩家赢");
+      return -1;
+    } else {
+      console.log("玩家输");
+      return 1;
+    }
+  };
+  ```
+
+- `index.js`
+
+  ```javascript
+  const fs = require("fs");
+  const http = require("http");
+  const url = require("url");
+  const queryString = require("querystring");
+
+  const game = require("./game");
+  const { log } = require("console");
+
+  let playerWon = 0;
+  let playerLastAction = null;
+  let sameCount = 0;
+
+  http
+    .createServer((req, res) => {
+      const parseUrl = url.parse(req.url);
+
+      if (parseUrl.pathname === "/favicon.ico") {
+        res.writeHead(200);
+        res.end();
+        return;
+      }
+
+      if (parseUrl.pathname === "/game") {
+        const query = queryString.parse(parseUrl.query);
+        const playerAction = query.action;
+
+        if (playerWon >= 3 || sameCount === 9) {
+          res.writeHead(500);
+          res.end("你太厉害了，我不玩儿了");
+          return;
+        }
+
+        if (playerLastAction && playerLastAction === playerAction) {
+          sameCount++;
+          if (sameCount >= 3) {
+            res.writeHead(400);
+            res.end("你作弊");
+            sameCount = 9;
+            return;
+          }
+        } else {
+          sameCount = 0;
+        }
+
+        playerLastAction = playerAction;
+
+        const gameResult = game(playerAction);
+
+        res.writeHead(200);
+        if (gameResult === 0) {
+          res.end("平手");
+        } else if (gameResult === -1) {
+          res.end("玩家赢");
+          playerWon++;
+        } else {
+          res.end("玩家输");
+        }
+      }
+
+      if (parseUrl.pathname === "/") {
+        fs.createReadStream(__dirname + "/index.html").pipe(res);
+      }
+    })
+    .listen(3000);
+    ```
+
+### HTTP：用express优化石头剪刀布游戏
+
+- Express
+  - 核心功能
+    - 路由
+    - request/response 简化
+      - request：pathname、query 等
+      - response：sen()、json()、jsonp()等
+    - 中间件
+      - 更好地组织流程代码
+      - 异步会打破 Express 的洋葱模型
+  - 代码演示
+
+    ```javascript
+    const fs = require("fs");
+    const http = require("http");
+    const url = require("url");
+    const queryString = require("querystring");
+    const express = require("express");
+
+    const game = require("./game");
+
+    let playerWonCount = 0;
+    let playerLastAction = null;
+    let sameCount = 0;
+
+    const app = express();
+
+    app.get("/favicon.ico", (req, res) => {
+      res.status(200);
+      return;
+    });
+
+    app.get(
+      "/game",
+      (req, res, next) => {
+        if (playerWonCount >= 3 || sameCount === 9) {
+          res.status(500);
+          res.send("你太厉害了，我不玩儿了");
+          return;
+        }
+        next();
+        if (res.playerWon) {
+          playerWonCount++;
+        }
+      },
+      (req, res, next) => {
+        const query = req.query;
+        const playerAction = query.action;
+
+        if (!playerAction) {
+          response.status(400);
+          response.send();
+          return;
+        }
+
+        if (playerLastAction && playerLastAction === playerAction) {
+          sameCount++;
+          if (sameCount >= 3) {
+            res.status(400);
+            res.send("你作弊，我再也不玩了");
+            sameCount = 9;
+            return;
+          }
+        } else {
+          sameCount = 0;
+        }
+
+        playerLastAction = playerAction;
+        res.playerAction = playerAction;
+        next();
+      },
+      (req, res) => {
+        const playerAction = res.playerAction;
+        const gameResult = game(playerAction);
+
+        res.status(200);
+        if (gameResult === 0) {
+          res.send("平手");
+        } else if (gameResult === -1) {
+          res.send("玩家赢");
+          res.playerWon = true;
+        } else {
+          res.send("玩家输");
+        }
+      }
+    );
+
+    app.get("/", (req, res) => {
+      res.send(fs.readFileSync(__dirname + "/index.html", "utf-8"));
+    });
+
+    app.listen(3000);
+    ```
+
+### HTTP：用koa优化石头剪刀布游戏
+
+- Koa
+  - 核心功能
+    - 比 Express 更极致的 request/response 简化
+      - ctx.status = 200
+      - ctx.body = "hello world"
+    - 使用 async function 实现的中间件
+      - 有 “暂定执行” 的能力
+      - 在异步的情况下也符合洋葱模型
+    - 精简内核，所有额外功能都移到中间件里实现
+    - 代码演示
+      - `npm i koa koa-mount`
+      - `index.js` 
+
+      ```javascript
+      const fs = require("fs");
+      const http = require("http");
+      const url = require("url");
+      const queryString = require("querystring");
+      const koa = require("koa");
+      const mount = require("koa-mount");
+
+      const game = require("./game");
+
+      let playerWonCount = 0;
+      let playerLastAction = null;
+      let sameCount = 0;
+
+      const app = new koa();
+
+      app.use(
+        mount("/favicon.ico", (ctx) => {
+          ctx.status = 200;
+        })
+      );
+
+      const gameKoa = new koa();
+      gameKoa.use(async (ctx, next) => {
+        if (playerWonCount >= 3) {
+          ctx.status = 500;
+          ctx.body = "你太厉害了，我不玩儿了";
+          return;
+        }
+        await next();
+        if (ctx.playerWon) {
+          playerWonCount++;
+        }
+      });
+
+      gameKoa.use(async (ctx, next) => {
+        const query = ctx.query;
+        const playerAction = query.action;
+
+        if (!playerAction) {
+          ctx.status = 400;
+          return;
+        }
+
+        if (sameCount === 9) {
+          ctx.status = 500;
+          ctx.body = "你太厉害了，我不玩儿了";
+          return;
+        }
+
+        if (playerLastAction && playerLastAction === playerAction) {
+          sameCount++;
+          if (sameCount >= 3) {
+            ctx.status = 400;
+            ctx.body = "你作弊，我再也不玩了";
+            sameCount = 9;
+            return;
+          }
+        } else {
+          sameCount = 0;
+        }
+
+        playerLastAction = playerAction;
+        ctx.playerAction = playerAction;
+        await next();
+      });
+
+      gameKoa.use(async (ctx, next) => {
+        const playerAction = ctx.playerAction;
+        const gameResult = game(playerAction);
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            ctx.status = 200;
+            if (gameResult === 0) {
+              ctx.body = "平手";
+            } else if (gameResult === -1) {
+              ctx.body = "玩家赢";
+              ctx.playerWon = true;
+            } else {
+              ctx.body = "玩家输";
+            }
+            resolve();
+          }, 500);
+        });
+      });
+
+      app.use(mount("/game", gameKoa));
+
+      app.use(
+        mount("/", (ctx) => {
+          ctx.body = fs.readFileSync(__dirname + "/index.html", "utf-8");
+        })
+      );
+
+      app.listen(3000);
+      ```
+
+### RPC 调用：什么是RPC调用
+
+- Remote Procedure Call（远程过程调用）
+- 和 Ajax 有什么相同点？
+  - 都是两个计算机之间的网络通信
+  - 需要双方约定一个数据格式
+- 和 Ajax 有什么不同点？
+  - 不一定使用 DNS作为寻址服务
+  - 应用层协议一般不使用 HTTP
+  - 基于 TCP 或 UDP协议
+- 寻址/负载均衡
+  - Ajax：使用DNS进行寻址
+  - RPC：使用特有服务进行寻址
+    ![RPC1](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/202309052125046.webp)
+- TCP 通信方式
+  - 单工通信
+  - 半双工通信（轮番单工）
+  - 全双工通信
+- 二进制协议
+  - 更小的数据包体积
+  - 更快的编解码速率
+    ![RPC2](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/202309052132923.webp)
+
+### RPC 调用：Node.js Buffer 编解码二进制数据包
+
+- 大小端问题
+  - 几个 Byte里，高位与地位的编排顺序不同
+  - 代码演示
+  
+    ```javascript
+    const buffer1 = Buffer.from("geekbang");
+    const buffer2 = Buffer.from([1, 2, 3, 4]);
+
+    const buffer3 = Buffer.alloc(20);
+
+    console.log(buffer1);
+    console.log(buffer2);
+    console.log(buffer3);
+
+    buffer2.writeInt8(12, 1);
+    console.log(buffer2);
+    buffer2.writeInt16BE(512, 2);
+    console.log(buffer2);
+    buffer2.writeInt16LE(512, 2);
+    console.log(buffer2);
+    
+    /*输出结果：
+    <Buffer 67 65 65 6b 62 61 6e 67>
+    <Buffer 01 02 03 04>
+    <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00>
+    <Buffer 01 0c 03 04>
+    <Buffer 01 0c 02 00>
+    <Buffer 01 0c 00 02>
+    */
+    ```
+
+- 处理方法与 string 接近
+  - 使用 concat 而不是 + 来避免 utf-8 字符拼接问题
+
+- Protocol Buffer
+  - Google 研发的二进制协议编解码库
+  - 通过协议文件控制 Buffer 的格式
+    - 更直观
+    - 更好维护
+    - 更便于合作
+  - 代码演示
+    - `npm install protocol-buffers`
+    
+    ```javascript
+    const fs = require("fs");
+    const protobuf = require("protocol-buffers");
+    const schema = protobuf(fs.readFileSync(__dirname + "/test.proto", "utf-8"));
+
+    console.log(schema);
+
+    const buffer = schema.Column.encode({
+      id: 1,
+      name: "Node.js",
+      price: 80.4,
+    });
+
+    console.log(schema.Column.decode(buffer));
+
+    /*输出结果：
+    Messages {
+      Column: {
+        type: 2,
+        message: true,
+        name: 'Column',
+        buffer: true,
+        encode: [Function: encode] { bytes: 0 },
+        decode: [Function: decode] { bytes: 0 },
+        encodingLength: [Function: encodingLength],
+        dependencies: [ [Object], [Object], [Object] ]
+      }
+    }
+    { id: 1, name: 'Node.js', price: 80.4000015258789 }
+    */
+    ```
+
+### RPC 调用：Node.js net 建立多路复用的 RPC 通道
+
+- Node.js net 模块
+  - 单工/半双工的通信通道搭建
+    - 代码演示
+
+    ```javascript
+    // server.js
+    const net = require("net");
+
+    const server = net.createServer((socket) => {
+      socket.on("data", (buffer) => {
+        const lessonid = buffer.readInt32BE();
+        setTimeout(() => {
+          socket.write(Buffer.from(data[lessonid]));
+        }, 50);
+      });
+    });
+
+    server.listen(3000);
+
+    const data = {
+      136797: "01 | 课程介绍",
+      136798: "02 | 内容综述",
+      136799: "03 | Node.js是什么？",
+      136800: "04 | Node.js可以用来做什么？",
+      136801: "05 | 课程实战项目介绍",
+      136803: "06 | 什么是技术预研？",
+      136804: "07 | Node.js开发环境安装",
+      136806: "08 | 第一个Node.js程序：石头剪刀布游戏",
+      136807: "09 | 模块：CommonJS规范",
+      136808: "10 | 模块：使用模块规范改造石头剪刀布游戏",
+      136809: "11 | 模块：npm",
+      141994: "12 | 模块：Node.js内置模块",
+      143517: "13 | 异步：非阻塞I/O",
+      143557: "14 | 异步：异步编程之callback",
+      143564: "15 | 异步：事件循环",
+      143644: "16 | 异步：异步编程之Promise",
+      146470: "17 | 异步：异步编程之async/await",
+      146569: "18 | HTTP：什么是HTTP服务器？",
+      146582: "19 | HTTP：简单实现一个HTTP服务器",
+    };
+    ```
+
+    ```javascript
+    //client.js
+    const net = require("net");
+
+    const socket = new net.Socket({});
+
+    socket.connect({
+      host: "127.0.0.1",
+      port: 3000,
+    });
+
+    const lessonids = [
+      "136797",
+      "136798",
+      "136799",
+      "136800",
+      "136801",
+      "136803",
+      "136804",
+      "136806",
+      "136807",
+      "136808",
+      "136809",
+      "141994",
+      "143517",
+      "143557",
+      "143564",
+      "143644",
+      "146470",
+      "146569",
+      "146582",
+    ];
+
+    let id = Math.floor(Math.random() * lessonids.length);
+    socket.write(encode(id));
+
+    socket.on("data", (buffer) => {
+      console.log(lessonids[id], buffer.toString());
+
+      id = Math.floor(Math.random() * lessonids.length);
+      socket.write(encode(id));
+    });
+
+    function encode(index) {
+      buffer = Buffer.alloc(4);
+      buffer.writeInt32BE(lessonids[index]);
+      return buffer;
+    }
+    ```
+
+  - 全双工的通信通道搭建
+    - 关键在于应用层协议需要有标记包号的字段
+
+    ```javascript
+    //server.js
+    const net = require("net");
+
+    const server = net.createServer((socket) => {
+      socket.on("data", (buffer) => {
+        const seqBuffer = buffer.slice(0, 2);
+        const lessonid = buffer.readInt32BE(2);
+        setTimeout(() => {
+          const buffer = Buffer.concat([seqBuffer, Buffer.from(data[lessonid])]);
+          socket.write(buffer);
+        }, 10 + Math.random() * 1000);
+      });
+    });
+
+    server.listen(3000);
+    ```
+
+    ```javascript
+    //client.js
+    const net = require("net");
+
+    const socket = new net.Socket({});
+
+    socket.connect({
+      host: "127.0.0.1",
+      port: 3000,
+    });
+
+    let id;
+    let seq = 0;
+
+    socket.on("data", (buffer) => {
+      const seqBuffer = buffer.slice(0, 2);
+      const titleBuffer = buffer.slice(2);
+      console.log(seqBuffer.readInt16BE(), titleBuffer.toString());
+    });
+
+    function encode(index) {
+      buffer = Buffer.alloc(6);
+      buffer.writeInt16BE(seq, 0);
+      buffer.writeInt32BE(lessonids[index], 2);
+      console.log(seq, lessonids[index]);
+      seq++;
+      return buffer;
+    }
+
+    setInterval(() => {
+      id = Math.floor(Math.random() * lessonids.length);
+      socket.write(encode(id));
+    }, 50);
+    ```
+
+    - 处理以下情况，需要有标记包长的字段
+      - 粘包
+      - 不完整包
+
+    ```javascript
+    
+    ```
+    
+    - 错误处理
+
+
+
+  
