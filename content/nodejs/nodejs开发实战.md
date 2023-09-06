@@ -17,11 +17,7 @@
     - [异步： 异步编程之 async/await](#异步-异步编程之-asyncawait)
     - [HTTP：简单实现一个 HTTP 服务器](#http简单实现一个-http-服务器)
     - [HTTP：实现网页版石头剪刀布](#http实现网页版石头剪刀布)
-    - [HTTP：用express优化石头剪刀布游戏](#http用express优化石头剪刀布游戏)
-    - [HTTP：用koa优化石头剪刀布游戏](#http用koa优化石头剪刀布游戏)
-    - [RPC 调用：什么是RPC调用](#rpc-调用什么是rpc调用)
-    - [RPC 调用：Node.js Buffer 编解码二进制数据包](#rpc-调用nodejs-buffer-编解码二进制数据包)
-    - [RPC 调用：Node.js net 建立多路复用的 RPC 通道](#rpc-调用nodejs-net-建立多路复用的-rpc-通道)
+
 
 ## 课程介绍
 
@@ -1296,11 +1292,184 @@
       - 不完整包
 
     ```javascript
-    
+    //server.js
+    const net = require("net");
+
+    const server = net.createServer((socket) => {
+      socket.on("data", (buffer) => {
+        let oldBuffer = null;
+        if (oldBuffer) {
+          buffer = Buffer.concat([oldBuffer, buffer]);
+        }
+
+        let packageLength = 0;
+        while ((packageLength = checkComplete(buffer))) {
+          const package = buffer.slice(0, packageLength);
+          buffer = buffer.slice(packageLength);
+          const result = decode(package);
+          socket.write(encode(LESSON_DATA[result.data], result.seq));
+        }
+        oldBuffer = buffer;
+      });
+    });
+
+    server.listen(3000);
+
+    function encode(data, seq) {
+      const body = Buffer.from(data);
+
+      const header = Buffer.alloc(6);
+      header.writeInt16BE(seq);
+      header.writeInt32BE(body.length, 2);
+
+      buffer = Buffer.concat([header, body]);
+      return buffer;
+    }
+
+    function decode(buffer) {
+      const header = buffer.slice(0, 6);
+      const seq = header.readInt16BE();
+      const body = buffer.slice(6);
+      const data = body.readInt32BE();
+      return {
+        seq,
+        data,
+      };
+    }
+
+    function checkComplete(buffer) {
+      if (buffer.length < 6) {
+        return 0;
+      }
+
+      const header = buffer.slice(0, 6);
+      const bodyLength = header.readInt32BE(2);
+      return 6 + bodyLength;
+    }
+
+    const LESSON_DATA = {
+      136797: "01 | 课程介绍",
+      136798: "02 | 内容综述",
+      136799: "03 | Node.js是什么？",
+      136800: "04 | Node.js可以用来做什么？",
+      136801: "05 | 课程实战项目介绍",
+      136803: "06 | 什么是技术预研？",
+      136804: "07 | Node.js开发环境安装",
+      136806: "08 | 第一个Node.js程序：石头剪刀布游戏",
+      136807: "09 | 模块：CommonJS规范",
+      136808: "10 | 模块：使用模块规范改造石头剪刀布游戏",
+      136809: "11 | 模块：npm",
+      141994: "12 | 模块：Node.js内置模块",
+      143517: "13 | 异步：非阻塞I/O",
+      143557: "14 | 异步：异步编程之callback",
+      143564: "15 | 异步：事件循环",
+      143644: "16 | 异步：异步编程之Promise",
+      146470: "17 | 异步：异步编程之async/await",
+      146569: "18 | HTTP：什么是HTTP服务器？",
+      146582: "19 | HTTP：简单实现一个HTTP服务器",
+    }; 
+    ```
+
+    ```javascript
+    //client.js
+    const net = require("net");
+
+    const socket = new net.Socket({});
+
+    socket.connect({
+      host: "127.0.0.1",
+      port: 3000,
+    });
+
+    let id;
+    let seq = 0;
+    let oldBuffer = null;
+
+    socket.on("data", (buffer) => {
+      if (oldBuffer) {
+        buffer = Buffer.concat([oldBuffer, buffer]);
+      }
+
+      let completeLength = 0;
+
+      while ((completeLength = checkComplete(buffer))) {
+        const package = buffer.slice(0, completeLength);
+        buffer = buffer.slice(completeLength);
+
+        const result = decode(package);
+        console.log(`包${result.seq}，返回值是${result.data}`);
+      }
+      oldBuffer = buffer;
+    });
+
+    function encode(data) {
+      const body = Buffer.alloc(4);
+      body.writeInt32BE(LESSON_IDS[data.id]);
+      const header = Buffer.alloc(6);
+      header.writeInt16BE(seq);
+      header.writeInt32BE(body.length, 2);
+      const buffer = Buffer.concat([header, body]);
+      console.log(`包${seq}传输的课程id为${LESSON_IDS[data.id]}`);
+      seq++;
+      return buffer;
+    }
+
+    function decode(buffer) {
+      const header = buffer.slice(0, 6);
+      const seq = header.readInt16BE();
+      const body = buffer.slice(6);
+      const data = body.toString();
+      return {
+        seq,
+        data,
+      };
+    }
+
+    function checkComplete(buffer) {
+      if (buffer.length < 6) {
+        return 0;
+      }
+
+      const header = buffer.slice(0, 6);
+      const bodyLength = header.readInt32BE(2);
+      return 6 + bodyLength;
+    }
+
+    const LESSON_IDS = [
+      "136797",
+      "136798",
+      "136799",
+      "136800",
+      "136801",
+      "136803",
+      "136804",
+      "136806",
+      "136807",
+      "136808",
+      "136809",
+      "141994",
+      "143517",
+      "143557",
+      "143564",
+      "143644",
+      "146470",
+      "146569",
+      "146582",
+    ];
+
+    for (let k = 0; k < 100; k++) {
+      id = Math.floor(Math.random() * LESSON_IDS.length);
+      socket.write(encode({ id }));
+    }
     ```
     
     - 错误处理
 
+## 项目开发篇
 
+### 极客时间课程 App 下载页的需求实现
 
-  
+```powershell
+npm init
+npm i koa koa-mount koa-static
+```
