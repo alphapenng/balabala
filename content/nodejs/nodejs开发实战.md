@@ -17,6 +17,16 @@
     - [异步： 异步编程之 async/await](#异步-异步编程之-asyncawait)
     - [HTTP：简单实现一个 HTTP 服务器](#http简单实现一个-http-服务器)
     - [HTTP：实现网页版石头剪刀布](#http实现网页版石头剪刀布)
+    - [HTTP：用express优化石头剪刀布游戏](#http用express优化石头剪刀布游戏)
+    - [HTTP：用koa优化石头剪刀布游戏](#http用koa优化石头剪刀布游戏)
+    - [RPC 调用：什么是RPC调用](#rpc-调用什么是rpc调用)
+    - [RPC 调用：Node.js Buffer 编解码二进制数据包](#rpc-调用nodejs-buffer-编解码二进制数据包)
+    - [RPC 调用：Node.js net 建立多路复用的 RPC 通道](#rpc-调用nodejs-net-建立多路复用的-rpc-通道)
+  - [项目开发篇](#项目开发篇)
+    - [极客时间课程 App 下载页的需求实现](#极客时间课程-app-下载页的需求实现)
+    - [课程详情页：极客时间详情页需求解构](#课程详情页极客时间详情页需求解构)
+    - [课程详情页：极客时间详情页需求实现](#课程详情页极客时间详情页需求实现)
+    - [课程播放页：极客时间课程播放页的需求解构](#课程播放页极客时间课程播放页的需求解构)
 
 
 ## 课程介绍
@@ -828,7 +838,7 @@
       }
     })
     .listen(3000);
-    ```
+  ```
 
 ### HTTP：用express优化石头剪刀布游戏
 
@@ -1472,4 +1482,251 @@
 ```powershell
 npm init
 npm i koa koa-mount koa-static
+npm i -g nodemon
 ```
+
+```javascript
+//index.js
+const koa = require("koa");
+const mount = require("koa-mount");
+const static = require("koa-static");
+const fs = require("fs");
+
+const app = new koa();
+
+app.use(static(__dirname + "/source"));
+
+app.use(
+  mount("/", async (ctx, next) => {
+    ctx.body = fs.readFileSync(__dirname + "/source/index.htm", "utf-8");
+  })
+);
+
+app.listen(3000);
+```
+
+### 课程详情页：极客时间详情页需求解构
+
+- 使用 RPC 通信从后台服务器获取数据
+- 模板渲染
+  - include 子模板
+  - xss过滤、模板helper函数
+
+### 课程详情页：极客时间详情页需求实现
+
+- server 
+
+  ```javascript
+  //rpc-server.js
+  const net = require("net");
+
+  module.exports = class RPC {
+    constructor({ encodeResponse, decodeRequest, isCompleteRequest }) {
+      this.encodeResponse = encodeResponse;
+      this.decodeRequest = decodeRequest;
+      this.isCompleteRequest = isCompleteRequest;
+    }
+
+    createServer(callback) {
+      let buffer = null;
+
+      const tcpServer = net.createServer((socket) => {
+        socket.on("data", (data) => {
+          buffer =
+            buffer && buffer.length > 0 ? Buffer.concat([buffer, data]) : data;
+
+          let checkLength = null;
+
+          while (buffer && (checkLength = this.isCompleteRequest(buffer))) {
+            let requestBuffer = null;
+            if (checkLength == buffer.length) {
+              requestBuffer = buffer;
+              buffer = null;
+            } else {
+              requestBuffer = buffer.slice(0, checkLength);
+              buffer = buffer.slice(checkLength);
+            }
+
+            const request = this.decodeRequest(requestBuffer);
+            callback(
+              {
+                body: request.result,
+                socket,
+              },
+              {
+                end: (data) => {
+                  const buffer = this.encodeResponse(data, request.seq);
+                  socket.write(buffer);
+                },
+              }
+            );
+          }
+        });
+      });
+
+      return {
+        listen() {
+          tcpServer.listen.apply(tcpServer, arguments);
+        },
+      };
+    }
+  };
+  ```
+
+  ```javascript
+  // geeknode-rpc-server.js
+  const RPC = require("./rpc-server");
+
+  module.exports = function (protobufRequestSchema, protobufResponseSchema) {
+    return new RPC({
+      decodeRequest(buffer) {
+        const seq = buffer.readInt32BE();
+        return {
+          seq,
+          result: protobufRequestSchema.decode(buffer.slice(8)),
+        };
+      },
+      encodeResponse(data, seq) {
+        const body = protobufResponseSchema.encode(data);
+        const head = Buffer.alloc(8);
+        head.writeInt32BE(seq);
+        head.writeInt32BE(body.length, 4);
+        return Buffer.concat([head, body]);
+      },
+      isCompleteRequest(buffer) {
+        if (buffer.length < 8) {
+          return 0;
+        }
+        const bodyLength = buffer.readInt32BE(4);
+        if (buffer.length >= bodyLength + 8) {
+          return bodyLength + 8;
+        } else {
+          return 0;
+        }
+      },
+    });
+  };
+  ```
+
+  ```javascript
+  // start.js
+  const fs = require("fs");
+  const protobuf = require("protocol-buffers");
+  const schemas = protobuf(fs.readFileSync(`${__dirname}/detail.proto`, "utf-8"));
+
+  const columnData = require("./mockdata/column");
+
+  const server = require("./lib/geeknode-rpc-server")(
+    schemas.ColumnRequest,
+    schemas.ColumnResponse
+  );
+
+  server
+    .createServer((request, response) => {
+      const columnId = request.body;
+
+      response.end({
+        column: columnData[0],
+        recommendColumns: [columnData[1], columnData[2]],
+      });
+    })
+    .listen(3001, () => {
+      console.log("rpc server listened: 3001");
+    });
+  ```
+
+- client
+
+  ```javascript
+  //client.js
+  const EasySock = require("easy_sock");
+
+  const protobuf = require("protocol-buffers");
+  const fs = require("fs");
+  const schemas = protobuf(fs.readFileSync(`${__dirname}/detail.proto`));
+
+  const easySock = new EasySock({
+    ip: "127.0.0.1",
+    port: 3001,
+    timeout: 500,
+    keepAlive: true,
+  });
+
+  easySock.encode = function (data, seq) {
+    const body = schemas.ColumnRequest.encode(data);
+
+    const head = Buffer.alloc(8);
+    head.writeInt32BE(seq);
+    head.writeInt32BE(body.length, 4);
+
+    return Buffer.concat([head, body]);
+  };
+  easySock.decode = function (buffer) {
+    const seq = buffer.readInt32BE();
+    const body = schemas.ColumnResponse.decode(buffer.slice(8));
+
+    return {
+      result: body,
+      seq,
+    };
+  };
+  easySock.isReceiveComplete = function (buffer) {
+    if (buffer.length < 8) {
+      return 0;
+    }
+    const bodyLength = buffer.readInt32BE(4);
+
+    if (buffer.length >= bodyLength + 8) {
+      return bodyLength + 8;
+    } else {
+      return 0;
+    }
+  };
+
+  module.exports = easySock;
+  ```
+
+  ```javascript
+  // index.js
+  const mount = require('koa-mount');
+  const static = require('koa-static')
+  const app = new (require('koa'));
+  const rpcClient = require('./client');
+  const template = require('./template');
+
+  const detailTemplate = template(__dirname + '/template/index.html');
+
+  app.use(mount('/static', static(`${__dirname}/source/static/`)))
+
+  app.use(async (ctx) => {
+      if (!ctx.query.columnid) {
+          ctx.status = 400;
+          ctx.body = 'invalid columnid';
+          return 
+      }
+
+      const result = await new Promise((resolve, reject) => {
+
+          rpcClient.write({
+              columnid: ctx.query.columnid
+          }, function (err, data) {
+              err ? reject(err) : resolve(data)
+          })
+      })
+
+      ctx.status = 200;
+      
+      ctx.body = detailTemplate(result);
+  })
+
+  app.listen(3000)
+
+  // module.exports = app;
+  ```
+
+### 课程播放页：极客时间课程播放页的需求解构
+
+
+
+
+
