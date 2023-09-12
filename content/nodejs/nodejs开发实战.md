@@ -27,6 +27,21 @@
     - [课程详情页：极客时间详情页需求解构](#课程详情页极客时间详情页需求解构)
     - [课程详情页：极客时间详情页需求实现](#课程详情页极客时间详情页需求实现)
     - [课程播放页：极客时间课程播放页的需求解构](#课程播放页极客时间课程播放页的需求解构)
+    - [课程播放页：GraphQL](#课程播放页graphql)
+    - [课程播放页：极客时间播放页需求实现](#课程播放页极客时间播放页需求实现)
+    - [课程列表页：极客时间列表页需求解构](#课程列表页极客时间列表页需求解构)
+    - [课程列表页：用 Vue/React 进行服务端渲染](#课程列表页用-vuereact-进行服务端渲染)
+  - [性能调优篇](#性能调优篇)
+    - [性能工具：HTTP 服务性能测试](#性能工具http-服务性能测试)
+    - [性能工具：Node.js 性能分析工具](#性能工具nodejs-性能分析工具)
+    - [代码优化：Javascript·代码性能优化](#代码优化javascript代码性能优化)
+    - [代码优化：内存管理优化](#代码优化内存管理优化)
+    - [代码优化：Node.js C++ 插件](#代码优化nodejs-c-插件)
+    - [多进程优化：Node.js 子进程与线程](#多进程优化nodejs-子进程与线程)
+    - [多进程优化：Node.js cluster 模块实战与源码解读](#多进程优化nodejs-cluster-模块实战与源码解读)
+    - [多进程优化：进程守护与管理](#多进程优化进程守护与管理)
+    - [架构优化：动静分离](#架构优化动静分离)
+    - [架构优化：反向代理与缓存服务](#架构优化反向代理与缓存服务)
 
 
 ## 课程介绍
@@ -1726,7 +1741,493 @@ app.listen(3000);
 
 ### 课程播放页：极客时间课程播放页的需求解构
 
+- API 服务—— RESTful
+  - 简单易懂
+  - 可以快速搭建
+  - 在数据的聚合有很大劣势
+- API服务——GraphQL
+  - 专注数据聚合，前端要什么就返回什么
+
+### 课程播放页：GraphQL
+
+- Facebook 开发的实现 API 服务的库
+  - 让前端 “自定义查询” 数据的能力
+
+  ```javascript
+  // query.js
+  var { graphql, buildSchema } = require('graphql');
+
+  // Construct a schema, using GraphQL schema language
+  var schema = buildSchema(`
+    type Query {
+      hello: String
+    }
+  `);
+
+  // The root provides a resolver function for each API endpoint
+  var root = {
+    hello: () => {
+      return 'Hello world!';
+    },
+  };
 
 
+  module.exports = function(query) {
+      // Run the GraphQL query '{ hello }' and print out the response
+      return graphql(schema, query, root).then((response) => {
+        return response;
+      });
+  }
+  ```
 
+  ```javascript
+  // index.js
+  const query = require('./query');
+
+  query('{ hello }').then(res=> {
+      console.log(res);
+  })
+  ```
+
+  ```javascript
+  // schema.js
+  const { graphql, buildSchema } = require('graphql');
+
+  const schema = buildSchema(`
+      type Comment {
+          id: Int
+          avatar: String
+          name: String
+          isTop: Boolean
+          content: String
+          publishDate: String
+          commentNum: Int
+          praiseNum: Int
+      }
+      type Query {
+          comment: [Comment]
+      }
+  `)
+
+  schema.getQueryType().getFields().comment.resolve = () => {
+      return [{
+          id: 1,
+          avatar: "https://static001.geekbang.org/account/avatar/00/0f/52/62/1b3ebed5.jpg",
+          name: "僵尸浩",
+          isTop: true,
+          content: "哈哈哈哈",
+          publishDate: "今天",
+          commentNum: 10,
+          praiseNum: 5
+      }]
+  }
+
+  module.exports = schema;
+  ```
+
+  ```javascript
+  // server.js
+  const app = new (require('koa'));
+  const graphqlHTTP = require('koa-graphql');
+
+
+  app.use(
+      graphqlHTTP({
+          schema: require('./schema')
+      })
+  )
+
+  app.listen(3000);
+  ```
+
+  - 浏览器输入 `http://127.0.0.1:3000/?query={comment{name}}` 访问 API
+
+### 课程播放页：极客时间播放页需求实现
+
+```javascript
+// mock-database.js
+module.exports = {
+    1: {
+        id: 1,
+        avatar: 'https://static001.geekbang.org/account/avatar/00/0f/52/62/1b3ebed5.jpg',
+        name: '僵尸浩',
+        isTop: true,
+        content: '哈哈哈哈',
+        publishDate: '今天',
+        commentNum: 10,
+        praiseNum: 5
+    },
+    2: {
+        id: 2,
+        avatar: 'https://static001.geekbang.org/account/avatar/00/0f/52/62/1b3ebed5.jpg',
+        name: '极客主编',
+        isTop: true,
+        content: '我来送大礼了！！',
+        publishDate: '上周',
+        commentNum: 10,
+        praiseNum: 2
+    },
+    3: {
+        id: 3,
+        avatar: 'https://static001.geekbang.org/account/avatar/00/0f/52/62/1b3ebed5.jpg',
+        name: '极客老板',
+        isTop: true,
+        content: '我来发股票了！！！',
+        publishDate: '十年前',
+        commentNum: 10,
+        praiseNum: 0
+    }
+}
+```
+
+```javascript
+// schema.js
+const { graphql, buildSchema } = require('graphql');
+const mockDatabase = require('./mock-database')
+
+const schema = buildSchema(`
+    type Comment {
+        id: Int
+        avatar: String
+        name: String
+        isTop: Boolean
+        content: String
+        publishDate: String
+        commentNum: Int
+        praiseNum: Int
+    }
+    type Query {
+        comment: [Comment]
+    }
+    type Mutation {
+        praise(id: Int): Int
+    }
+`)
+
+schema.getQueryType().getFields().comment.resolve = () => {
+    return Object.keys(mockDatabase).map(key=> {
+        return mockDatabase[key];
+    })
+}
+schema.getMutationType().getFields().praise.resolve = (args0, { id }) => {
+    mockDatabase[id].praiseNum++;
+
+    return mockDatabase[id].praiseNum
+}
+
+module.exports = schema;
+```
+
+```javascript
+// server.js
+const fs = require('fs');
+const app = new (require('koa'));
+const mount = require('koa-mount');
+const static = require('koa-static');
+const graphqlHTTP = require('koa-graphql');
+
+
+app.use(
+    // 给koa-graphql传一个graphql的协议文件，就会自动帮你生成graphql-api
+    mount('/api', graphqlHTTP({
+        schema: require('./schema')
+    }))
+    
+)
+
+app.use(
+    mount('/static', static(`${__dirname}/source/static`))
+)
+
+app.use(
+    mount('/', async (ctx) => {
+        ctx.status = 200;
+
+        ctx.body = fs.readFileSync(`${__dirname}/source/index.htm`, 'utf-8')
+    })
+)
+
+// module.exports = app;
+app.listen(3000)
+```
+
+- 请求评论 `http://127.0.0.1:3000/api?query={comment{name,content,praiseNum}}`
+- 获取点赞
+
+  ![post_praise](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/202309111425113.webp)
+
+### 课程列表页：极客时间列表页需求解构
+
+- 后端需要渲染列表
+  - 首屏加速
+  - SEO
+- 前端也需要渲染列表
+  - 无刷新过滤、排序
+- 前后端同构
+  - 同一个模板/组件，可在浏览器渲染，也可在 Node.js 渲染
+
+### 课程列表页：用 Vue/React 进行服务端渲染
+
+- 前后端同构
+
+  ![前后端同构](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/202309111434274.webp)
+
+  - ReactDomServer.renderToString()
+  - VueServerRendrer.renderToString()
+  - React/Vue 同构的最大难题其实是数据部分
+  - 同构的关键
+    - 注重职责的分离
+
+## 性能调优篇
+
+### 性能工具：HTTP 服务性能测试
+
+- 想要优化性能，首先要做性能检查
+- 压力测试工具
+  - ab `ab -c200 -n1600 http://127.0.0.1:3000/download/`
+  - webbench
+- 服务器性能指标
+  - QPS
+  - 吞吐量
+- 找到性能瓶颈
+  - top
+  - iostat
+
+### 性能工具：Node.js 性能分析工具
+
+- 工具
+  - Node.js 自带 profile 
+    - `node --prof entry.js` 
+    - `ab -c50 -t15 http://127.0.0.1:3000/download/`
+    - `node --prof-process isolate-0x102812000-78962-v8.log > profile.txt`
+  - Chrome devtool
+    - `node --inspect-brk entry.js`
+    - `chrome://inspect`
+    - `ab -c50 -t15 http://127.0.0.1:3000/download/`
+  - npm - cinic
+
+### 代码优化：Javascript·代码性能优化
+
+- 根据性能分析结果，优化下载页性能
+- 性能优化的准则
+  - 减少不必要的计算
+  - 空间换时间
+- Node.js HTTP 服务性能优化准则：
+  - 提前计算
+
+### 代码优化：内存管理优化
+
+- 垃圾回收
+- 新生代
+  - 容量小，垃圾回收更快
+- 老生代
+  - 容量大，垃圾回收更慢
+- 减少内存使用，也是提高服务性能的手段
+- 如果有内存泄漏，会导致服务性能大大降低
+- Node.js Buffer 的内存分配策略
+- 节省内存的最好方式就是
+  - 使用池
+
+### 代码优化：Node.js C++ 插件
+
+- 编译环境安装
+  - node-gyp
+    - node-gyp 本身
+    - 对应的 node 版本编译环境
+  - python2
+- 将计算量转移到 C++ 进行
+  - 收益：C++ 运算比 JavaScript 更快的部分
+  - 成本：C++ 变量和 v8 变量的转换
+
+### 多进程优化：Node.js 子进程与线程
+
+- 进程
+  - 操作系统挂载运行程序的单元
+  - 拥有一些独立的资源，如内存等
+- 线程
+  - 进行运算调度的单元
+  - 进程内的线程共享进程内的资源
+  - 进程类似“公司”
+  - 线程类似公司的 “职员”
+- Node.js 的事件循环
+  - 主线程运行 v8 与 JavaScript
+  - 多个子线程通过事件循环被调度
+- 使用子进程或线程利用更多 CPU 资源
+
+```javascipt
+// master.js
+const cp = require("child_process");
+
+const child_process = cp.fork(__dirname + "/child.js");
+
+child_process.send("haha");
+
+child_process.on("message", (str) => {
+  console.log("parent", str);
+});
+```
+
+```javascript
+// child.js
+process.on("message", (str) => {
+  console.log("child", str);
+  process.send("hehe");
+});
+```
+
+### 多进程优化：Node.js cluster 模块实战与源码解读
+
+- 主进程启动多个子进程，由主进程轮流分发请求，子进程代为处理
+
+```javascrip
+// app.js
+const fs = require("fs");
+const http = require("http");
+
+// console.log(11112222);
+module.exports = http
+  .createServer((req, res) => {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+    });
+    res.end(fs.readFileSync(__dirname + "/index.htm", "utf-8"));
+  })
+  .listen(3000, () => {
+    console.log("listened 3000");
+  });
+```
+
+```javascript
+// index.js
+const cluster = require("cluster");
+const os = require("os");
+
+if (cluster.isMaster) {
+  for (let i = 0; i < os.cpus().length / 2; i++) cluster.fork();
+} else {
+  require("./app");
+}
+```
+
+### 多进程优化：进程守护与管理
+
+- Node.js 的稳定性
+- 防止僵尸进程
+  - 心跳
+- 死亡重启
+- 数据监控
+
+```javascript
+// app.js
+const fs = require("fs");
+const http = require("http");
+const leak = [];
+
+// console.log(11112222);
+module.exports = http
+  .createServer((req, res) => {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+    });
+    setTimeout(() => {
+      const result = fs.readFileSync(__dirname + "/index.htm", "utf-8");
+      leak.push(result);
+      res.end(result);
+    }, 50);
+    // res.end("hello world");
+    while (true) {}
+  })
+  .listen(3000, () => {
+    console.log("listened 3000");
+  });
+```
+
+```javascript
+// boot.js
+/**
+ * 简单的进程守护器
+ */
+const cluster = require('cluster');
+
+if (cluster.isMaster) {
+    // console.log(require('os').cpus())
+    for (let i = 0; i < require('os').cpus().length / 2; i++) {
+        createWorker();
+    }
+
+    cluster.on('exit', function () {
+        setTimeout(() => {
+            createWorker()
+        }, 5000)
+    })
+
+    function createWorker() {
+        // 创建子进程并进行心跳监控
+        var worker = cluster.fork();
+
+        var missed = 0;// 没有回应的ping次数
+
+        // 心跳
+        var timer = setInterval(function () {
+
+            // 三次没回应，杀之
+            if (missed == 3) {
+                clearInterval(timer);
+                console.log(worker.process.pid + ' has become a zombie!');
+                process.kill(worker.process.pid);
+                return;
+            }
+            // 开始心跳
+            missed++;
+            worker.send('ping#' + worker.process.pid);
+        }, 10000);
+
+        worker.on('message', function (msg) {
+            // 确认心跳回应。
+            if (msg == 'pong#' + worker.process.pid) {
+                missed--;
+            }
+        });
+
+        // 挂了就没必要再进行心跳了
+        worker.on('exit', function () {
+            clearInterval(timer);
+        });
+    }
+
+} else {
+    // 当进程出现会崩溃的错误
+    process.on('uncaughtException', function (err) {
+        // 这里可以做写日志的操作
+        console.log(err);
+        // 退出进程
+        process.exit(1);
+    });
+
+    // 回应心跳信息
+    process.on('message', function (msg) {
+        if (msg == 'ping#' + process.pid) {
+            process.send('pong#' + process.pid);
+        }
+    });
+
+    // 内存使用过多，自己退出进程
+    if (process.memoryUsage().rss > 734003200) {
+        process.exit(1);
+    }
+
+    require('./app')
+}
+```
+
+### 架构优化：动静分离
+
+- 静态内容
+  - 基本不会变动，也不会因为请求参数不同而变化
+  - -> CDN分发，HTTP缓存等
+- 动态内容
+  - 各种因为请求参数不同而变动，且变种的数量几乎不可枚举
+  - -> 用大量的源站机器承载，结合反向代理进行负载均衡
+
+### 架构优化：反向代理与缓存服务
 
