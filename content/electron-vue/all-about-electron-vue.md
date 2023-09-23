@@ -1,14 +1,21 @@
+<!--
+ * @Description: 
+ * @Author: alphapenng
+ * @Github: 
+ * @Date: 2023-08-20 11:46:11
+ * @LastEditors: alphapenng
+ * @LastEditTime: 2023-09-23 14:01:42
+ * @FilePath: /balabala/content/electron-vue/all-about-electron-vue.md
+-->
 # All-about-electron-vue
 
 - [All-about-electron-vue](#all-about-electron-vue)
   - [`npm run dev` 报错](#npm-run-dev-报错)
   - [electron 中 Unable to install `vue-devtools`](#electron-中-unable-to-install-vue-devtools)
 
-
 ## `npm run dev` 报错
 
 > `npm run dev` 出现 `[Error message "error:0308010C:digital envelope routines::unsupported"](https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported)`
-
 
 You can try one of these:
 
@@ -41,8 +48,6 @@ $env:NODE_OPTIONS = "--openssl-legacy-provider"
 
 > [electron 中 Unable to install `vue-devtools` 的解决方法](https://www.cnblogs.com/william1994/p/13894822.html)
 
-
-
 先 npm install vue-devtools --save-dev
 
 然后 把 ready 事件里面注释掉 5 行，再加上一行手动加载的。
@@ -71,4 +76,3 @@ require('electron').app.on('ready', () => {
 // Require `main` process to boot app
 require('./index')
 ```
-
