@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-12-07 13:08:13
+ * @LastEditTime: 2023-12-10 12:19:13
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -15,6 +15,8 @@
     - [课程的内容](#课程的内容)
   - [邂逅 Vue3 开发](#邂逅-vue3-开发)
     - [如何使用 Vue呢？](#如何使用-vue呢)
+    - [Vue 的源码](#vue-的源码)
+  - [Vue3 基础-模板语法](#vue3-基础-模板语法)
 
 ## 开篇
 
@@ -56,4 +58,33 @@
   - data 中返回的对象会被 **Vue 的响应式系统劫持**，之后对该**对象的修改或者访问**都会在劫持中被处理：
     - 所以我们在template中通过 {{counter}} 访问 counter，可以从对象中获取到数据
     - 所以我们修改counter的值时，template中的 {{counter}} 也会发生改变
+
+- methods属性
+  - methods 属性是一个对象，通常我们会在这个对象中定义很多的方法：
+    - 这些方法可以 **被绑定到 template 模板**中；
+    - 在该方法中，我们可以**使用 this关键字**来直接访问到data中返回的对象的属性；
+    - ⚠️注意：**不应该使用箭头函数来定义method函数**（例如 `plus: () => this.a++`）。理由是箭头函数绑定了父级作用域的上下文，所以 `this` 将不会按照期望指向组件实例，`this.a` 将是 `undefined`。
+      - 问题一：不能使用箭头函数？
+        - 我们在 methods 中要使用 data 返回对象中的数据：
+          - 那么这个 **this是必须有值**的，并且应该可以 **通过this获取到data返回对象中的数据**。
+        - 如果我们使用**箭头函数**，那么这个**this就会是window**了。
+        - **在箭头函数中是不绑定this**。
+      - 问题二：this到底指向什么？
+        - 事实上 Vue的源码当中就是对methods中的所有函数进行了遍历，并且通过bind绑定了this：
+
+### Vue 的源码
+
+- 如果想要学习 Vue 的源码，比如看 createApp 的实现过程，应该怎么办呢？
+  - 第一步： 在 GitHub 上搜索 vue-next，下载源代码（这里推荐通过 git clone 的方式下载）；
+  - 第二步：安装 Vue 源码项目相关的依赖（执行 yarn install）；
+  - 第三步： 对项目执行打包操作（执行 yarn dev），执行前修改脚本；
+
+    ```json
+    "scripts": {
+      "dev": "node scripts/dev.js --sourcemap",
+    ```
+
+  - 第四步： 通过 `packages/vue/dist/vue.global.js` 调试代码
+
+## Vue3 基础-模板语法
 
