@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-12-12 15:15:55
+ * @LastEditTime: 2023-12-12 17:14:13
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -20,6 +20,11 @@
     - [VSCode 代码片段](#vscode-代码片段)
     - [Mustache 双大括号语法](#mustache-双大括号语法)
     - [v-once 指令](#v-once-指令)
+    - [v-text 指令](#v-text-指令)
+    - [v-html 指令](#v-html-指令)
+    - [v-pre](#v-pre)
+    - [v-cloak](#v-cloak)
+    - [v-bind 的绑定属性](#v-bind-的绑定属性)
 
 ## 开篇
 
@@ -106,7 +111,7 @@
 
 - **用于指定元素或者组件只渲染一次：**
   - 当数据发生变化时，**元素或者组件以及其所有的子元素**将视为**静态内容**并且跳过；
-	- 该指令可以用于**性能优化**；
+  - 该指令可以用于**性能优化**；
 
 ### v-text 指令
 
@@ -119,29 +124,28 @@
 ### v-pre
 
 - 用于跳过元素和它的子元素的编译过程，显示原始的 Mustache 标签
-	- 跳过不需要编译的节点，加快编译的速度；
+- 跳过不需要编译的节点，加快编译的速度；
 
 ### v-cloak
 
 - 这个指令保持在元素上直到关联组件实例结束编译。
-	- 和 CSS 规则如 `[v-cloak]{display:none}` 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到组件实例准备完毕。
+- 和 CSS 规则如 `[v-cloak]{display:none}` 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到组件实例准备完毕。
 
 ### v-bind 的绑定属性
 
 - **绑定属性我们使用v-bind：**
-	-	缩写 :
-	- 预期 any(with argument)|Object(without argument)
-	- 参数 attrOrProp(optional)
-	- 修饰符 将 kebab-case attribute 名转换为 camelCase；
-	- 用法 **动态地绑定一个或多个 attribute**，或者**向另一个组件传递 props **；
+  - 缩写 :
+  - 预期 any(with argument)|Object(without argument)
+  - 参数 attrOrProp(optional)
+  - 修饰符 将 kebab-case attribute 名转换为 camelCase；
+  - 用法 **动态地绑定一个或多个 attribute**，或者**向另一个组件传递 props**；
+
 - 绑定 class 介绍
-	- **绑定 class 有两种方式：**
-		- 对象语法 `<div :class="{'active': true}">呵呵</div>`
-		- 数组语法 `<div :class="['abc', title]">哈哈</div>`
+  - **绑定 class 有两种方式：**
+    - 对象语法 `<div :class="{'active': true}">呵呵</div>`
+    - 数组语法 `<div :class="['abc', title]">哈哈</div>`
+
 - 绑定 style 介绍
-	- 利用 **v-bind:style来绑定一些 **CSS内联样式**；
-		- 因为某些样式我们需要根据**数据**动态来决定；
-		- 比如某段文字的**颜色**，**大小**等等；
-
-
-
+  - 利用 **v-bind:style**来绑定一些 **CSS内联样式**；
+    - 因为某些样式我们需要根据**数据**动态来决定；
+    - 比如某段文字的**颜色**，**大小**等等；
