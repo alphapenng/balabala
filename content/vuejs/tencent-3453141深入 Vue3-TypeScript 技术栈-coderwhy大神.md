@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-12-10 12:19:13
+ * @LastEditTime: 2023-12-12 15:15:55
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -17,6 +17,9 @@
     - [如何使用 Vue呢？](#如何使用-vue呢)
     - [Vue 的源码](#vue-的源码)
   - [Vue3 基础-模板语法](#vue3-基础-模板语法)
+    - [VSCode 代码片段](#vscode-代码片段)
+    - [Mustache 双大括号语法](#mustache-双大括号语法)
+    - [v-once 指令](#v-once-指令)
 
 ## 开篇
 
@@ -82,9 +85,24 @@
     ```json
     "scripts": {
       "dev": "node scripts/dev.js --sourcemap",
+    }
     ```
 
   - 第四步： 通过 `packages/vue/dist/vue.global.js` 调试代码
 
 ## Vue3 基础-模板语法
 
+### VSCode 代码片段
+
+- 第一步，复制自己需要生成代码片段的代码；
+- 第二步，<https://snippet-generator.app/> 在该网站中生成代码片段；
+- 第三步，在 VSCode 中配置代码片段；
+
+### Mustache 双大括号语法
+
+- 不仅仅可以是 data 中的属性，也可以是一个 JavaScript 的表达式。
+
+### v-once 指令
+
+- **用于指定元素或者组件只渲染一次：**
+  - 当数据发生变化时，**元素或者组件以及其所有的子元素**将视为**静态内容**并且跳过；
