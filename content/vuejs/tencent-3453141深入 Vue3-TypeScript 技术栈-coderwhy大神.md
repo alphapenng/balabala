@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-12-12 17:14:13
+ * @LastEditTime: 2023-12-13 15:57:05
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -25,6 +25,7 @@
     - [v-pre](#v-pre)
     - [v-cloak](#v-cloak)
     - [v-bind 的绑定属性](#v-bind-的绑定属性)
+    - [v-on 绑定事件](#v-on-绑定事件)
 
 ## 开篇
 
@@ -134,11 +135,11 @@
 ### v-bind 的绑定属性
 
 - **绑定属性我们使用v-bind：**
-  - 缩写 :
-  - 预期 any(with argument)|Object(without argument)
-  - 参数 attrOrProp(optional)
-  - 修饰符 将 kebab-case attribute 名转换为 camelCase；
-  - 用法 **动态地绑定一个或多个 attribute**，或者**向另一个组件传递 props**；
+  - 缩写：`:`
+  - 预期：any(with argument)|Object(without argument)
+  - 参数：attrOrProp(optional)
+  - 修饰符： 将 kebab-case attribute 名转换为 camelCase；
+  - 用法： **动态地绑定一个或多个 attribute**，或者**向另一个组件传递 props**；
 
 - 绑定 class 介绍
   - **绑定 class 有两种方式：**
@@ -149,3 +150,49 @@
   - 利用 **v-bind:style**来绑定一些 **CSS内联样式**；
     - 因为某些样式我们需要根据**数据**动态来决定；
     - 比如某段文字的**颜色**，**大小**等等；
+  - CSS property 名可以用 **驼峰式（camelCase）** 或 **短横线分隔（kebab-case，记得用引号括起来）** 来命名；
+  - **绑定 class 有两种方式：**
+    - 对象语法 `<div :style="{color: 'red', fontSize: '20px'}">呵呵</div>`
+    - 数组语法 `<div :style="[{color: 'red'}, {fontSize: '30px'}]">哈哈</div>`
+  
+- 动态绑定属性
+  - 在某些情况下，我们**属性的名称**可能也不是固定的：
+  - 如果**属性名称不是固定**的，我们可以使用 **:[属性名]="值"** 的格式来定义；
+  - 这种绑定的方式，我们称之为 **动态绑定属性**；
+
+- 绑定一个对象
+  - 将一个"对象的所有属性"，绑定到"元素上的所有属性"，应该怎么做呢？
+    - 直接使用 **v-bind绑定一个对象**；
+
+      ```html
+      <div v-bind="{id: 123, class: 'abc'}">呵呵</div>
+      ```
+
+### v-on 绑定事件
+
+- **在前端开发中，我们需要经常和用户进行各种各样的交互：**
+  - 我们必须监听用户发生的事件，比如**点击、拖拽、键盘事件**等等
+  - 在 Vue 中如何监听事件呢？使用 **v-on指令**
+
+- v-on 的使用：
+  - 缩写：`@`
+  - 预期：Function|Inline Statement|Object
+  - 参数：event
+  - 修饰符：
+    - .stop - 调用 event.stopPropagation()
+    - .prevent - 调用 event.preventDefault()
+    - .capture - 事件在捕获阶段被触发
+    - .self - 只有当 event.target 是当前元素本身时，事件才会被触发
+    - .{keyAlias} - 仅当事件是从特定键触发时才触发回调
+    - .once - 事件只触发一次
+    - .left - 只当点击鼠标左键时触发
+    - .right - 只当点击鼠标右键时触发
+    - .middle - 只当点击鼠标中键时触发
+    - .passive - {passive: true} 模式添加侦听器
+  - 用法：绑定事件监听
+
+- v-on 的参数传递：
+  - 当通过 methods 中定义方法，以供 @click 调用时，需要 **注意参数问题**：
+  - 情况一：如果该方法不需要额外参数，那么方法后的（）可以不添加。
+  - 情况二：如果需要同时传入某个参数，同时需要event是，可以通过 $event 传入事件。
+
