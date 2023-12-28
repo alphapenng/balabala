@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-12-16 17:27:40
+ * @LastEditTime: 2023-12-28 19:31:55
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -35,7 +35,34 @@
   - [Vue3 的表单和开发模式](#vue3-的表单和开发模式)
     - [v-model](#v-model)
     - [组件化开发](#组件化开发)
-    - [Webpack](#webpack)
+  - [Webpack 基础打包](#webpack-基础打包)
+    - [Webpack 到底是什么呢？](#webpack-到底是什么呢)
+    - [Vue 项目加载的文件有哪些呢？](#vue-项目加载的文件有哪些呢)
+    - [Webpack 的使用前提](#webpack-的使用前提)
+    - [Webpack 的安装](#webpack-的安装)
+    - [Webpack 的默认打包](#webpack-的默认打包)
+    - [创建局部的 webpack](#创建局部的-webpack)
+    - [webpack 配置文件](#webpack-配置文件)
+    - [css-loader 的使用](#css-loader-的使用)
+    - [css-loader 的使用方案](#css-loader-的使用方案)
+    - [loader 配置方式](#loader-配置方式)
+    - [认识 style-loader](#认识-style-loader)
+    - [如何处理 less 文件？](#如何处理-less-文件)
+    - [less-loader 处理](#less-loader-处理)
+    - [认识 PostCSS 工具](#认识-postcss-工具)
+    - [命令行使用 postcss](#命令行使用-postcss)
+    - [插件 autoprefixer](#插件-autoprefixer)
+    - [postcss-loader](#postcss-loader)
+    - [单独的 postcss 配置文件](#单独的-postcss-配置文件)
+    - [postcss-preset-env](#postcss-preset-env)
+  - [webpack 打包其他资源](#webpack-打包其他资源)
+    - [图片资源](#图片资源)
+    - [认识 Plugin](#认识-plugin)
+    - [Mode 配置](#mode-配置)
+  - [Babel 和 dev-server](#babel-和-dev-server)
+    - [Babel](#babel)
+    - [Vue 源码的打包](#vue-源码的打包)
+    - [为什么要搭建本地服务器？](#为什么要搭建本地服务器)
 
 ## 开篇
 
@@ -379,10 +406,40 @@
     - 方式一：**使用 Vue CLI 来创建项目**，项目会默认帮助我们配置好所有的配置选项，可以在其中直接使用 .vue 文件；
     - 方式二：自己**使用 Webpack 或者 rollup 或者 vite 等构建工具来处理** .vue 文件。
 
-### Webpack
+## Webpack 基础打包
 
-- Webpack 的使用前提
-  - webpack 的官方文档是 <https://webpack.js.org/>
+### Webpack 到底是什么呢？
+
+- webpack 是一个静态的模块化打包工具，为现代的 JavaScript 应用程序；
+
+- 对上面的解释进行拆解：
+  - **打包 bundler：** webpack 可以将帮助我们进行打包，所以它是一个打包工具
+  - **静态的static：** 这样表述的原因是我们最终可以将代码打包成最终的静态资源（部署到静态服务器）；
+  - **模块化 module：** webpack 默认支持各种模块化开发， ES Module、CommonJS、 AMD 等；
+  - **现代的 modern：** 我们前端说过，正是因为现代前端开发面临各种各样的问题，才催生了 webpack 的出现和发展；
+
+### Vue 项目加载的文件有哪些呢？
+
+- JavaScript 的打包：
+  - 将 ES6 转换成 ES5 的语法；
+  - TypeScript 的处理，将其转换成 JavaScript；
+
+- Css 的处理：
+  - CSS 文件模块的加载、提取；
+  - Less、Sass 等预处理器的处理；
+
+- 资源文件 img、font；
+  - 图片 img 文件的加载；
+  - 字体 font 文件的加载
+
+- HTML 资源的处理：
+  - 打包 HTML 资源文件；
+
+- 处理 vue 项目的 SFC 文件.vue文件；
+
+### Webpack 的使用前提
+
+- webpack 的官方文档是 <https://webpack.js.org/>
   - webpack 的中文官方文档是 <https://webpack.docschina.org/>
   - DOCUMENTATION：文档详情，也是我们最关注的
 
@@ -390,3 +447,421 @@
   - 所以我们需要先安装 Node.js，并且同时会安装 npm；
   - 当前电脑上的 node 版本是 v14.15.5,npm 版本是 v6.14.11（你也可以使用 nvm 或者 n 来管理 Node 版本）；
   - Node 官方网站：<https://nodejs.org/>
+
+### Webpack 的安装
+
+- webpack 的安装目前分为两个： **webpack**、 **webpack-cli**
+
+- **它们是什么关系呢？**
+  - 执行 webpack 命令，会执行 node_modules 下的 bin 目录下的 webpack；
+  - webpack 在执行时是依赖 webpack-cli 的，如果没有安装就会报错；
+  - 而 webpack-cli 中代码执行时，才是真正利用 webpack 进行编译和打包的过程；
+  - 所以在安装 webpack 时，我们需要同时安装 webpack-cli （第三方的脚手架事实上是没有使用 webpack-cli 的，而是类似于自己的 vue-service-cli 的东西）
+
+### Webpack 的默认打包
+
+- 我们可以通过 webpack 进行打包，之后运行**打包之后**的代码
+  - 在目录下直接执行 webpack 命令
+    `webpack`
+- **生成一个 dist 文件夹，里面存放一个 main.js 的文件，就是我们打包之后的文件：**
+  - 这个文件中的代码被压缩和丑化了；
+  - 另外我们发现代码中依然存在 ES6 的语法，比如箭头函数、const 等，这是因为默认情况下 webpack 并不清楚我们打包后的文件是否需要转成 ES5 之前的语法，后续我们需要通过 babel 来进行转换和设置；
+- **我们发现是可以正常进行打包的，但是有一个问题，webpack 是如何确定我们的入口的呢？**
+  - 事实上，当我们运行 webpack 时，webpack 会查找当前目录下的 src/index.js 作为入口；
+  - 所以，如果当前项目中没有存在 src/index.js 文件，那么会报错；
+- **当然，我们也可以通过配置来指定入口和出口**
+  `npx webpack --entry ./src/main.js --output-path ./build`
+
+### 创建局部的 webpack
+
+- 前面我们直接执行 webpack 命令使用的是全局的 webpack，如果希望使用局部的可以按照下面的步骤来操作。
+- 第一步：创建 package.json 文件，用于管理项目的信息、库依赖等
+  `npm init`
+- 第二步：安装局部的 webpack
+  `npm install webpack webpack-cli -D`
+- 第三步：使用局部的 webpack
+  `npx webpack`
+- 第四步：在 package.json 中创建 scripts 脚本，执行脚本打包即可
+  `npm run build`
+
+### webpack 配置文件
+
+- 在通常情况下，webpack 需要打包的项目是非常复杂的，并且我们需要一系列的配置来满足要求，默认配置必然是不可以的。
+- 我们可以在根目录下创建一个 webpack.config.js 文件，来作为 webpack 的配置文件；
+- 继续执行 webpack 命令，依然可以正常打包
+  `npm run build`
+
+### css-loader 的使用
+
+- 我们需要一个 loader 来加载这个 css 文件，但是 **loader** 是什么呢？
+  - loader 可以用于对**模块的源代码**进行转换；
+  - 我们可以**将 css 文件也看成是一个模块**，我们是**通过 import 来加载这个模块** 的；
+  - 在加载这个模块时，**webpack 其实并不知道如何对其进行加载**，我们必须指定对应的 loader 来完成这个功能；
+- 我们需要一个什么样的 loader 呢？
+  - 对于加载 css 文件来说，我们需要一个可以读取 css 文件的 loader；
+  - 这个 loader 最常用的是 **css-loader****；
+- css-loader 的安装：
+  `npm install css-loader -D`
+
+### css-loader 的使用方案
+
+- 如何使用这个 loader 来加载 css 文件呢？ 有三种方式：
+  - 内联方式；
+  - CLI 方式（webpack5 中不再使用）
+  - 配置方式；
+
+### loader 配置方式
+
+- 配置方式表示的意思是在我们的 webpack.config.js 文件中写明配置信息：
+  - module.rules 中允许我们配置多个 loader（因为我们也会继续使用其他的 loader，来完成其他文件的加载）；
+  - 这种方式可以更好的表示 loader 的配置，也方便后期的维护，同时也让你对各个 Loader 有一个全局的概览；
+- **module.rules 的配置如下：**
+- rules 属性对应的值是一个数组：[Rule]
+- 数组中存放的是一个个的 Rule，Rule 是一个对象，对象中可以设置多个属性：
+  - **test 属性**：用于对 resource（资源） 进行匹配的，通常会设置成正则表达式；
+  - **use 属性**：对应的值是一个数组：[UseEntry]
+    - UseEntry 是一个对象，可以通过对象的属性来设置一些其他属性
+      - **loader**：必须有一个 loader 属性，对应的值是一个字符串；
+      - **options**：可选的属性，值是一个字符串或者对象，值会被传入到 loader 中；
+      - **query**：目前已经使用 options 来替代；
+    - **传递字符串（如：use:['style-loader'] 是 loader 属性的简写方式（如：use[{loader: 'style-loader'}]）；
+  - **loader属性**：Rule.use:[{loader}] 的简写。
+
+### 认识 style-loader
+
+- css 在我们的代码中并**没有生效（页面没有效果）**。
+  - 因为 css-loader 只是**负责将 .css 文件进行解析**，并不会将解析之后的**css插入到页面**中；
+  - 如果我们希望再完成**插入 style 的操作**，那么我们还需要另外一个 loader，就是 **style-loader**；
+- 安装 style-loader
+  `npm install style-loader -D`
+
+### 如何处理 less 文件？
+
+- 在我们开发中，我们可能会使用**less、sass、stylus 的预处理器**来编写 css 样式，效率会更高。
+- 如何可以让我们的**环境支持这些预处理器**呢？
+  - less、sass 等编写的 css 需要通过工具转换成普通的 css；
+- 我们可以使用 less 工具来完成它的贬义词转换：
+  `npm install less -D`
+- 执行如下命令
+  `npx lessc ./src/css/title.less title.css`
+
+### less-loader 处理
+
+- 我们可以使用 less-loader，来自动使用 less 工具转换 less 到 css；
+  `npm install less-loader -D`
+- 配置 webpack.config.js
+
+  ```js
+  module.exports = {
+    module: {
+      rules: [
+        {
+          test: /\.less$/,
+          use: [
+            'style-loader',
+            'css-loader',
+            'less-loader'
+          ]
+        }
+      ]
+    }
+  }
+  ```
+
+- 执行 `npm run build`，less 就可以自动转换成 css，并且页面也会生效了。
+
+### 认识 PostCSS 工具
+
+- 什么是 PostCSS 工具呢？
+  - PostCSS 是一个通过 JavaScript 来转换样式的工具；
+  - 这个工具可以帮助我们进行一些 CSS 的转换和适配，比如自动添加浏览器前缀、css 样式的重置；
+  - 但是实现这些功能，我们需要借助于 PostCSS 对应的插件；
+- 如何使用 PostCSS 呢？主要就是两个步骤：
+  - 第一步：查找 PostCSS 在构建工具中的扩展，比如 webpack 中的 postcss-loader；
+  - 第二步：选择可以添加你需要的 PostCSS 相关的插件；
+
+### 命令行使用 postcss
+
+- 直接在终端使用 PostCSS 呢？
+  - 单独安装一个工具 postcss-cli；
+    `npm install postcss postcss-cli -D`
+- 我们编写一个需要添加前缀的 css：
+  - <https://autoprefixer.github.io>
+  - 我们可以在上面的网站中查询一些添加 css 属性的样式；
+
+### 插件 autoprefixer
+
+- 因为我们需要需要添加前缀，所以我们需要安装一个插件 autoprefixer
+  `npm install autoprefixer -D`
+- 直接使用 postcss 工具，并且指定使用 autoprefixer 插件
+  `npx postcss --use autoprefixer -o end.css ./src/css/style.css`
+
+### postcss-loader
+
+- 真实开发中我们必然不会直接使用命令行工具来对 css 进行处理，而是可以借助于构建工具：
+  - 在 webpack 中使用 postcss 就是使用 postcss-loader 来处理的；
+  `npm install postcss-loader -D`
+- 修改加载 css 的 loader：
+  - ⚠️ 注意：因为 postcss 需要有对应的插件才会起效果，所以我们需要配置它的 plugin：
+
+### 单独的 postcss 配置文件
+
+- 我们也可以将这些配置信息放到一个单独的文件中进行管理：
+  - 在根目录下创建 postcss.config.js
+
+### postcss-preset-env
+
+- 我们在配置 postcss-loader 时，我们配置插件并不需要使用 autoprefixer。
+- 我们可以使用另外一个插件： postcss-preset-env
+  - postcss-preset-env 也是一个 postcss 的插件；
+  - 它可以帮助我们将一些现代的 CSS 特性，转成大多数浏览器认识的 CSS，并且会根据目标浏览器或者运行时环境添加所需的polyfill；
+  - 也包括会自动帮助我们添加 autoprefixer（所以相当于已经内置了 autoprefixer）；
+- 安装 postcss-preset-env
+  - `npm install postcss-preset-env -D`
+
+## webpack 打包其他资源
+
+### 图片资源
+
+- 加载图片案例准备
+  - 在项目中使用图片，比较常见的使用图片的方式是两种：
+    - **img 元素**，设置 **src 属性**；
+    - **其他元素**（比如 div），设置 **background-image** 的 css 属性；
+- file-loader
+  - 要处理jpg、png 等格式的图片，我们也需要有对应的 loader： **file-loader**
+    - file-loader 的作用就是帮助我们处理 **import/require() 方式** 引入的一个文件资源，并且会将它放到我们**输出的文件夹**中；
+  - 安装 file-loader
+    - `npm install file-loader -D`
+  - 文件的命名规则
+    - 我们处理后的**文件名称**按照一定的规则进行显示：
+      - 比如保留原来的**文件名、扩展名**，同时为了防止重复，包含一个**hash值**等；
+    - 这个时候我们可以使用**PlaceHolders**来完成，webpack 给我们提供了大量的 PlaceHolders 来显示不同的内容；
+      - <https://webpack.js.org/loaders/file-loader/#placeholders>
+      - 我们可以在文档中查阅自己需要的 placeholder；
+    - 介绍几个最常用的 placeholder：
+      - **[ext]：** 处理文件的扩展名；
+      - **[name]：** 处理文件的名称：
+      - **[hash]：** 文件的内容，使用 MD4 的散列函数处理，生成的一个 128 位的 hash 值（32个十六进制）；
+      - **[contentHash]：** 在 file-loader 中和 [hash] 结果是一致的（在 webpack 的一些其他地方不一样）；
+      - **[hash:<length>]：** 截图 hash 的长度，默认 32 个字符太长了；
+      - **[path]：** 文件相对于 webpack 配置文件的路径；
+- url-loader
+  - **url-loader** 和 **file-loader** 的工作方式是相似的，但是可以将较小的文件，转成 **base64 的 URI**。
+  - 安装 url-loader
+    - `npm install url-loader -D`
+  - 默认情况下 url-loader 会将所有的图片文件转成 base64 编码；
+  - url-loader 的 limit
+    - 开发中我们往往是**小的图片需要转换**，但是**大的图片直接使用图片**即可
+      - 这是因为**小的图片转换 base64**之后可以**和页面一起被请求**，**减少不必要的请求过程**；
+      - 而**大的图片也逆行转换**，反而会**影响页面的请求速度**；
+    - 我们如何可以**限制哪些大小的图片转换和不转换**呢？
+      - url-loader 有一个 options 属性 **limit**，可以用于设置转换的限制；
+- 认识 asset module type
+  - **我们当前使用的 webpack 版本是 webpack5：**
+    - 在 webpack5 之前，加载这些资源我们需要**使用一些 loader，比如 raw-loader、url-loader、file-loader**；
+    - 在 webpack5 开始，我们可以直接使用 **资源模块类型（asset module type）**，来替代上面的这些 loader；
+  - **资源模块类型（asset module type），通过添加 4 种新的模块类型，来替换所有这些 loader：
+    - **asset/resource** 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现；
+    - **asset/inline** 导出一个资源的 data URI。之前通过使用 url-loader 实现；
+    - **asset/source** 导出资源的源代码。之前通过使用 raw-loader 实现；
+    - **asset** 在导出一个 data URI 和发送一个单独的文件之间自动选择。之前通过使用 url-loader，并且配置资源体积限制实现；
+
+### 认识 Plugin
+
+- Webpack 的另一个核心是 Plugin：
+  - Loader 是用于**特定的模块类型**进行转换；
+  - Plugin 可以用于**执行更加广泛的任务**，比如打包优化、资源管理、环境变量注入等； 
+- CleanWebpackPlugin
+  - 每次重新打包时，都需要**手动删除dist文件夹**：
+  - `npm install clean-webpack-plugin -D`
+- HtmlWebpackPlugin
+  - 还有一个**不太规范**的地方：
+    - 我们的 HTML 文件是编写在根目录下的，而最终打包的**dist文件夹中是没有 index.html 文件**的。
+    - 在**进行项目部署**时，必然也是需要**有对应的入口文件 index.html**；
+    - 所以我们也需要对 **index.html 进行打包处理**；
+  - 对 HTML 进行打包处理我们可以使用另外一个插件：**HtmlWebpackPlugin**；
+  - `npm install html-webpack-plugin -D`  
+  - 在配置 HtmlWebpackPlugin 时，我们可以添加如下配置：
+    - **template**：指定我们要使用的模块所在的路径；
+    - **title**：在进行 htmlWebpackPlugin.options.title 读取时，就会读到该信息；
+- DefinePlugin 的介绍
+  - 在我们的模块中还使用到一个 **BASE_URL 的常量** ：
+  - DefinePlugin 允许在编译时创建配置的全局常量，是一个 webpack 内置的插件（不需要单独安装）；
+- CopyWebpackPlugin
+  - 在 vue 的打包过程中，如果我们将一些文件**放到 public 的目录**下，那么这个目录会**被复制到 dist 文件夹**中。
+  - 安装 CopyWebpackPlugin 插件：
+    - `npm install copy-webpack-plugin -D`
+  - **接下来配置 CopyWebpackPlugin 即可：**
+    - 复制的规则在 patterns 中设置；
+    - **from：** 设置从哪一个源中开始复制；
+    - **to：** 复制到的位置，可以省略，会默认复制到打包的目录下；
+    - **globOptions：** 设置一些额外的选项，其中可以编写需要忽略的文件：
+      - .DS_Store: mac 目录下会自动生成的一个文件；
+      - index.html：也不需要复制，因为我们已经通过 HtmlWebpackPlugin 完成了 index.html 的生成；
+
+### Mode 配置
+
+- `development`：会将 `DefinePlugin` 中 `process.env.NODE_ENV` 的值设置为 `development` 为模块和 chunk 启用有效的名。
+- `production`：会将 `DefinePlugin` 中 `process.env.NODE_ENV` 的值设置为 `production` 为模块和 chunk 启用确定性的混淆名称，`FlagDependencyUsagePlagin` 和 `FlagIncludedChunksPlugin` ，`ModuleConcatenationPlugin` ，`NoEmitOnErrorsPlugin` ，`TerserPlugin`。
+- `none`：不使用任何默认优化选项。
+
+## Babel 和 dev-server
+
+### Babel
+
+- 为什么需要 babel ？
+  - Babel 是一个**工具链**，主要用于旧浏览器或者环境中将 ECMAScript 2015+ 代码转换为向后兼容版本的 JavaScript；
+  - 包括：语法转换、源代码转换等；
+- Babel 命令行使用
+  - babel 本身可以作为**一个独立的工具**（和 postcss 一样），不和 webpack 等构建工具配置来单独使用。 
+  - 如果我们希望在命令行尝试使用 babel，需要安装如下库：
+    - **@babel/core**：babel 的核心代码，必须安装；
+    - **babel/cli**：可以让我们在命令行使用 babel；
+      `npm install @babel/core @babel/cli -D`
+  - 使用 babel 来处理我们的源代码：
+    - src：是源文件的目录；
+    - --out-dir：指定要输出的文件夹 dist；
+  - 插件的使用
+    - 比如我们需要转换箭头函数，那么我们就可以使用**箭头函数转换相关的插件**；
+    - `npm install @babel/plugin-transform-arrow-functions -D`
+    - `npx babel src --out-dir dist --plugins=@babel/plugin-transform-arrow-functions`
+    - const 转成 var
+    - `npm install @babel/plugin-transform-block-scoping -D`
+    - `npx babel src --out-dir dist --plugins=@babel/plugin-transform-arrow-functions,@babel/plugin-transform-block-scoping`
+- Babel 的预设 preset
+  - 但是如果要转换的内容过多，一个个设置是比较麻烦的，我们可以使用预设（preset）：
+  - 安装 @babel/preset-env 预设：
+  - `npm install @babel/preset-env -D`
+  - 执行如下命令：
+  - `npx babel src --out-dir dist --presets=@babel/preset-env`
+- Babel 的底层原理
+  - babel 是如何做到将我们的**一段代码（ES6、TypeScript、React）**转成**另外一段代码（ES5）**的呢？
+    - 从一种**源代码（原生语言）**转换成**另一种源代码（目标语言）**，这是什么的动作呢？
+    - 就是**编译器**，事实上我们可以将 babel 看成就是一个编译器。
+    - Babel 编译器的作用就是**将我们的源代码**，转换成浏览器可以直接识别的**另外一段源代码**；
+  - **Babe 也拥有编译器的工作流程：**
+    - 解析阶段（Parsing）；
+    - 转换阶段（Transformation）；
+    - 生成阶段（Code Generation）；
+  - <https://github.com/jamiebuilds/the-super-tiny-compiler>
+- babel-loader
+  - 在实际开发中，我们通常会在构建工具中通过配置 babel 来对其进行使用的，比如在 webpack 中。
+  - 那么我们就需要去安装相关的依赖：
+    - 如果之前已经安装了 @babel/core，那么这里不需要再次安装；
+      - `npm install babel-loader @babel/core -D`
+- babel-preset
+  - 如果我们一个个去安装使用插件，那么需要手动来管理大量的 babel 插件，我们可以直接给 webpack 提供一个 preset，webpack 会根据我们的预设来加载对应的插件列表，并且将其传递给 babel。
+  - 比如常见的预设有三个：
+    - env
+    - react
+    - typescript
+  - 安装 preset-env：
+    - `npm install @babel/preset-env -D`
+- Babel 的配置文件
+  - 像之前一样，我们可以将 babel 的配置信息放到一个独立的文件中，babel 给我们提供了两种配置文件的编写：
+    - babel.config.json（或者 .js，.cjs, .mjs）文件；
+    - .babelrc.json（或者 .babelrc.js，.babelrc.cjs, .babelrc.mjs）文件；
+
+### Vue 源码的打包
+
+- Vue 打包后不同版本解析
+  - vue(.runtime).global(.prod).js:
+    - 通过浏览器中的 `<script src= "..."></script>` 直接使用；
+    - 我们之前通过 CDN 引入和下载的 Vue 版本就是这个版本
+    - 会暴露一个全局的 Vue 来使用；
+  - vue(.runtime).esm-browser(.prod).js:
+    - 用于通过原生 ES 模块导入使用（在浏览器中通过 `<script type="module"></script>` 来使用）。
+  - vue(.runtime).esm-bundler.js:
+    - 用于 webpack、rollup 和 parcel 等构建工具；
+    - 构建工具中默认是 vue.runtime.esm-bundler.js;
+    - 如果我们需要解析模版 template，那么需要手动指定 vue.esm-bundler.js；
+  - vue.cjs(.prod).js:
+    - 服务器端渲染使用；
+    - 通过 require() 在 Node.js 中使用；
+- 运行时 + 编译器 vs 仅运行时
+  - 在 Vue 的开发过程中我们有**三种方式**来编写 DOM 元素：
+    - 方式一：**template模版**的方式（之前经常使用的方式）；
+    - 方式二：**render函数**的方式，使用 h 函数来编写渲染的内容；
+    - 方式三：通过 **.vue文件**中的 template 来编写模版；
+  - **它们的模板分别是如何处理的呢？**
+    - 方式二中的 h 函数可以直接返回一个**虚拟节点**，也就是**Vnode节点**；
+    - 方式一和方式三的 template 都需要有 **特定的代码** 来对其进行解析；
+      - 方式三 .vue 文件中的 template 可以通过在 **vue-loader** 对其进行编译和处理；
+      - 方式一中的 template 我们必须要**通过源码中一部分代码**来进行编译；
+  - 所以，Vue 在让我们选择版本的时候分为 **运行时+编译器** vs **仅运行时**
+    - **运行时+编译器**包含了对 template 模板的编译代码，更加完整，但是也更大一些；
+    - **仅运行时**没有包含对 template 版本的编译代码，相对更小一下； 
+- VSCode 对 SFC 文件的支持
+  - 真实开发中多数情况下我们都是使用 SFC （**single-file components（单文件组件）**）。
+  - 我们先说一下 VSCode 对 SFC 的支持：
+    - 插件一：Vetur，从 Vue2 开发就一直在使用的 VSCode 支持 Vue 的插件；
+    - 插件二：Volar，官方推荐的插件（后续会基于 Volar 开发官方的 VSCode 插件）；
+- 编写 App.vue 代码
+  - 编写自己的 App.vue 代码：
+
+    ![app-vue](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20231224231055_kgp50Q.png)
+
+    ![index](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20231224231417_BFWgO4.png)
+- App.vue 的打包过程
+  - 使用 vue-loader：
+    - `npm install vue-loader -D`
+  - 在 webpack 的模板中进行配置：
+
+    ```js
+    module.exports = {
+      module: {
+        rules: [
+          {
+            test: /\.vue$/,
+            loader: 'vue-loader'
+          }
+        ]
+      }
+    }
+    ```
+
+  - 添加 @vue/compiler-sfc 来对 template 进行解析：
+    - `npm install @vue/compiler-sfc -D`
+  - 另外我们需要配置对应的 Vue 插件：
+  
+    ```js
+    const { VueLoaderPlugin } = require('vue-loader/dist/index')
+    module.exports = {
+      module: {
+        rules: [
+          {
+            test: /\.vue$/,
+            loader: 'vue-loader'
+          }
+        ],
+        plugins: [
+          new VueLoaderPlugin()
+        ]
+      }
+    }
+    ```
+  
+  - 重新打包即可支持 App.vue 的写法
+  - 另外，我们也可以编写其他的 .vue 文件来编写自己的组件；
+
+### 为什么要搭建本地服务器？
+
+- **为了完成自动编译，webpack 提供了几种可选的方式：**
+  - webpack watch mode；
+  - webpack-dev-server（常用）；
+  - webpack-dev-middleware；
+- webpack watch
+  - webpack 给我们提供了 watch 模式：
+    - 在该模式下，webpack 依赖图中的所有文件，只要有一个**发生了更新**，那么代码将**被重新编译**；
+    - 我们**不需要手动**去运行 npm run build 指令了；
+  - 如何开启 watch 呢？两种方式：
+    - 方式一：在导出的配置中，添加 **watch:true**；
+    - 方式二：在启动 webpack 的命令中，添加 **--watch 的标识**；
+- webpack-dev-server
+  - 上面的方式**可以见听到文件的变化**，但是事实上它本身是**没有自动刷新浏览器的功能**的；
+    - 当然，目前我们可以在 VSCode 中使用 live-server 来完成这样的功能；
+    - 但是，我们希望在**不使用 live-server** 的情况下，可以具备 **live reloading （实时重新加载）** 的功能；
+  - **安装 webpack-dev-server**
+    - `npm install webpack-dev-server -D`
+  - **修改配置文件**，告知 dev server，从什么位置查找文件：
+    -  
