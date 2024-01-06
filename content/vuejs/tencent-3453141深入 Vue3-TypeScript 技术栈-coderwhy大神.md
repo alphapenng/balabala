@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-12-28 19:31:55
+ * @LastEditTime: 2024-01-06 13:27:02
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -63,6 +63,10 @@
     - [Babel](#babel)
     - [Vue 源码的打包](#vue-源码的打包)
     - [为什么要搭建本地服务器？](#为什么要搭建本地服务器)
+  - [VueCLI 和 Vite](#vuecli-和-vite)
+    - [Vue CLI 安装和使用](#vue-cli-安装和使用)
+    - [Vite](#vite)
+  - [Vue3 组件化开发(一)](#vue3-组件化开发一)
 
 ## 开篇
 
@@ -864,4 +868,228 @@
   - **安装 webpack-dev-server**
     - `npm install webpack-dev-server -D`
   - **修改配置文件**，告知 dev server，从什么位置查找文件：
-    -  
+
+    ```javascript
+    devServer: {
+      contentBase: "./public"
+    },
+    ```
+
+    开发阶段：contentBase
+    打包阶段：copywebpackplugin
+
+    ```javascript
+    target: "web",
+    "serve": "webpack serve --config wk.config.js",
+    ```
+
+  - webpack-dev-server 在编译之后**不会写入到任何输出文件**，而是将 bundle 文件**保留在内存**中：
+    - 事实上 webpack-dev-server 使用了一个库叫 memfs（memory-fs webpack 自己写的）
+  - 认识模块热替换（HMR）
+    - 什么是 HMR 呢？
+      - HMR 的全称是 **Hot Module Replacement**，翻译为**模块热替换**；
+      - 模块热替换是指在**应用程序运行过程中，替换、添加、删除模块**，而**无需重新刷新整个页面**；
+    - HMR 通过如下几种方式，来提高开发的速度：
+      - **不重新加载整个页面**，这样**可以保留某些应用程序的状态不丢失**；
+      - 只更新**需要变化的内容**，**节省开发的时间**；
+      - 修改了**css、js源代码**，会**立即在浏览器更新**，相当于直接在浏览器的 devtools 中直接修改样式；
+    - 如何使用 HMR 呢？
+      - 默认情况下，**webpack-dev-server 已经支持 HMR**，我们**只需要开启即可**；
+      - 在不开启 HMR 的情况下，当我们修改了源代码之后，整个页面会自动刷新，使用的是 live reloading；
+  - 开启 HMR
+    - 修改 webpack 的配置：
+
+    ```javascript
+    target: "web",
+    devServer: {
+      hot: true
+    },
+    ```
+
+    - **当我们修改了某一个模块的代码时，依然是刷新的整个页面：**
+      - 这是因为我们需要去**指定哪些模块发生更新**时，进行 HMR；
+
+      ```javascript
+      if (module.hot) {
+        module.hot.accept("./util.js", () => {
+          console.log("util 更新了");
+        })
+      }
+      ```
+
+  - 框架的 HMR
+    - 在开发其他项目时，**我们是否需要经常手动去写入 module.hot.accept 相关的 API 呢？**
+      - 比如**开发 Vue、React 项目**，我们**修改了组件**，希望**进行热更新**，这个时候**应该如何去操作**呢？
+      - vue 开发中，我们使用 **vue-loader**，此 loader 支持 vue 组件的 HMR，提供开箱即用的体验；
+      - react 开发中，有 **React Hot Loader**，实时调整 react 组件（目前 React 官方已经弃用了，改成使用 react-refresh）；
+  - HMR 的原理
+    - HMR 的原理是什么呢？如何可以做到只更新一个模块中的内容呢？
+      - webpack-dev-server 会创建两个服务：**提供静态资源的服务（express）**和**Socket 服务（net.Socket）**；
+      - express server 负责直接提供**静态资源的服务**（打包后的资源直接被浏览器请求和解析）；
+    - HMR Socket Server，是一个 socket 的长连接：
+      - 长连接有一个最好的好处是**建立连接后双方可以通信**（服务器可以直接发送文件到客户端）；
+      - 当服务器**监听到对应的模块发生变化**时，会生成**两个文件 .json（manifest描述文件）和.js文件（update chunk）**；
+      - 通过长连接，可以直接**将这两个文件主动发送给客户端**（浏览器）；
+      - 浏览器**拿到两个新的文件**后，通过 HMR runtime 机制，**加载这两个文件**，并且**针对修改的模块进行更新**； 
+
+      ![HMR](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20231231142809_IMG_0660.PNG)
+
+  - hotOnly、host 配置
+    - **host 设置主机地址：**
+      - 默认值是 localhost；
+      - 如何希望其他地方也可以访问，可以设置为 0.0.0.0；
+  - port、open、compress
+    - **port 设置监听的端口，默认情况下是 8080**
+    - **open 是否打开浏览器：**
+      - 默认值是 false，设置为 true 会打开浏览器；
+      - 也可以设置为类似于 Google Chrome 等值；
+    - **compress 是否为静态文件开启 gzip compression：**
+      - 默认值是 false，可以设置为 true；
+  - Proxy
+    - **proxy 是我们开发中非常常用的一个配置选项，它的目的设置代理来解决跨域访问的问题：**
+      - 比如我们的**一个 api 请求是 <http://localhost:8888>**, 但是**本地启动服务器的域名是 <http://localhost：8000>**，这个时候发送网络请求就会**出现跨域的问题**；
+      - 那么我们可以将请求**先发送到一个代理服务器，代理服务器和 API 服务器没有跨域的问题**，就可以**解决我们的跨域问题**了；
+    - **我们可以进行如下的设置：**
+      - **target：** 表示的是代理到的目标地址，比如 /api-hy/moment 会被代理到 http://localhost:8888/api-hy/moment；
+      - **pathRewrite：** 默认情况下，我们的 /api-hy 也会被写入到 URL 种，如果希望删除，可以使用 pathRewrite；
+      - **secure：** 默认情况下不接收转发到 https 的服务器上，如果希望支持，可以设置为 false；
+      - **changeOrigin：** 它表示是否更新代理后请求的 headers 中 host 地址；
+  - historyApiFallback
+    - **historyApiFallback** 是开发中一个非常常见的属性，它主要的作用是解决 SPA 页面在路由跳转之后，进行页面刷新时，返回 404 的错误。
+    - boolean值：默认是 false
+      - 如果设置为 true，那么在刷新时，返回 404 错误时，会自动返回 index.html 的内容；
+    - object 类型的值，可以配置 rewrites 属性（了解）：
+      - 可以配置 from 来匹配路径，决定要跳转到哪一个页面；
+    - 事实上 devServer 中实现 historyApiFallback 功能是通过 connect-history-api-fallback 库的：
+      - 可以查看 **connect-history-api-fallback** 文档 
+- resolve 模块解析
+  - resolve 用于设置模块如何被解析：
+    - 在开发中我们会有各种各样的模块依赖，这些模块可能来自于自己编写的代码，也可能来自第三方库；
+    - resolve 可以帮助 webpack 从每个 require/import 语句中，找到需要引入到合适的模块代码；
+    - webpack 使用 **enhanced-resolve** 来解析文件路径；
+  - **webpack 能解析三种文件路径：**
+    - 绝对路径
+      - 由于已经获得文件的绝对路径，因此不需要再做进一步解析
+    - 相对路径
+      - 在这种情况下，使用 import 或 require 的资源文件所处的目录，被认为是上下文目录；
+      - 在 import/require 中给定的相对路径，会拼接此上下文路径，来生成模块的绝对路径；
+    - 模块路径
+      - 在 resolve.modules 中指定的所有目录检索模块；
+        - 默认值是 ['node_modules']，所以默认会从 node_modules 中查找文件；
+      - 我们可以通过设置别名的方式来替换初始模块路径，具体看 alias 的配置；
+  - 确定文件还是文件夹
+    - 如果是一个文件：
+      - 如果文件具有扩展名，则直接打包文件；
+      - 否则，将使用 resolve.extensions 选项作为文件扩展名解析；
+    - 如果是一个文件夹：
+      - 会在文件夹中根据 resolve.mainFiles 配置选项中指定的文件顺序查找：
+        - resolve.mainFiles 的默认值是 ['index']；
+        - 再根据 resolve.extensions 来解析扩展名；
+  - extensions 和 alias 配置
+    - extensions 是解析到文件时自动添加扩展名：
+      - 默认值是 ['.wasm', '.mjs', '.js', '.json']；
+      - 所以如果我们代码中想要添加加载 .vue 或者 jsx 或者 ts 等文件时，我们必须自己写上扩展名；
+    - 另一个非常好用的功能是配置别名 alias：
+      - 特别是当我们项目的目录结构比较深的时候，或者一个文件的路径可能需要 ../../../ 这种路径片段；
+      - 我们可以给某些常见的路径起一个别名；
+
+## VueCLI 和 Vite
+
+### Vue CLI 安装和使用
+
+- 安装 Vue CLI
+  - 全局安装，这样在任何时候都可以通过 vue 的命令来创建项目；
+    - `npm install @vue/cli -g`
+  - 升级 Vue CLI：
+    - 如果是比较旧的版本，可以通过下面的命令来升级：
+      - `npm update @vue/cli -g`
+  - 通过 Vue 的命令来创建项目
+    - `vue create 项目的名称`
+- Vue CLI 的运行原理
+
+  ![运行原理](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240106091708_IMG_0665.PNG)
+
+### Vite
+
+- Vite 的构造
+  - 它主要由两部分组成：
+    - 一个开发服务器，它基于原生 ES 模块提供了丰富的内建功能，HMR 的速度非常快速；
+    - 一套构建指令，它使用 rollup 打开我们的代码，并且它是预配置的，可以输出生成环境的优化过的静态资源；
+- Vite 的安装和使用
+  - 注意：Vite 本身也是依赖 Node 的，所以也需要安装好 Node 环境
+    - 并且 Vite 要求 Node 版本是大于 12 版本的；
+  - 首先，我们安装一下 vite 工具：
+
+    ```javascript
+    npm install vite -g # 全局安装
+    npm install vite -D # 局部安装
+    ```
+
+  - 通过 vite 来启动项目：
+
+    `npx vite`
+
+- Vite 对 css 的支持
+  - vite 可以直接支持 css 的处理
+    - 直接导入 css 即可；
+  - vite 可以直接支持 css 预处理器，比如 less
+    - 直接导入 less；
+    - 之后安装 less 编译器； `npm install less -D`
+  - vite 直接支持 postcss 的转换；
+    - 只需要安装 postcss，并且配置 postcss.config.js 的配置文件即可；
+      `npm install postcss postcss-preset-env -D`
+- Vite 对 TypeScript 的支持
+  - vite 对 TypeScript 是原生支持的，它会直接使用 ESBuild 来完成编译：
+    - 只需要直接导入即可；
+  - 如果我们查看浏览器中的请求，会发现请求的依然是 ts 的代码：
+    - 这是因为 vite 中的服务器 Connect 会对我们的请求进行转发；
+    - 获取 ts 编译后的代码，给浏览器返回，浏览器可以直接进行解析；
+  - 注意：在 vite2 中，已经不再使用 Koa 了，而是使用 Connect 来搭建的服务器
+    > 由于大多数逻辑应该通过插件钩子而不是中间件来完成，因此对中间件的需求大大减少，内部服务器应用现在是一个很好的旧版的 connect 实例，而不是 Koa。
+- Vite 对 Vue 的支持
+  - vite 对 vue 提供第一优先级支持：
+    - Vue 3 单文件组件支持：**@vitejs/plugin-vue**
+    - Vue 3 JSX 支持：**@vitejs/plugin-vue-jsx**
+    - Vue 2 支持：**underfin/vite-plugin-vue2**
+  - 安装支持 vue 的插件：
+    `npm install @vitejs/plugin-vue -D`
+  - 在 vite.config.js 中配置插件：
+
+    ```javascript
+    import vue from '@vitejs/plugin-vue';
+
+    module.exports = {
+      plugins: [
+        vue()
+      ]
+    }
+    ```
+
+- Vite 打包项目
+  - 我们可以直接通过 vite build 来完成对当前项目的打包工具：`npx vite build`
+  - 我们可以通过 preview 的方式，开启一个本地服务来预览打包后的效果：`npx vite preview`
+- ESBuild 解析
+  - ESBuild 的特点：
+    - 超快的构建速度，并且不需要缓存；
+    - 支持 ES6 和 CommonJS 的模块化；
+    - 支持 ES6 的 Tree Shaking；
+    - 支持 Go、JavaScript 的 API；
+    - 支持 TypeScript、JSX 等语法编译；
+    - 支持 SourceMap；
+    - 支持代码压缩；
+    - 支持扩展其他插件；
+- Vite 脚手架工具
+  - 在开发中，我们不可能所有的项目都使用 vite 从零去搭建，比如一个 react 项目，Vue 项目；
+    - 这个时候 vite 还给我们提供了对应的脚手架工具；
+  - 所以 Vite 实际上是有两个工具的：
+    - vite：相当于是一个构建工具，类似于 webpack、rollup；
+    - @vitejs/create-app：类似 vue-cli、create-react-app；
+  - 如果使用脚手架工具呢？**`npm init @vitejs/app`**
+  - 上面的做法相当于省略了安装脚手架的过程：
+
+    ```powershell
+    npm install @vitejs/create-app -g
+    create-app
+    ```
+
+## Vue3 组件化开发(一)
