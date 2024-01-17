@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-08-20 11:46:11
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-09-23 14:01:42
+ * @LastEditTime: 2024-01-17 12:33:15
  * @FilePath: /balabala/content/electron-vue/all-about-electron-vue.md
 -->
 # All-about-electron-vue
@@ -12,6 +12,7 @@
 - [All-about-electron-vue](#all-about-electron-vue)
   - [`npm run dev` 报错](#npm-run-dev-报错)
   - [electron 中 Unable to install `vue-devtools`](#electron-中-unable-to-install-vue-devtools)
+  - [electron-vue 出现 Starting inspector on 127.0.0.1:5858 failed: permission denied 问题解决](#electron-vue-出现-starting-inspector-on-1270015858-failed-permission-denied-问题解决)
 
 ## `npm run dev` 报错
 
@@ -75,4 +76,19 @@ require('electron').app.on('ready', () => {
 
 // Require `main` process to boot app
 require('./index')
+```
+
+## electron-vue 出现 Starting inspector on 127.0.0.1:5858 failed: permission denied 问题解决
+
+`Starting inspector on 127.0.0.1:5858 failed: permission denied`
+
+这是端口被占用了
+找到 `.electron-vue` 文件夹下 ·`dev-runner.js` 文件，修改如下：
+
+```javascript
+var args = [
+  // '--inspect=5858',
+  '--inspect=58585',
+  path.join(__dirname, '../dist/electron/main.js')
+]
 ```
