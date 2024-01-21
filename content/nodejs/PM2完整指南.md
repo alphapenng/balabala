@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-19 22:18:11
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-01-20 00:30:18
+ * @LastEditTime: 2024-01-21 08:27:56
  * @FilePath: /balabala/content/nodejs/PM2完整指南.md
 -->
 # PM2 完整指南
@@ -372,4 +372,3 @@ $ pm2 install pm2-logrotate
 I hope this article has helped to crystallize the importance of process management in Node.js applications and how to leverage PM2's robust feature set to manage your application efficiently.
 
 PM2 offers other capabilities that were not covered in this article such as Docker integration, a JavaScript API, and a daemon-less mode, so ensure you check out [PM2's documentation](https://pm2.keymetrics.io/docs/usage/quick-start/) to learn more about these advanced features.
-
