@@ -2,42 +2,40 @@
 
 > Advanced process manager for production Node.js applications. Load balancer, logs facility, startup s......
 
-PM2 Process Management Quick Start
+# PM2 Process Management Quick Start
+
 ----------------------------------
 
 PM2 is a daemon process manager that will help you manage and keep your application online. Getting started with PM2 is straightforward, it is offered as a simple and intuitive CLI, installable via NPM.
 
-### Installation
+## Installation
 
 The latest PM2 version is installable with NPM or Yarn:
 
-```
+```bash
 $ npm install pm2@latest -g
 # or
 $ yarn global add pm2
-
 
 ```
 
 To install Node.js and NPM you can use [NVM](https://yoember.com/nodejs/the-best-way-to-install-node-js/)
 
-### Start an app
+## Start an app
 
 The simplest way to start, daemonize and monitor your application is by using this command line:
 
 Or start any other application easily:
 
-```
-$ pm2 start bashscript.sh
-$ pm2 start python-app.py --watch
-$ pm2 start binary-file -- --port 1520
-
-
+```bash
+pm2 start bashscript.sh
+pm2 start python-app.py --watch
+pm2 start binary-file -- --port 1520
 ```
 
 Some options you can pass to the CLI:
 
-```
+```bash
 # Specify an app name
 --name <app_name>
 
@@ -67,30 +65,29 @@ Some options you can pass to the CLI:
 
 # Attach to application log
 --no-daemon
-
-
 ```
 
 As you can see many options are available to manage your application with PM2. You will discover them depending on your use case.
 
-Managing processes
-------------------
+## Managing processes
+
+----------------------------------
 
 Managing application state is simple here are the commands:
 
 ```
-$ pm2 restart app_name
-$ pm2 reload app_name
-$ pm2 stop app_name
-$ pm2 delete app_name
+pm2 restart app_name
+pm2 reload app_name
+pm2 stop app_name
+pm2 delete app_name
 
 
 ```
 
 Instead of `app_name` you can pass:
 
-*   `all` to act on all processes
-*   `id` to act on a specific process id
+* `all` to act on all processes
+* `id` to act on a specific process id
 
 Check status, logs, metrics
 ---------------------------
@@ -129,7 +126,7 @@ For Node.js applications, PM2 includes an automatic load balancer that will shar
 To start an application in Cluster mode:
 
 ```
-$ pm2 start app.js -i max
+pm2 start app.js -i max
 
 
 ```
@@ -166,7 +163,7 @@ module.exports = {
 And start it easily:
 
 ```
-$ pm2 start ecosystem.config.js
+pm2 start ecosystem.config.js
 
 
 ```
@@ -188,8 +185,8 @@ Restart application on changes
 It’s pretty easy with the `--watch` option:
 
 ```
-$ cd /path/to/my/app
-$ pm2 start env.js --watch --ignore-watch="node_modules"
+cd /path/to/my/app
+pm2 start env.js --watch --ignore-watch="node_modules"
 
 
 ```
