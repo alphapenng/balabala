@@ -2,13 +2,13 @@
 
 > Advanced process manager for production Node.js applications. Load balancer, logs facility, startup s......
 
-# PM2 Process Management Quick Start
+## PM2 Process Management Quick Start
 
 ----------------------------------
 
 PM2 is a daemon process manager that will help you manage and keep your application online. Getting started with PM2 is straightforward, it is offered as a simple and intuitive CLI, installable via NPM.
 
-## Installation
+### Installation
 
 The latest PM2 version is installable with NPM or Yarn:
 
@@ -16,12 +16,11 @@ The latest PM2 version is installable with NPM or Yarn:
 $ npm install pm2@latest -g
 # or
 $ yarn global add pm2
-
 ```
 
 To install Node.js and NPM you can use [NVM](https://yoember.com/nodejs/the-best-way-to-install-node-js/)
 
-## Start an app
+### Start an app
 
 The simplest way to start, daemonize and monitor your application is by using this command line:
 
@@ -75,13 +74,11 @@ As you can see many options are available to manage your application with PM2. Y
 
 Managing application state is simple here are the commands:
 
-```
+```bash
 pm2 restart app_name
 pm2 reload app_name
 pm2 stop app_name
 pm2 delete app_name
-
-
 ```
 
 Instead of `app_name` you can pass:
@@ -89,8 +86,9 @@ Instead of `app_name` you can pass:
 * `all` to act on all processes
 * `id` to act on a specific process id
 
-Check status, logs, metrics
----------------------------
+## Check status, logs, metrics
+
+----------------------------------
 
 Now that you have started this application, you can check its status, logs, metrics and even get the online dashboard with [pm2.io](https://pm2.io/).
 
@@ -118,29 +116,29 @@ Web based dashboard, cross servers with diagnostic system:
 
 ![](https://i.imgur.com/sigMHli.png)
 
-Cluster mode
-------------
+## Cluster mode
+
+----------------------------------
 
 For Node.js applications, PM2 includes an automatic load balancer that will share all HTTP[s]/Websocket/TCP/UDP connections between each spawned processes.
 
 To start an application in Cluster mode:
 
-```
+```bash
 pm2 start app.js -i max
-
-
 ```
 
 Read more about cluster mode [here](https://pm2.keymetrics.io/docs/usage/cluster-mode/).
 
-Ecosystem File
---------------
+## Ecosystem File
+
+----------------------------------
 
 You can also create a configuration file, called Ecosystem File, to manage multiple applications. To generate an Ecosystem file:
 
 This will generate an ecosystem.config.js file:
 
-```
+```javascript
 module.exports = {
   apps : [{
     name: "app",
@@ -156,22 +154,19 @@ module.exports = {
      script: 'worker.js'
   }]
 }
-
-
 ```
 
 And start it easily:
 
-```
+```bash
 pm2 start ecosystem.config.js
-
-
 ```
 
 Read more about application declaration [here](https://pm2.keymetrics.io/docs/usage/application-declaration/).
 
-Setup startup script
---------------------
+## Setup startup script
+
+----------------------------------
 
 Restarting PM2 with the processes you manage on server boot/reboot is critical. To solve this, just run this command to generate an active startup script:
 
@@ -179,41 +174,40 @@ And to freeze a process list for automatic respawn:
 
 Read more about startup script generator [here](https://pm2.keymetrics.io/docs/usage/startup/).
 
-Restart application on changes
-------------------------------
+## Restart application on changes
+
+----------------------------------
 
 It’s pretty easy with the `--watch` option:
 
-```
+```bash
 cd /path/to/my/app
 pm2 start env.js --watch --ignore-watch="node_modules"
-
-
 ```
 
 This will watch & restart the app on any file change from the current directory + all subfolders and it will ignore any changes in the node_modules folder `--ignore-watch="node_modules"`.
 
 You can then use `pm2 logs` to check for restarted app logs.
 
-Updating PM2
-------------
+## Updating PM2
+
+----------------------------------
 
 We made it simple, there is no breaking change between releases and the procedure is straightforward:
 
-```
+```bash
 npm install pm2@latest -g
-
-
 ```
 
 Then update the in-memory PM2 :
 
-CheatSheet
-----------
+## CheatSheet
+
+----------------------------------
 
 Here are some commands that are worth knowing. Just try them with a sample application or with your current web application on your development machine:
 
-```
+```bash
 # Fork mode
 pm2 start app.js --name my-api # Name process
 
@@ -261,12 +255,11 @@ pm2 sendSignal SIGUSR2 my-app # Send system signal to script
 pm2 start app.js --no-daemon
 pm2 start app.js --no-vizion
 pm2 start app.js --no-autorestart
-
-
 ```
 
-What’s next?
-------------
+## What’s next?
+
+----------------------------------
 
 Learn how to declare all your application’s behavior options into a [JSON configuration file](http://pm2.keymetrics.io/docs/usage/application-declaration/).
 
@@ -276,15 +269,14 @@ Learn how to [deploy and update production applications easily](http://pm2.keyme
 
 Monitor your production applications with [PM2.io](https://app.pm2.io/).
 
-How to update PM2
------------------
+## How to update PM2
+
+----------------------------------
 
 Install the latest pm2 version:
 
-```
+```bash
 npm install pm2@latest -g
-
-
 ```
 
 Then update the in-memory PM2 :
