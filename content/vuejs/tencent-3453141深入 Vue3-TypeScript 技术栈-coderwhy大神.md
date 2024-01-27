@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2023-12-03 06:52:42
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-01-27 15:42:56
+ * @LastEditTime: 2024-01-27 16:12:53
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -1506,5 +1506,3 @@
   - 我们来通过 gsap 的延迟 delay 属性，做一个交替消失的动画：
 
 ## Composition API（一）
-
-
