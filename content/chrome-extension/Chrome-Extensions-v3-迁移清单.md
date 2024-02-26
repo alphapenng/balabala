@@ -9,19 +9,19 @@ Chrome 计划完全停止 v2 版本维护，后续 v2 版本将无法上架谷�
 
 ### 1.2 v3 版本带来了什么新特性？
 
-*   更强的隐私性，这一点在权限配置上会有所体现，权限划分更细腻。
-*   更强的安全性，比如废弃 eval 方法，禁止加载运行远程仓库代码
-*   更佳的性能，比如 background 被替换为 service workers，它不会持久运行
-*   整合和调整了部分 API ，更符合未来的发展等等。
+* 更强的隐私性，这一点在权限配置上会有所体现，权限划分更细腻。
+* 更强的安全性，比如废弃 eval 方法，禁止加载运行远程仓库代码
+* 更佳的性能，比如 background 被替换为 service workers，它不会持久运行
+* 整合和调整了部分 API ，更符合未来的发展等等。
 
 ### 1.3 v2 迁移 V3 我需要做什么？
 
 主要是四个方向的改动：
 
-*   manifest 配置更新
-*   background 迁移 Service Worker
-*   API 变更
-*   安全调整
+* manifest 配置更新
+* background 迁移 Service Worker
+* API 变更
+* 安全调整
 
 以下是具体需要做的事情。
 
@@ -32,7 +32,7 @@ Chrome 计划完全停止 v2 版本维护，后续 v2 版本将无法上架谷�
 
 manifest 版本号需要改为 3。
 
-```
+```json
 // v2
 {
   ...
@@ -57,7 +57,7 @@ persistent 用于决定 Chrome extensions 是否开启常驻后台，由于 v3 �
 
 而 v3 的权限粒度划分会更细腻，不会像之前权限一把梭，所以像主机访问权限配置需要单独添加到 `host_permissions` 中：
 
-```
+```json
 // v2
 {
   "permissions": [
@@ -92,7 +92,7 @@ persistent 用于决定 Chrome extensions 是否开启常驻后台，由于 v3 �
 
 V3 使用 Service Worker 取代了 Background，这里包含两个层面的意思，第一是配置字段变了（见下方代码），第二是 Service Worker 不再像之前的 Background 能做到一直在后台运行，这点我们后面细说。
 
-```
+```json
 // v2
 {
     ...,
@@ -107,7 +107,7 @@ V3 使用 Service Worker 取代了 Background，这里包含两个层面的意�
     ...,
     "background": {
         "service_worker": "background.js" // 字段变了
-      	// 删了 persistent
+       // 删了 persistent
       },
     ...
 }
@@ -117,7 +117,7 @@ V3 使用 Service Worker 取代了 Background，这里包含两个层面的意�
 
 `web_accessible_resources` 用于指定哪些资源文件可以被 web 页面访问和加载，但在 v2 时也是一把梭，基本一次配置哪哪的网页都能访问，同样在 v3 此字段改为资源与匹配的对象形式，看代码就懂了：
 
-```
+```json
 // v2
 {
   ...
@@ -156,7 +156,7 @@ V3 使用 Service Worker 取代了 Background，这里包含两个层面的意�
 
 ### 2.6 合并 browser_action 与 page_action 为 action
 
-```
+```json
 // v2
 {
   "browser_action": { … },
@@ -173,7 +173,7 @@ V3 使用 Service Worker 取代了 Background，这里包含两个层面的意�
 
 `content_security_policy` 用于定义加载和执行内容的安全策略，在 v3 版本你需要通过对象的形式来做配置：
 
-```
+```json
 // v2
 "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.lr-in-prod.com; object-src 'self'"
 
@@ -192,7 +192,7 @@ V3 使用 Service Worker 取代了 Background，这里包含两个层面的意�
 
 我们在 manifest 更新提到 background 迁移 Service Worker 需要更新 manifest 中的字段名，当然除了 key 变了之外， Service Worker 还会有一些本质的区别。避免大家混淆，Service Worker 和 v2 的 background 还是同一个文件，只是现在定义，使用场景都存在部分差异，接下来细说变化。
 
-### 3.1 Service Worker 不再支持 DOM 访问。
+### 3.1 Service Worker 不再支持 DOM 访问
 
 之前写在 background 的关于 dom 操作代码需要移出此文件，现有的 Service Worker 更适合用于做消息推送，时间监听之类的活。
 
@@ -200,7 +200,7 @@ V3 使用 Service Worker 取代了 Background，这里包含两个层面的意�
 
 第二种办法就是通过 `Offscreen API` 创建离屏文档，在离屏文档中进行 DOM 的操作。简单理解就是插件单独开辟一个虚拟环境用于你来操作 DOM， 比如：
 
-```
+```json
 // manifest.json
 "permissions": ["offscreen"]
 
@@ -231,7 +231,7 @@ v3 的 Service Worker 不支持调用 Window，因此 localStorage 直接用不�
 
 在 v2 版本由于 background 支持后台持久运行，我们可能直接在 background 定义持久变量，如下代码你希望统计事件派发次数：
 
-```
+```javascript
 let num = 0;
 chrome.runtime.onMessage.addListener((message) => {
     num++;
@@ -241,7 +241,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
 但由于 v3 不再持久运行，那么上述代逻每次被激活 num 会不断被重置为 0，如果你还需要达到上述效果得结合本地缓存：
 
-```
+```javascript
 chrome.runtime.onMessage.addListener((message) => {
   const count = await chrome.storage.local.get(['num']);
     num++;
@@ -255,7 +255,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
 比如在 v2：
 
-```
+```javascript
 chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
   chrome.browserAction.setBadgeText({ text: badgeText });
   // 异步注册
@@ -265,7 +265,7 @@ chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
 
 在 v3 请保证注册同步：
 
-```
+```javascript
 chrome.action.onClicked.addListener(handleActionClick);
 
 chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
@@ -277,7 +277,7 @@ chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
 
 在 Manifest V3 中，由于安全性和隔离性的考虑， Service Worker 禁止使用 `XMLHttpRequest()`，其它地方不建议使用 XMLHttpRequest。总体来讲，建议将后台脚本中对 `XMLHttpRequest()` 的调用替换为使用全局的 `fetch()` 来执行网络请求。
 
-```
+```javascript
 const xhr = new XMLHttpRequest();
 console.log('UNSENT', xhr.readyState); 
 
@@ -292,7 +292,7 @@ xhr.send(null);
 
 V3 替换为 fetch:
 
-```
+```javascript
 const response = await fetch('https://www.example.com/greeting.json'');
 console.log(response.statusText);
 ```
@@ -305,7 +305,7 @@ console.log(response.statusText);
 
 同理，由于 Service Worker 不再常驻执行，以前我们可能通过定时器异步来更改插件图标或其它操作，这都可能因为 Service Worker 释放导致定时器无法按预期执行，使用 Alarms 代替定时器；需要注意的除 Service Worker 外定时器还是随便你使用。
 
-```
+```json
 // v2
 const TIMEOUT = 3 * 60 * 1000; 
 setTimeout(() => {
@@ -333,13 +333,13 @@ chrome.alarms.onAlarm.addListener(() => {
 
 使用 `scripting.executeScript()` 需要在 manifest 配置权限
 
-```
+```json
 "permissions": ["activeTab", "scripting"],
 ```
 
 注入脚本方式代码层面的代码变化，比如 tabID 不再单独作为参数，files 支持传递多个文件，格式也变成了一个数组：
 
-```
+```javascript
 // v2
 async function getCurrentTab() {/* ... */}
 let tab = await getCurrentTab();
@@ -363,13 +363,13 @@ chrome.scripting.executeScript({
 
 如果是直接执行代码，变化如下：
 
-```
+```javascript
 // v2
 chrome.tabs.executeScript(
   tab.id,
-	{
-  	code: alert("Hello, World!")
-	}
+ {
+   code: alert("Hello, World!")
+ }
 );
 
 // v3
@@ -387,7 +387,7 @@ chrome.scripting.executeScript({
 
 同理，使用 scripting.insertCSS 也需要配置权限
 
-```
+```json
 "permissions": [
   "activeTab", // 如果你只需要在当前激活的标签页中注入 CSS
   "scripting"  // 添加 scripting 权限
@@ -396,7 +396,7 @@ chrome.scripting.executeScript({
 
 注入样式文件前后对比：
 
-```
+```javascript
 // v2
 chrome.tabs.insertCSS(tabId, injectDetails, () => {
   file: 'style.css'
@@ -412,7 +412,7 @@ const insertPromise = await chrome.scripting.insertCSS({
 
 注入字符串的前后对比：
 
-```
+```javascript
 // v2
 chrome.tabs.insertCSS(tabId, {
   code: 'body { background-color: lightblue; }'
@@ -435,7 +435,7 @@ const insertPromise = chrome.scripting.insertCSS({
 
 这个在 manifest 迁移已经提了一次，除了配置合并外，这两个 API 也被合并为 actions
 
-```
+```javascript
 // v2
 chrome.browserAction.onClicked.addListener(tab => { ... });
 chrome.pageAction.onClicked.addListener(tab => { ... });
@@ -448,15 +448,15 @@ chrome.action.onClicked.addListener(tab => { ... });
 
 在 Manifest V3 中，不同的扩展上下文只能通过消息传递与 service worker 进行交互。因此，你需要替换那些期望与后台上下文交互的调用，具体包括以下几个：
 
-1.  `chrome.runtime.getBackgroundPage()`: 这个函数通常用于获取后台页（background page）的引用，以便与后台页通信。在 Manifest V3 中，由于没有后台页的概念，你需要使用消息传递来与 service worker 通信，而不是直接获取后台页的引用。
-2.  `chrome.extension.getBackgroundPage()`: 类似于 `chrome.runtime.getBackgroundPage()`，这个函数也用于获取后台页的引用，而在 Manifest V3 中，同样需要改用消息传递来实现与 service worker 通信。
-3.  `chrome.extension.getExtensionTabs()`: 这个函数用于获取扩展的标签页信息。在 Manifest V3 中，标签页的概念发生了变化，因此需要采用不同的方法来获取相关信息。
+1. `chrome.runtime.getBackgroundPage()`: 这个函数通常用于获取后台页（background page）的引用，以便与后台页通信。在 Manifest V3 中，由于没有后台页的概念，你需要使用消息传递来与 service worker 通信，而不是直接获取后台页的引用。
+2. `chrome.extension.getBackgroundPage()`: 类似于 `chrome.runtime.getBackgroundPage()`，这个函数也用于获取后台页的引用，而在 Manifest V3 中，同样需要改用消息传递来实现与 service worker 通信。
+3. `chrome.extension.getExtensionTabs()`: 这个函数用于获取扩展的标签页信息。在 Manifest V3 中，标签页的概念发生了变化，因此需要采用不同的方法来获取相关信息。
 
 第一和第二点好理解，毕竟 service worker 不再常驻，不能直接获取 background 直接用里面的变量，需要改为通信的形式。
 
 关于第三点，因为 Manifest V3 引入了一些重大的更改，包括对标签页（tabs）的管理方式。如果你需要获取有关标签页的信息，你可以使用 `chrome.tabs` API。
 
-```
+```javascript
 // 获取当前标签页信息：
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
   // tabs[0] 包含了当前标签页的信息
@@ -493,13 +493,13 @@ V3 出于安全考虑，不再允许执行一些危险的 JavaScript 操作，�
 
 关于 `executeScript` 其实上文 `scripting.executeScript` 我们已经给了例子，这里再贴个例子：
 
-```
+```javascript
 // v2 不再推荐
 chrome.tabs.executeScript(
   tab.id,
-	{
-  	code: alert("Hello, World!")
-	}
+ {
+   code: alert("Hello, World!")
+ }
 );
 
 // 不允许使用 eval
@@ -532,8 +532,8 @@ chrome.scripting.executeScript({
 
 v3 出于安全考虑，不能直接引用或执行托管在远程服务器上的 JavaScript 代码，防止恶意代码的执行，比如：
 
-*   不允许从服务器上动态拉取 JavaScript 文件并执行。
-*   不允许通过 CDN 远程加载代码。
+* 不允许从服务器上动态拉取 JavaScript 文件并执行。
+* 不允许通过 CDN 远程加载代码。
 
 说通俗点，你需要执行的代码都应该属于插件代码自身的一部分，假设插件使用到了 react，一种解决办法是我们本地开发 npm react 后，再打包插件时应该将 react 源码也一起打包进去。
 
@@ -543,9 +543,9 @@ v3 出于安全考虑，不能直接引用或执行托管在远程服务器上�
 
 这一点在 manifest 提过一次，除了 `content_security_policy` 由 v2 字符串变成 v3 对象之外，"script-src"、"object-src" 和 "worker-src" 指令，只有以下四个值是被允许的：
 
-1.  `self`: 这表示只允许从与扩展自身相关的源加载脚本、对象或 Worker 脚本。
-2.  `none`: 这表示不允许加载任何脚本、对象或 Worker 脚本。
-3.  `wasm-unsafe-eval`: 这表示允许加载 WebAssembly 模块，但禁止执行不安全的 eval 操作。
-4.  仅适用于未打包的扩展：`localhost` 源，包括 `http://localhost`、`http://127.0.0.1` 或这些域上的任何端口。
+1. `self`: 这表示只允许从与扩展自身相关的源加载脚本、对象或 Worker 脚本。
+2. `none`: 这表示不允许加载任何脚本、对象或 Worker 脚本。
+3. `wasm-unsafe-eval`: 这表示允许加载 WebAssembly 模块，但禁止执行不安全的 eval 操作。
+4. 仅适用于未打包的扩展：`localhost` 源，包括 `http://localhost`、`http://127.0.0.1` 或这些域上的任何端口。
 
 所以在 manifest 我们强调了像 `unsafe-eval` 这种直接废弃了，毕竟不支持 eval 执行了。
