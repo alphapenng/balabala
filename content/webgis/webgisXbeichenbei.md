@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-05-06 21:14:39
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-05-09 16:54:37
+ * @LastEditTime: 2024-05-14 13:56:58
  * @FilePath: /balabala/content/webgis/webgisXbeichenbei.md
 -->
 
@@ -12,10 +12,8 @@
 
 - [webgis-notes](#webgis-notes)
   - [ArcGIS API for JavaScript 介绍](#arcgis-api-for-javascript-介绍)
-    - [其他一些主流的地图JS API 介绍 （百度地图API、高德地图 API、天地图 API、Openlayer、Cesium 等），各自开发一个 demo](#其他一些主流的地图js-api-介绍-百度地图api高德地图-api天地图-apiopenlayercesium-等各自开发一个-demo)
-  - [Vue 和 React 基础开发知识讲解](#vue-和-react-基础开发知识讲解)
+  - [Vue 基础开发知识讲解](#vue-基础开发知识讲解)
     - [Vue 基础知识](#vue-基础知识)
-    - [React 基础知识](#react-基础知识)
   - [一张图 WebGIS 项目开发](#一张图-webgis-项目开发)
 
 ## ArcGIS API for JavaScript 介绍
@@ -30,7 +28,7 @@
 2. 加载模块和写代码
 
     ```html
-    <script>
+    <scrip>
         require([
             "esri/Map",
             "esri/views/MapView",
@@ -49,13 +47,9 @@
     </script>
     ```
 
-### 其他一些主流的地图JS API 介绍 （百度地图API、高德地图 API、天地图 API、Openlayer、Cesium 等），各自开发一个 demo
-
-## Vue 和 React 基础开发知识讲解
+## Vue 基础开发知识讲解
 
 ### Vue 基础知识
-
-### React 基础知识
 
 ## 一张图 WebGIS 项目开发
 
@@ -65,9 +59,87 @@
 
 3. Git、GitHub 流程讲解
 
+    ```bash
+    git checkout -b anotherBranch
+    git add .
+    git commit -m "commit message"
+    git push origin anotherBranch
+
+    # github上merge到main
+
+    git checkout main
+    git pull
+    ```
+
 4. 项目环境搭建、项目初始化
 
+    ```bash
+    # 创建项目
+    vue create webgismap-vue
+    ```
+
 5. ArcGIS API for JavaScript 引入
+
+    **第一种方式：**
+    在 Vue 项目中使用 JS API 时已经不像传统的开发方式那样在 index html 中引入 JS 和 CSS 文件来使用 JS API，而是通过一个叫 "esri-loader" 的中间件，将我们的 JS API 和 Vue 项目做一个无缝链接。
+
+    ```bash
+    npm install esri-loader -D
+    ```
+
+    ```js
+    # MapView.uve
+    <script>
+        import {loadModules} from 'esri-loader';
+
+        const options = {
+            url: 'https://js.arcgis.com/4.20/init.js',
+            css: 'https://js.arcgis.com/4.20/esri/themes/light/main.css'
+        }
+
+        export default {
+            name: 'MapView',
+            mounted: function() {
+                this._createMapView();
+            },
+            methods: {
+                async _createMapView() {
+                const [Map, MapView] = await loadModules(['esri/Map', 'esri/views/MapView'], options)
+
+                const map = new Map({
+                    basemap: 'osm',
+                })
+
+                const view = new MapView({
+                    container: 'mapview',
+                    map: map,
+                    zoom: 10,
+                    center: [104.072745, 30.663774]
+                })
+
+                view.ui.components = []
+
+                console.log(view)
+                }
+            }
+        }
+    </script>
+    ```
+
+    **第二种方式：**
+
+    ```bash
+    npm install @arcgis/core
+    ```
+
+    ```json
+    # package.json
+    "scripts": {
+        "start": "npm run copy && react-scripts start",
+        "build": "npm run copy && react-scripts build",
+        "copy": "ncp /node_modules/@arcgis/core/assets ./public/assets"
+    }
+    ```
 
 6. 地图模块开发、地图基础组件开发（底图切换、二/三维切换、比例尺、图例等等）
 
