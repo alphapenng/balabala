@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-05-06 21:14:39
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-05-14 13:56:58
+ * @LastEditTime: 2024-05-19 18:22:00
  * @FilePath: /balabala/content/webgis/webgisXbeichenbei.md
 -->
 
@@ -13,7 +13,8 @@
 - [webgis-notes](#webgis-notes)
   - [ArcGIS API for JavaScript 介绍](#arcgis-api-for-javascript-介绍)
   - [Vue 基础开发知识讲解](#vue-基础开发知识讲解)
-    - [Vue 基础知识](#vue-基础知识)
+    - [Vue Router](#vue-router)
+    - [Vuex](#vuex)
   - [一张图 WebGIS 项目开发](#一张图-webgis-项目开发)
 
 ## ArcGIS API for JavaScript 介绍
@@ -49,7 +50,106 @@
 
 ## Vue 基础开发知识讲解
 
-### Vue 基础知识
+### Vue Router
+
+```bash
+npm install vue-router@3 -D
+```
+
+```javascript
+# router/router.js
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import DataVisual from '../pages/DataVisual.vue'
+import OneMap from '../pages/OneMap.vue'
+
+Vue.use(VueRouter)
+
+export default new VueRouter({
+    routes: [
+        {
+            path: '/',
+            component: DataVisual,
+        },
+        {
+            path: '/onemap',
+            component: OneMap,
+        }
+    ],
+    mode: 'history',
+})
+```
+
+```javascript
+# main.js
+import Vue from 'vue'
+import App from './App.vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import router from './router/router'
+
+Vue.config.productionTip = false
+
+Vue.use(ElementUI)
+
+new Vue({
+  router,
+  render: h => h(App),
+}).$mount('#app')
+```
+
+### Vuex
+
+```bash
+npm install vuex@3 -D
+```
+
+```javascript
+# store/index.js
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+    state: {
+        _defaultView: '', // 默认地图view
+    },
+    getters: {
+        _getDefaultView: (state) => {
+            return state._defaultView        
+        }
+    },
+    mutations: {
+        _setDefaultView: (state, value) => {
+            state._defaultView = value
+        }
+    }
+})
+
+export default store
+```
+
+```javascript
+# main.js
+import Vue from 'vue'
+import App from './App.vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import router from './router/router'
+import store from './store'
+
+Vue.config.productionTip = false
+
+Vue.use(ElementUI)
+
+new Vue({
+  store,
+  router,
+  render: h => h(App),
+}).$mount('#app')
+```
 
 ## 一张图 WebGIS 项目开发
 
@@ -141,9 +241,122 @@
     }
     ```
 
-6. 地图模块开发、地图基础组件开发（底图切换、二/三维切换、比例尺、图例等等）
+6. 地图模块开发、地图基础组件开发（底图自定义、底图切换、比例尺、图例等等）
+
+    1. 底图自定义
+
+        ```javascript
+            async _createMapView() {
+            const [Map, MapView, Basemap, TileLayer] = await loadModules(['esri/Map', 'esri/views/MapView', 'esri/Basemap', 'esri/layers/TileLayer'], options)
+
+            let basemap = new Basemap({
+                baseLayers: [
+                    new TileLayer({
+                        url: 'http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer',
+                        title: 'Basemap'
+                    })
+                ],
+                title: 'basemap',
+                id: 'basemap'
+            })
+
+            const map = new Map({
+                basemap,
+            })
+
+            const view = new MapView({
+                container: 'mapview',
+                map: map,
+                zoom: 10,
+                center: [104.072745, 30.663774]
+            })
+
+            view.ui.components = []
+
+            this.$store.commit('_setDefaultView', view)
+
+            console.log(view)
+        }
+        ```
+
+    2. 底图切换，比例尺、缩放控件
+
+        ```javascript
+        async _createMapView() {
+            const [Map, MapView, Basemap, TileLayer, BasemapToggle, ScaleBar, Zoom] = await loadModules(
+                [
+                    'esri/Map', 
+                    'esri/views/MapView', 
+                    'esri/Basemap', 
+                    'esri/layers/TileLayer', 
+                    'esri/widgets/BasemapToggle',
+                    'esri/widgets/ScaleBar',
+                    'esri/widgets/Zoom'
+                ], 
+                options
+            )
+
+            let basemap = new Basemap({
+                baseLayers: [
+                    new TileLayer({
+                        url: 'http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer',
+                        title: 'Basemap'
+                    })
+                ],
+                title: 'basemap',
+                id: 'basemap'
+            })
+
+            const map = new Map({
+                basemap,
+            })
+
+            const view = new MapView({
+                container: 'mapview',
+                map: map,
+                zoom: 10,
+                center: [104.072745, 30.663774]
+            })
+
+            // 实例化地图切换控件
+            const basemapToggle = new BasemapToggle({
+                view: view,
+                nextBasemap: 'satellite',
+                container: 'basemap-toggle'
+            })
+            view.ui.add(basemapToggle)
+
+            // 实例化比例尺
+            const scaleBar = new ScaleBar({
+                view: view,
+                unit: 'metric',
+                container: 'scale-bar'
+            })
+            view.ui.add(scaleBar)
+
+            // 实例化缩放控件
+            const zoom = new Zoom({
+                view: view,
+                container: 'zoom'
+            })
+            view.ui.add(zoom)
+
+            view.ui.components = []
+
+            this.$store.commit('_setDefaultView', view)
+
+            console.log(view)
+        }
+        ```
 
 7. 目录树开发、图层加载
+
+    1. arcgis 数据导入、处理（坐标转换）、发布
+
+        arcgis pro 试用
+        arcgis online 试用
+
+    2. 行政区划导航、属性加载
 
 8. 属性查询、空间查询、卷帘分析，多屏对比功能模块开发
 
