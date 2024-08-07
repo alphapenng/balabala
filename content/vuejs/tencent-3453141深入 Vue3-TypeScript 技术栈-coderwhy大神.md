@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-05-06 21:17:46
+ * @LastEditTime: 2024-07-06 22:44:51
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -420,7 +420,7 @@
     - 比如之前的 App 组件中，我们有 data、computed、methods 等选项了，事实上还可以有一个 **components选项**；
     - 该 components 选项对应的 **是一个对象**，对象中的键值对是**组件的名称：组件对象**；
 - Vue 的开发模式
-  - 在真实开发中，我们可以通过一个**后缀名为.vue**的**single-file components（单文件组件）**来解决，并且可以使用 webpack 或者 vite 或者 rollup 等构建工具来对其进行处理。
+  - 在真实开发中，我们可以通过一个**后缀名为.vue**的 **single-file components 的单文件组件**来解决，并且可以使用 webpack 或者 vite 或者 rollup 等构建工具来对其进行处理。
   - 如果我们想要使用这一的 SFC 的 .vue 文件，比较**常见的是两种方式：**
     - 方式一：**使用 Vue CLI 来创建项目**，项目会默认帮助我们配置好所有的配置选项，可以在其中直接使用 .vue 文件；
     - 方式二：自己**使用 Webpack 或者 rollup 或者 vite 等构建工具来处理** .vue 文件。
@@ -543,7 +543,7 @@
       - **loader**：必须有一个 loader 属性，对应的值是一个字符串；
       - **options**：可选的属性，值是一个字符串或者对象，值会被传入到 loader 中；
       - **query**：目前已经使用 options 来替代；
-    - **传递字符串（如：use:['style-loader'] 是 loader 属性的简写方式（如：use[{loader: 'style-loader'}]）；
+    - **传递字符串**（如：use:['style-loader'] 是 loader 属性的简写方式（如：use[{loader: 'style-loader'}]）；
   - **loader属性**：Rule.use:[{loader}] 的简写。
 
 ### 认识 style-loader
