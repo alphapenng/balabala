@@ -4,10 +4,12 @@
  * @Github: 
  * @Date: 2023-08-20 11:46:11
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-01-17 12:33:15
+ * @LastEditTime: 2024-08-07 22:34:45
  * @FilePath: /balabala/content/electron-vue/all-about-electron-vue.md
 -->
 # All-about-electron-vue
+
+[electron-vue](https://simulatedgreg.gitbooks.io/electron-vue/content/cn/)
 
 - [All-about-electron-vue](#all-about-electron-vue)
   - [`npm run dev` 报错](#npm-run-dev-报错)

@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-07-06 22:44:51
+ * @LastEditTime: 2024-09-19 11:19:06
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -76,12 +76,15 @@
     - [keep-alive](#keep-alive)
     - [异步组件](#异步组件)
     - [refs](#refs)
-    - [$parent 和 $root](#parent-和-root)
+    - [`$parent` 和 `$root`](#parent-和-root)
     - [生命周期](#生命周期)
     - [组件的 `v-model`](#组件的-v-model)
     - [混入 Mixin](#混入-mixin)
   - [Vue3 过渡\&动画实现](#vue3-过渡动画实现)
   - [Composition API（一）](#composition-api一)
+  - [Composition API（二）](#composition-api二)
+  - [Composition API（三）高级语法补充](#composition-api三高级语法补充)
+  - [Vue3 高级语法补充](#vue3-高级语法补充)
 
 ## 开篇
 
@@ -435,7 +438,7 @@
   - **打包 bundler：** webpack 可以将帮助我们进行打包，所以它是一个打包工具
   - **静态的static：** 这样表述的原因是我们最终可以将代码打包成最终的静态资源（部署到静态服务器）；
   - **模块化 module：** webpack 默认支持各种模块化开发， ES Module、CommonJS、 AMD 等；
-  - **现代的 modern：** 我们前端说过，正是因为现代前端开发面临各种各样的问题，才催生了 webpack 的出现和发展；
+  - **现代的 modern：** 我们前面说过，正是因为现代前端开发面临各种各样的问题，才催生了 webpack 的出现和发展；
 
 ### Vue 项目加载的文件有哪些呢？
 
@@ -518,7 +521,7 @@
   - 在加载这个模块时，**webpack 其实并不知道如何对其进行加载**，我们必须指定对应的 loader 来完成这个功能；
 - 我们需要一个什么样的 loader 呢？
   - 对于加载 css 文件来说，我们需要一个可以读取 css 文件的 loader；
-  - 这个 loader 最常用的是 **css-loader****；
+  - 这个 loader 最常用的是 **css-loader**；
 - css-loader 的安装：
   `npm install css-loader -D`
 
@@ -672,14 +675,14 @@
   - url-loader 的 limit
     - 开发中我们往往是**小的图片需要转换**，但是**大的图片直接使用图片**即可
       - 这是因为**小的图片转换 base64**之后可以**和页面一起被请求**，**减少不必要的请求过程**；
-      - 而**大的图片也逆行转换**，反而会**影响页面的请求速度**；
+      - 而**大的图片也进行转换**，反而会**影响页面的请求速度**；
     - 我们如何可以**限制哪些大小的图片转换和不转换**呢？
       - url-loader 有一个 options 属性 **limit**，可以用于设置转换的限制；
 - 认识 asset module type
   - **我们当前使用的 webpack 版本是 webpack5：**
     - 在 webpack5 之前，加载这些资源我们需要**使用一些 loader，比如 raw-loader、url-loader、file-loader**；
     - 在 webpack5 开始，我们可以直接使用 **资源模块类型（asset module type）**，来替代上面的这些 loader；
-  - **资源模块类型（asset module type），通过添加 4 种新的模块类型，来替换所有这些 loader：
+  - **资源模块类型（asset module type）**，通过添加 4 种新的模块类型，来替换所有这些 loader：
     - **asset/resource** 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现；
     - **asset/inline** 导出一个资源的 data URI。之前通过使用 url-loader 实现；
     - **asset/source** 导出资源的源代码。之前通过使用 raw-loader 实现；
@@ -758,7 +761,7 @@
     - 从一种**源代码（原生语言）**转换成**另一种源代码（目标语言）**，这是什么的动作呢？
     - 就是**编译器**，事实上我们可以将 babel 看成就是一个编译器。
     - Babel 编译器的作用就是**将我们的源代码**，转换成浏览器可以直接识别的**另外一段源代码**；
-  - **Babe 也拥有编译器的工作流程：**
+  - **Babel 也拥有编译器的工作流程：**
     - 解析阶段（Parsing）；
     - 转换阶段（Transformation）；
     - 生成阶段（Code Generation）；
@@ -1217,9 +1220,9 @@
 
 - **在开发中，我们会经常封装一个个可复用的组件：**
   - 前面我们会**通过 props 传递**给组件一些数据，让组件来进行展示：
-  - 但是为了让这个组件具备**更强的通用性**，我们**不能将组件中的内容限制为固定的div、span**等待这些元素；
+  - 但是为了让这个组件具备**更强的通用性**，我们**不能将组件中的内容限制为固定的div、span**等这些元素；
   - 比如某种情况下我们使用组件，希望组件显示的是**一个按钮**，某种情况下我们使用组件希望显示的是**一张图片**；
-  - 我们应该让使用者可以决定**某一块区域到底存放什么内容和原素**；
+  - 我们应该让使用者可以决定**某一块区域到底存放什么内容和元素**；
 - 举个例子：假如我们定制一个通用的导航组件 - NavBar
   - 这个组件分成三块区域：**左边-中间-右边**，每块区域的内容是不固定；
   - 左边区域可能显示一个菜单图标，也可能显示一个返回按钮，可能什么都不显示；
@@ -1254,7 +1257,7 @@
     - 父级模板里的所有内容都是**在父级作用域中编译**的；
     - 子模板里的所有内容都是**在子作用域中编译**的；
   - 如何理解这句话呢？我们来看一个案例：
-    - 在我们的案例中 ChildCpn 自然是可以让问自己作用域中的 title 内容的；
+    - 在我们的案例中 ChildCpn 自然是可以访问自己作用域中的 title 内容的；
     - 但是在 App 中，是访问不了 ChildCpn 中的内容的，因为它们是跨作用域的访问；
 - 认识作用域插槽
   - 有时候我们希望插槽**可以访问到子组件中的内容**是非常重要的：
@@ -1269,7 +1272,7 @@
     6. 使用 slotProps 中的 item 和 index
 - 作用域插槽的案例
 
-  ![slot-scope](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240110212744_IMG_0672.PNG) 
+  ![slot-scope](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240110212744_IMG_0672.PNG)
 
 - 独占默认插槽的缩写
   - 如果我们的插槽是默认插槽 default，那么在使用的时候 `v-slot:default="slotProps"` 可以简写为 `v-slot="slotProps"`：
@@ -1341,7 +1344,7 @@
   - **组件实例有一个 $refs 属性：**
     - 它是一个对象 Object，持有**注册过 ref attribute** 的所有 DOM 元素和组件实例。
   
-### $parent 和 $root
+### `$parent` 和 `$root`
 
 - **我们可以通过 $parent 来访问父元素。**
 - **通过 $root 来访问根元素。**
@@ -1380,6 +1383,32 @@
 ### 混入 Mixin
 
 - 认识 Mixin
+  - 目前我们是使用组件化的方式在开发整个 Vue 的应用程序，但是**组件和组件之间有时候会存在相同的代码逻辑**，我们希望对**相同的代码逻辑进行抽取**。
+  - 在 Vue2 和 Vue3 中都支持的一种方式就是**使用 Mixin 来完成**：
+    - Mixin 提供了一种非常灵活的方式，来**分发 Vue 组件中的可复用功能**；
+    - 一个 Mixin 对象可以包含**任何组件选项**；
+    - 当组件使用 Mixin 对象时，所有 **Mixin 对象的选项将被混合进入该组件本身的选项中**；
+    ![Mixin的使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240915224158_28f2ms.png)
+- Mixin 的合并规则
+  - 如果 Mixin 对象中的选项和组件对象中的选项发生了冲突，那么 Vue 会如何操作呢？
+    - 这里**分成不同的情况**来进行处理；
+  - **情况一：如果是 data 函数的返回值对象**
+    - 返回值对象默认情况下会**进行合并**；
+    - 如果 data 返回值对象的属性发生了冲突，那么会**保留组件自身的数据**；
+  - **情况二：如何生命周期钩子函数**
+    - 生命周期的钩子函数**会被合并到数组**中，都会被调用；
+  - **情况三：值为对象的选项，例如 methods、components 和 directives，将被合并为同一个对象。**
+    - 比如都有 **methods 选项**，并且都定义了方法，那么**它们都会生效**；
+    - 但是如果**对象的key相同**，那么**会取组件对象的键值对**；
+- 全局混入 Mixin
+  - 如果组件中的某些选项，是所有的组件都需要拥有的，那么这个时候我们可以使用**全局的mixin**：
+    - 全局的 Mixin 可以使用**应用app的方法mixin**来完成注册；
+    - 一旦注册，那么**全局混入的选项将会影响每一个组件**；
+    ![全局混入Mixin](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917105247_mYBlq0.png)
+- extends
+  - 另外一个类似于 Mixin 的方式是**通过extends属性**：
+    - 允许声明扩展另外一个组件，**类似于 Mixins**;
+    ![extends](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917111019_2nrkWC.png)
 
 ## Vue3 过渡&动画实现
 
@@ -1506,3 +1535,290 @@
   - 我们来通过 gsap 的延迟 delay 属性，做一个交替消失的动画：
 
 ## Composition API（一）
+
+- Options API 的弊端
+  - 在 Vue2 中，我们**编写组件的方式是 Options API**：
+    - Options API 的一大特点就是在**对应的属性**中编写**对应的功能模块**；
+    - 比如**data定义数据**、**methods中定义方法**、**computed中定义计算属性**、**watch中定义监听**，也包括**生命周期钩子**；
+- 但是这种代码有一个很大的弊端：  
+  - 当我们**实现某一个功能**时，这个功能**对应的代码逻辑**会被**拆分到各个属性**中；
+  - 当我们**组件变得更大、更复杂**时，**逻辑关注点的列表**就会增长，那么**同一个功能的逻辑就会被拆分的很分散**；
+  - 尤其对于哪些一开始**没有编写这些组件的人**来说，这个组件的代码是**难以阅读和理解的**（阅读组件的其他人）；
+- 下面我们来看一个非常大的组件，其中的逻辑功能按照颜色进行了划分：
+  - 这种**碎片化的代码**使用**理解和维护这个复杂的组件**变得异常困难，并且**隐藏了潜在的逻辑问题**；
+  - 并且当我们**处理单个逻辑关注点**时，需要不断的**跳到相应的代码**块中；
+  - 如果我们能将**同一个逻辑关注点相关的代码**收集**在一起**会更好。**这就是 Composition API 想要做的事情，以及可以帮助我们完成的事情。** 也有人把 Vue Composition API 简称为 **VCA**。
+- 认识 Composition API
+  - 那么既然知道 Composition API 想要帮助我们做什么事情，接下来看一下**到底是怎么做**呢？
+    - 为了开始使用 Composition API，我们需要有一个可以实际使用它**（编写代码）的地方**；
+    - 在 Vue 组件中，这个位置就是 **setup 函数**；
+  - **setup 其实就是组件的另外一个选项：**
+    - 只不过这个选项强大到我们可以**用它来替代之前所编写的大部分其他选项**；
+    - 比如 **methods、computed、watch、data、生命周期**等等；
+  - setup 函数的参数
+    - 它主要**有两个参数**：
+      - 第一个参数：**props**
+      - 第二个参数：**context**
+    - props 非常好理解，它其实就是**父组件传递过来的属性**会被**放到 props 对象**中，我们在**setup中如果需要使用**，那么就可以直接**通过props参数获取**：
+      - 对于**定义 props 的类型**，我们还是**和之前的规则是一样的，在 props 选项中定义**；
+      - 并且**在 template 中**依然是可以**正常去使用props中的属性**，比如 message；
+      - 如果我们**在setup函数中想要使用 props**，那么**不可以通过 this 去获取**；
+      - 因为 props 有直接**作为参数传递到 setup 函数**中，所以我们可以**直接通过参数**来使用即可；
+    - 另外一个参数是 context，我们也称之为是一个 **SetupContext**，它里面**包含三个属性**：
+      - **attrs**：**包含了父组件传递过来的所有非 props 的特性**；
+      - **slots**：**包含了父组件传递过来的所有插槽（这个在以渲染函数返回时会用作用，后面会讲到）**；
+      - **emit**：**当我们组件内部需要发出事件时会用到 emit（因为我们不能访问 this，所以不可以通过 this.$emit 发出事件）**；
+      ![setup的context参数](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917194811_dZNGud.png)
+      ![setup的context参数解构](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917195124_fUPWjS.png)
+  - setup 函数的返回值
+    - setup 既然是一个函数，那么它也可以有**返回值**，**它的返回值用来做什么呢？**
+      - setup 的返回值可以在**模板 template 中被使用**；
+      - 也就是说我们可以**通过setup的返回值来替代 data 选项**；
+      ![setup的返回值](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917202453_MovkQ5.png)
+  - setup 不可以使用 this
+    - 官方关于 this 有这样一段描述（这段描述是我给官方提交了 PR 之后的一段描述）：
+      - 表达的含义是**this 并没有指向当前组件实例**；
+      - 并且**在 setup 被调用之前，data、computed、methods**等都没有被解析；
+      - 所以**无法在 setup 中获取 this**；
+      ![官方setup](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917204154_Y6OGit.png)
+  - Reactive API
+    ![reactive_api_1](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917204550_kooIvc.png)
+    ![reactive_api_2](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917205126_QgECQP.png)
+    - 为什么就可以变成响应式的呢？
+      - 这是因为当我们**使用 reactive 函数处理我们的数据之后**，数据**再次被使用**时就会**进行依赖收集**；
+      - 当**数据发生改变**时，所有**收集到的依赖**都是**进行对应的响应式操作**（比如界面更新）；
+      - 事实上，我们编写的 **data 选项**，也是在内部 **交给了 reactive 函数**将其编程响应式对象的；
+  - Ref API
+    - reactive API 对**传入的类型是有限制的**，它要求我们必须传入的是**一个对象或者数组类型**：
+      - 如果我们传入一个**基本数据类型（String、Number、Boolean）会报一个警告**；
+      - 这个时候 Vue3 给我们提供了**另外一个 API：ref API**
+        - ref 会返回一个**可变的响应式对象**，该对象作为一个 **响应式的引用** 维护着它 **内部的值**，这就是 **ref 名称的来源**；
+        - 它内部的值是**在 ref 的 value 属性**中被维护的；
+        ![ref_api_1](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917210807_fpRVHu.png)
+        ![ref_api_2](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917211017_BkLtTY.png)
+    - **这里有两个注意事项：**
+      - 在**模板中引入 ref 的值**时，Vue会**自动帮助我们进行解包**操作，所以我们并**不需要在模板中通过 ref.value** 的方式来使用**（模板中的解包是浅层的解包）**；
+      - 但是在 **setup 函数内部**，它依然是一个 **ref引用**，所以对其进行操作时，我们依然需要**使用 ref.value 的方式**；
+      ![ref自动解包](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130235_Screenshot_20240918_085229.jpg)
+  - 认识 readonly
+    - 我们通过 **reactive 或者 ref 可以获取到一个响应式的对象，但是某些情况下，我们**传入给其他地方（组件）**的这个响应式对象希望**在另一个地方（组件）被使用**，但是**不能被修改**，这个时候**如何防止这种情况的出现**呢？
+      - Vue3 为我们提供了 **readonly 的方法**；
+      - **readonly 会返回原生对象的只读代理**（也就是它依然是一个 Proxy，这是一个 **proxy 的 set 方法被劫持**，并且不能对其进行修改）；
+      ![readonly原理](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130317_Screenshot_20240918_090558.jpg)
+      ![readonly举例](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130357_Screenshot_20240918_091219.jpg)
+
+## Composition API（二）
+
+- Reactive 判断的 API
+  - isProxy
+    - 检查对象**是否是由 reactive 或 readonly 创建的 proxy**。
+  - isReactive
+    - 检查对象**是否是由 reactive 创建的响应式代理**：
+    - 如果**该代理是 readonly 建的**，但**包裹了由 reactive 创建的另一个代理**，它也会返回 true；
+  - isReadonly
+    - 检查对象**是否是由 readonly 创建的只读代理**。
+  - toRaw
+    - 返回 **reactive 或 readonly 代理的原始对象**（不建议保留对原始对象的持久引用。请谨慎使用）。
+  - shallowReactive
+    - 创建一个响应式代理，它跟踪其自身 property 的响应性，但**不执行嵌套对象的深层响应式转换**（深层还是原生对象）。
+  - shallowReadonly
+    - 创建一个 proxy，使其自身的 property 为只读，但**不执行嵌套对象的深度只读转换**（深层还是可读、可写的）。
+- toRefs
+  - 如果我们使用 **ES6 的结构语法**，对 **reactive 返回的对象进行解构获取值**，那么之后无论是**修改解构后的变量**，还是**修改 reactive 返回的 state 对象**，**数据都不再是响应式**的：
+  
+    ```javascript
+    const state = reactive({
+      name: "why",
+      age: 18
+    })
+
+    const {name, age} = state;
+    ```
+  
+  - 那么有没有办法**让我们解构出来的属性是响应式**的呢？
+    - Vue 为我们提供了一个 **toRefs 的函数**，可以将 **reactive 返回的对象中的属性都转成 ref**；
+    - 那么我们再次进行解构出来的 **name 和 age 本身都是 ref 的**；
+
+    ```javascript
+    // 当我们这样来做的时候，会返回两个 ref 对象，它们都是响应式的
+    const {name, age} = toRefs(state);
+    ```
+
+  - 这种做法相当于已经在 **state.name 和 ref.value** 之间建立了**链接**，**任何一个修改都会引起另外一个变化**；
+- toRef
+  - 如果我们只希望转换一个 **reactive 对象中的属性为 ref**，那么可以**使用 toRef 的方法**：
+  ![toRefs和toRef](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130524_Screenshot_20240918_100015.jpg)
+- ref 其他的 API
+  - unref
+    - 如果我们想要**获取一个 ref 引用中的 value**，那么也可以**通过 unref 方法**：
+      - 如果**参数是一个 ref**，则**返回内部值**，否则**返回参数本身**；
+      - 这是 `val = isRef(val) ? val.value : val` 的语法糖
+  - isRef
+    - 判断值**是否是一个 ref 对象**。
+  - shallowRef
+    - 创建一个**浅层的 ref 对象**；
+  - triggerRef
+    - **手动触发和 shallowRef 相关联的副作用**：
+  ![shallowRef和triggerRef举例](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130707_Screenshot_20240918_102309.jpg)
+- customRef
+  - 创建一个**自定义的ref**，并**对其依赖项跟踪和更新触发**进行**显示控制**：
+    - 它需要**一个工厂函数**，该**函数接受 track 和 trigger 函数**作为参数；
+    - 并且应该返回**一个带有 get 和 set 的对象**；
+  - 这里我们使用一个案例：
+    - 对**双向绑定的属性进行 debounce（防抖）**的操作；
+    ![自定义ref](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130801_Screenshot_20240918_104729.jpg)
+- computed
+  - 在 Composition API 中，我们可以在 setup 函数中使用 computed 方法来编写一个计算属性；
+  - 如何使用 computed 呢？
+    - 方式一：接收一个 getter 函数，并为 getter 函数返回的值，返回一个不变的 ref 对象；
+    - 方式二：接收一个具有 get 和 set 的对象，返回一个可变的（可读写）ref 对象；
+  ![computed举例](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130830_Screenshot_20240918_105721.jpg)
+- 侦听数据的变化
+  - 在前面的 Options API 中，我们可以通过 watch 选项来侦听 data 或者 props 的数据变化，当数据变化时执行某一些操作。
+  - 在 Composition API 中，我们可以使用 watchEffect 和 watch 来完成响应式数据的侦听；
+    - watchEffect 用于自动收集响应式数据的依赖；
+    - watch 需要手动指定侦听的数据源；
+  - watchEffect
+    - 当侦听到某些响应式数据变化时，我们希望执行某些操作，这个时候可以使用 watchEffect。
+    - 首先，**watchEffect 传入的函数会被立即执行一次，并且在执行的过程中会收集依赖**；
+    - 其次，**只有收集的依赖发生变化时，watchEffect传入的函数才会再次执行**；
+    ![watchEffect基本使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918202525_Screenshot_20240918_150532.jpg)
+  - watchEffect 的停止侦听
+    ![watchEffect停止侦听](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918202814_Screenshot_20240918_151307.jpg)
+  - watchEffect 清除副作用
+    - 什么是清除副作用呢？
+      - 比如在开发中我们需要在侦听函数中执行网络请求，但是在网络请求还没有达到时候，我们停止了侦听器，或者侦听器侦听函数被再次执行了。
+      - 那么上一次的网络请求应该被取消掉，这个时候我们就可以清除上一次的副作用；
+    - 在我们给 watchEffect 传入的函数被回调时，其实可以获取到一个参数：onInvalidate
+      - 当**副作用即将重新执行**或者**侦听器被停止**时会执行该函数传入的回调函数；
+      - 我们可以在传入的回调函数中，执行一些清除工作；
+
+      ```javascript
+      const stopWatch = watchEffect((onInvalidate) => {
+        console.log("watchEffect执行~", name.value, age.value);
+        const timer = setTimeout(() => {
+          console.log("2s后执行的操作");
+        }, 2000);
+        onInvalidate(() => {
+          clearTimeout(timer);
+        });
+      });
+      ```
+
+      ![watchEffect清除副作用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918202923_Screenshot_20240918_153915.jpg)
+      ![watchEffect清除副作用结果](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918202853_Screenshot_20240918_153824.jpg)
+  - setup 中使用 ref
+    - 在讲解 watchEffect 执行时机之前，我们先补充一个知识：在 setup 中如何使用 ref 或者元素或者组件？
+      - 其实非常简单，我们只需要定义一个 ref 对象，绑定到元素或者组件的 ref 属性上即可；
+    ![监听ref变化](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203021_Screenshot_20240918_154944.jpg)
+    ![监听ref变化的结果](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203046_Screenshot_20240918_154950.jpg)
+  - 调整 watchEffect 的执行时机
+    ![监听ref dom挂载后的结果](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203113_Screenshot_20240918_155654.jpg)
+  - watch 的使用
+    - watch 的 API 完全等同于组件 watch 选项的 Property：
+      - watch 需要侦听特定的数据源，并在回调函数中执行副作用；
+      - 默认情况下它是惰性的，只有当被侦听的源发生变化时才会执行回调；
+    - **与 watchEffect 的比较，watch 允许我们**：
+      - **懒执行副作用（第一次不会直接执行）；**
+      - **更具体的说明当哪些状态发生变化时，触发侦听器的执行；**
+      - **访问侦听状态变化前后的值；**
+  - 侦听单个数据源
+    - watch 侦听函数的数据源有两种类型：
+      - 一个 getter 函数：但是该 getter 函数必须引用可响应式的对象（比如 reactive 或者 ref）；
+      - 直接写入一个可响应式的对象，reactive 或者 ref（比较常用的是 ref）；
+    ![侦听单个数据源](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203146_Screenshot_20240918_163145.jpg)
+  - 侦听多个数据源
+    ![侦听多个数据源](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203210_Screenshot_20240918_163802.jpg)
+  - 侦听响应式对象
+    - 如果我们希望侦听一个数组或者对象，那么可以使用一个 getter 函数，并且对可响应对象进行解构：
+  - watch 的选项
+    - 如果我们希望侦听一个深层的侦听，那么依然需要设置 deep 为 true：
+      - 也可以传入 immediate 立即执行；
+    ![watch的选项](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203245_Screenshot_20240918_164505.jpg)
+
+## Composition API（三）高级语法补充
+
+- 生命周期钩子
+  - setup 中如何使用生命周期函数呢？
+    - 可以使用直接导入的 onX 函数注册生命周期钩子；
+    ![生命周期钩子](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203324_Screenshot_20240918_170126.jpg)
+- Provide 和 Inject 函数
+  - provide 可以传入两个参数：
+    - name：提供的属性名称；
+    - value：提供的属性值；
+  - inject 可以传入两个参数：
+    - 要 inject 的 property 的 name；
+    - 默认值；
+  - 为了增加 provide 和 inject 值之间的响应性，我们可以在 provide 值时使用 ref 和 reactive。
+  ![provide的使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918214715_Screenshot_20240918_204322.jpg)
+  ![inject的使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215241_Screenshot_20240918_204544.jpg)
+- useCounter
+  - 我们先来对之前的 counter 逻辑进行抽取：
+  ![useCounter](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215319_Screenshot_20240918_210421.jpg)
+  ![引入useCounter](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215343_Screenshot_20240918_210639.jpg)
+- useTitle
+  - 我们编写一个修改title 的 hook；
+  ![useTitle](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215545_Screenshot_20240918_211659.jpg)
+  ![引入useTitle](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215607_Screenshot_20240918_211739.jpg)
+- useScrollPosition
+  ![useScrollPosition](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215628_Screenshot_20240918_213244.jpg)
+  ![引入useScrollPosition](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215658_Screenshot_20240918_213405.jpg)
+- useMousePosition
+  - 我们来完成一个监听鼠标位置的 hook：
+  ![useMousePosition](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215913_Screenshot_20240918_214023.jpg)
+  ![引入useMousePosition](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215939_Screenshot_20240918_214243.jpg)
+- useLocalStorage
+  ![useLocalStorage]()
+  ![hooks封装]()
+  ![引入useLocalStorage]()
+- setup 顶层编写方式（实验性api）
+  ![defineProps和defineEmit]()
+  ![父组件使用]()
+- 认识 h 函数
+  - Vue 推荐在绝大多数情况下**使用模板**来创建你的 HTML，然后一些特殊的场景，你真的需要 **JavaScript 的完全编程的能力**，这个时候你可以使用**渲染函数**，它**比模板更接近编译器**；
+    - 前面我们讲解过 **VNode 和 VDOM 的改变**
+    - Vue 在生成真实的 DOM之前，会将**我们的节点转换成 VNode**，而 VNode 组合在一起形成**一棵树结构**，就是**虚拟 DOM（VDOM）**；
+    - 事实上，我们之前编写的 template 中的 HTML 最终也是 **使用渲染函数** 生成 **对应的 VNode**；
+    - 那么，如果你想充分的利用 JavaScript 的编程能力，我们可以自己来**编写 createVNode 函数**，生成**对应的 VNode**；
+  - 那么我们应该怎么来做呢？**使用 h() 函数**：
+    - **h() 函数**是一个用于**创建 vnode 的一个函数**；
+    - 其实更准确的命名是 **cerateVNode() 函数**，但是为了简便在 Vue 将之**简化为 h() 函数**；
+- h() 函数如何使用呢？
+  - h() 函数接受三个参数：
+    - {String | Object | Function} tag 一个 html 标签名、一个组件、一个异步组件、或一个函数式组件；
+    - {Object} props 与 attribute、 prop 和 事件相对应的对象，我们会在模板中使用；
+    - {String | Array | Object} children 子 VNodes，使用 `h()` 构建，或使用字符串获取“文本 VNode”或者有插槽的对象。（可选的）
+  - ⚠️ **注意事项：**
+    - 如果**没有 props**，那么通常可以**将 children 作为第二个参数传入**；
+    - 如果会产生歧义，可以**将 null 作为第二个参数传入**，将 **children 作为第三个参数传入**；
+  ![h函数基本使用]()
+  ![setup函数实现计数器]()
+  ![h函数默认插槽子组件]()
+  ![h函数默认插槽父组件]()
+  ![h函数作用域插槽子组件]()
+  ![h函数作用域插槽父组件]()
+- jsx 的 babel 配置
+  - 如果我们希望**在项目中使用 jsx**，那么我们**需要添加对 jsx 的支持**：
+    - jsx 我们通常会**通过 Babel 来进行转换**（React 编写的 jsx 就是通过 babel 转换的）；
+    - 对于 Vue 来说，我们只需要在 **Babel 中配置对应的插件**即可；
+  - 安装 **Babel 支持 Vue 的 jsx 插件**：
+    - `npm install @vue/babel-plugin-jsx -D`
+  - 在 **babel.config.js 配置文件**中配置插件：
+
+    ```javascript
+    module.exports = {
+      presets: [
+        '@vue/cli-plugin-babel/preset'
+      ],
+      plugins: [
+        "@vue/babel-plugin-jsx"
+      ]
+    }
+    ```
+
+  ![jsx的使用父组件]()
+  ![jsx的使用子组件]()
+  
+## Vue3 高级语法补充
+
+- 认识自定义指令
