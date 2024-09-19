@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-19 11:19:06
+ * @LastEditTime: 2024-09-19 12:50:01
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -82,9 +82,22 @@
     - [混入 Mixin](#混入-mixin)
   - [Vue3 过渡\&动画实现](#vue3-过渡动画实现)
   - [Composition API（一）](#composition-api一)
+    - [Options API 的弊端](#options-api-的弊端)
+    - [认识 Composition API](#认识-composition-api)
   - [Composition API（二）](#composition-api二)
+    - [Reactive 判断的 API](#reactive-判断的-api)
+    - [toRefs 与 toRef](#torefs-与-toref)
+    - [computed](#computed)
+    - [watchEffect 与 watch](#watcheffect-与-watch)
   - [Composition API（三）高级语法补充](#composition-api三高级语法补充)
+    - [生命周期钩子](#生命周期钩子)
+    - [Provide 和 Inject 函数](#provide-和-inject-函数)
+    - [Composition API 举例](#composition-api-举例)
+    - [setup 顶层编写方式（实验性api）](#setup-顶层编写方式实验性api)
+    - [认识 h 函数](#认识-h-函数)
+    - [jsx](#jsx)
   - [Vue3 高级语法补充](#vue3-高级语法补充)
+    - [认识自定义指令](#认识自定义指令)
 
 ## 开篇
 
@@ -1536,6 +1549,8 @@
 
 ## Composition API（一）
 
+### Options API 的弊端
+
 - Options API 的弊端
   - 在 Vue2 中，我们**编写组件的方式是 Options API**：
     - Options API 的一大特点就是在**对应的属性**中编写**对应的功能模块**；
@@ -1548,6 +1563,9 @@
   - 这种**碎片化的代码**使用**理解和维护这个复杂的组件**变得异常困难，并且**隐藏了潜在的逻辑问题**；
   - 并且当我们**处理单个逻辑关注点**时，需要不断的**跳到相应的代码**块中；
   - 如果我们能将**同一个逻辑关注点相关的代码**收集**在一起**会更好。**这就是 Composition API 想要做的事情，以及可以帮助我们完成的事情。** 也有人把 Vue Composition API 简称为 **VCA**。
+
+### 认识 Composition API
+
 - 认识 Composition API
   - 那么既然知道 Composition API 想要帮助我们做什么事情，接下来看一下**到底是怎么做**呢？
     - 为了开始使用 Composition API，我们需要有一个可以实际使用它**（编写代码）的地方**；
@@ -1609,6 +1627,8 @@
 
 ## Composition API（二）
 
+### Reactive 判断的 API
+
 - Reactive 判断的 API
   - isProxy
     - 检查对象**是否是由 reactive 或 readonly 创建的 proxy**。
@@ -1623,6 +1643,9 @@
     - 创建一个响应式代理，它跟踪其自身 property 的响应性，但**不执行嵌套对象的深层响应式转换**（深层还是原生对象）。
   - shallowReadonly
     - 创建一个 proxy，使其自身的 property 为只读，但**不执行嵌套对象的深度只读转换**（深层还是可读、可写的）。
+
+### toRefs 与 toRef
+
 - toRefs
   - 如果我们使用 **ES6 的结构语法**，对 **reactive 返回的对象进行解构获取值**，那么之后无论是**修改解构后的变量**，还是**修改 reactive 返回的 state 对象**，**数据都不再是响应式**的：
   
@@ -1665,14 +1688,20 @@
     - 它需要**一个工厂函数**，该**函数接受 track 和 trigger 函数**作为参数；
     - 并且应该返回**一个带有 get 和 set 的对象**；
   - 这里我们使用一个案例：
-    - 对**双向绑定的属性进行 debounce（防抖）**的操作；
+    - 对 **双向绑定的属性进行 debounce（防抖）** 的操作；
     ![自定义ref](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130801_Screenshot_20240918_104729.jpg)
+
+### computed
+
 - computed
   - 在 Composition API 中，我们可以在 setup 函数中使用 computed 方法来编写一个计算属性；
   - 如何使用 computed 呢？
     - 方式一：接收一个 getter 函数，并为 getter 函数返回的值，返回一个不变的 ref 对象；
     - 方式二：接收一个具有 get 和 set 的对象，返回一个可变的（可读写）ref 对象；
   ![computed举例](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130830_Screenshot_20240918_105721.jpg)
+
+### watchEffect 与 watch
+
 - 侦听数据的变化
   - 在前面的 Options API 中，我们可以通过 watch 选项来侦听 data 或者 props 的数据变化，当数据变化时执行某一些操作。
   - 在 Composition API 中，我们可以使用 watchEffect 和 watch 来完成响应式数据的侦听；
@@ -1738,10 +1767,15 @@
 
 ## Composition API（三）高级语法补充
 
+### 生命周期钩子
+
 - 生命周期钩子
   - setup 中如何使用生命周期函数呢？
     - 可以使用直接导入的 onX 函数注册生命周期钩子；
     ![生命周期钩子](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918203324_Screenshot_20240918_170126.jpg)
+
+### Provide 和 Inject 函数
+
 - Provide 和 Inject 函数
   - provide 可以传入两个参数：
     - name：提供的属性名称；
@@ -1752,6 +1786,9 @@
   - 为了增加 provide 和 inject 值之间的响应性，我们可以在 provide 值时使用 ref 和 reactive。
   ![provide的使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918214715_Screenshot_20240918_204322.jpg)
   ![inject的使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215241_Screenshot_20240918_204544.jpg)
+
+### Composition API 举例
+
 - useCounter
   - 我们先来对之前的 counter 逻辑进行抽取：
   ![useCounter](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215319_Screenshot_20240918_210421.jpg)
@@ -1768,12 +1805,18 @@
   ![useMousePosition](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215913_Screenshot_20240918_214023.jpg)
   ![引入useMousePosition](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918215939_Screenshot_20240918_214243.jpg)
 - useLocalStorage
-  ![useLocalStorage]()
-  ![hooks封装]()
-  ![引入useLocalStorage]()
+  ![useLocalStorage](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919123753_Screenshot_20240919_082823.jpg)
+  ![hooks封装](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919123931_Screenshot_20240919_083228.jpg)
+  ![引入useLocalStorage](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124057_Screenshot_20240919_083623.jpg)
+
+### setup 顶层编写方式（实验性api）
+
 - setup 顶层编写方式（实验性api）
-  ![defineProps和defineEmit]()
-  ![父组件使用]()
+  ![defineProps和defineEmit](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124121_Screenshot_20240919_085236.jpg)
+  ![父组件使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124150_Screenshot_20240919_085403.jpg)
+
+### 认识 h 函数
+
 - 认识 h 函数
   - Vue 推荐在绝大多数情况下**使用模板**来创建你的 HTML，然后一些特殊的场景，你真的需要 **JavaScript 的完全编程的能力**，这个时候你可以使用**渲染函数**，它**比模板更接近编译器**；
     - 前面我们讲解过 **VNode 和 VDOM 的改变**
@@ -1791,12 +1834,15 @@
   - ⚠️ **注意事项：**
     - 如果**没有 props**，那么通常可以**将 children 作为第二个参数传入**；
     - 如果会产生歧义，可以**将 null 作为第二个参数传入**，将 **children 作为第三个参数传入**；
-  ![h函数基本使用]()
-  ![setup函数实现计数器]()
-  ![h函数默认插槽子组件]()
-  ![h函数默认插槽父组件]()
-  ![h函数作用域插槽子组件]()
-  ![h函数作用域插槽父组件]()
+  ![h函数基本使用](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124223_Screenshot_20240919_093451.jpg)
+  ![setup函数实现计数器](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124244_Screenshot_20240919_093955.jpg)
+  ![h函数默认插槽子组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124319_Screenshot_20240919_102938.jpg)
+  ![h函数默认插槽父组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124342_Screenshot_20240919_102959.jpg)
+  ![h函数作用域插槽子组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124415_Screenshot_20240919_104920.jpg)
+  ![h函数作用域插槽父组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124447_Screenshot_20240919_105223.jpg)
+
+### jsx
+
 - jsx 的 babel 配置
   - 如果我们希望**在项目中使用 jsx**，那么我们**需要添加对 jsx 的支持**：
     - jsx 我们通常会**通过 Babel 来进行转换**（React 编写的 jsx 就是通过 babel 转换的）；
@@ -1816,9 +1862,11 @@
     }
     ```
 
-  ![jsx的使用父组件]()
-  ![jsx的使用子组件]()
+  ![jsx的使用父组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124552_Screenshot_20240919_111238.jpg)
+  ![jsx的使用子组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919124642_Screenshot_20240919_111317.jpg)
   
 ## Vue3 高级语法补充
+
+### 认识自定义指令
 
 - 认识自定义指令
