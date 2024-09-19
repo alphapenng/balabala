@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-19 12:50:01
+ * @LastEditTime: 2024-09-19 23:23:19
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -98,6 +98,9 @@
     - [jsx](#jsx)
   - [Vue3 高级语法补充](#vue3-高级语法补充)
     - [认识自定义指令](#认识自定义指令)
+    - [认识 Teleport](#认识-teleport)
+    - [认识 Vue 插件](#认识-vue-插件)
+  - [Vue3 源码学习](#vue3-源码学习)
 
 ## 开篇
 
@@ -1615,7 +1618,7 @@
         ![ref_api_1](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917210807_fpRVHu.png)
         ![ref_api_2](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917211017_BkLtTY.png)
     - **这里有两个注意事项：**
-      - 在**模板中引入 ref 的值**时，Vue会**自动帮助我们进行解包**操作，所以我们并**不需要在模板中通过 ref.value** 的方式来使用**（模板中的解包是浅层的解包）**；
+      - 在**模板中引入 ref 的值**时，Vue会**自动帮助我们进行解包**操作，所以我们并**不需要在模板中通过 ref.value** 的方式来使用 **（模板中的解包是浅层的解包）**；
       - 但是在 **setup 函数内部**，它依然是一个 **ref引用**，所以对其进行操作时，我们依然需要**使用 ref.value 的方式**；
       ![ref自动解包](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130235_Screenshot_20240918_085229.jpg)
   - 认识 readonly
@@ -1870,3 +1873,83 @@
 ### 认识自定义指令
 
 - 认识自定义指令
+  - 在 Vue 的模板语法中我们学习过各种各样的指令：v-show、v-for、、v-model 等等，除了使用这些指令之外，**Vue 也允许我们来自定义自己的指令。**
+    - 注意：在 Vue 中，**代码的复用和抽象主要还是通过组件**；
+    - 通常在某些情况下，你需要**对 DOM 元素进行底层操作**，这个时候就会用到**自定义指令**；
+  - 自定义指令分为两种：
+    - **自定义局部指令：** 组件中通过 **directives 选项**，只能在当前组件中使用；
+    - **自定义全局指令：** app 的 **directive 方法**，可以在任意组件中被使用；
+  - 比如我们来做一个非常简单的案例：当某个元素挂载完成后可以自动获取焦点
+    - 实现方式一：如果我们使用**默认的的实现方式**；
+      ![默认的实现](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919231613_Screenshot_20240919_170526.jpg)
+    - 实现方式二：自定义一个 **v-focus 的局部指令**；
+      ![局部指令](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919231812_Screenshot_20240919_170951.jpg)
+    - 实现方式三：自定义一个 **v-focus 的全局指令**；
+      ![全局指令](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919231838_Screenshot_20240919_171237.jpg)
+- 指令的生命周期
+  - 一个指令定义的对象，Vue 提供了如下的几个钩子函数：
+    - **created**：在绑定元素的 attribute 或事件监听器被应用之前调用；
+    - **beforeMount**：当指令第一次绑定到元素并且在挂载父组件之前调用；
+    - **mounted**：在绑定元素的父组件被挂载后调用；
+    - **beforeUpdate**：在更新包含组件的 VNode 之前调用；
+    - **updated**：在包含组件的 VNode **及其子组件的 VNode** 更新后调用；
+    - **beforeUnmount**：在卸载绑定元素的父组件之前调用；
+    - **unmounted**：当指令与元素解除绑定且父组件已卸载时，只调用一次；
+  ![生命周期和参数修饰符](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919231856_Screenshot_20240919_214219.jpg)
+- 自定义指令练习
+  - 自定义指令案例：时间戳的显示需求
+    - 在开发中，大多数情况下从**服务器**获取到的都是**时间戳**；
+    - 我们需要**将时间戳转换成具体格式化的时间**来展示；
+    - 在 Vue2 中我们可以**通过过滤器**来完成；
+    - 在 Vue3 中我们可以通过**计算属性（computed）** 或者 **自定义一个方法（methods）** 来完成；
+    - 其实我们还可以通过一个**自定义的指令**来完成；
+    ![自定义指令案例](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919231937_Screenshot_20240919_220232.jpg)
+
+### 认识 Teleport
+
+- 认识 Telelport
+  - 在组件化开发中，我们**封装一个组件A**，在**另外一个组件B中使用**：
+    - 那么**组件A中 template 的元素**，会**被挂载到组件B中 template** 的某个位置；
+    - 最终我们的应用程序会形成**一颗DOM树结构**；
+  - 但是某些情况下，我们希望**组件不是挂载在这个组件树上**，可能是**移动到 Vue app 之外的其他位置**：
+    - 比如**移动到 body 元素**上，或者我们**有其他的div#app之外的元素**上；
+    - 这个时候我们就可以**通过 teleport 来完成**；
+  - **Teleport 是什么呢？**
+    - 它是一个 **Vue 提供的内置组件**，类似于 react 的 portals；
+    - teleport 翻译过来是心灵传输、远距离运输的意思；
+      - 它有两个属性：
+        - **to**：指定将其中的内容移动到的目标元素，可以使用选择器；
+        - **disabled**：是否禁用 teleport 的功能；
+  ![teleport](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232013_Screenshot_20240919_222942.jpg)
+
+### 认识 Vue 插件
+
+- 认识 Vue 插件
+  - 通常我们**向 Vue 全局添加一些功能**时，会采用**插件的模式，它有两种编写方式**：
+    - **对象类型**：一个**对象**，但是必须包含一个 **install 的函数**，该**函数会在安装插件时**执行；
+    - **函数类型**：一个**function**，这个函数会在**安装插件时自动执行**；
+  - 插件可以**完成的功能没有限制**，比如下面的几种都是可以的：
+    - **添加全局方法或者 property**，通过把它们添加到 **config.globalProperties** 上实现；
+    - **添加全局资源**：**指令/过滤器/过渡**等；
+    - 通过**全局 mixin** 来添加**一些组件选项**；
+    - **一个库，提供自己的 API**，同时**提供上面提到的一个或多个功能**；
+    ![plugins_object](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232051_Screenshot_20240919_224456.jpg)
+    ![main.js引入](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232136_Screenshot_20240919_224827.jpg)
+    ![组件获取全局property](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232116_Screenshot_20240919_224520.jpg)
+    ![plugins_function](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232204_Screenshot_20240919_224910.jpg)
+
+## Vue3 源码学习
+
+- 真实的 DOM 渲染
+  - 我们传统的前端开发中，我们是编写自己 HTML，最终被渲染到浏览器上的，那么它是什么样的过程呢？
+  ![传统DOM渲染](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232233_Screenshot_20240919_225610.jpg)
+- 虚拟 DOM 优势
+  - 目前框架都会引入虚拟 DOM 来对真实的 DOM 进行抽象，这样做有很多的好处：
+  - 首先是可以对真实的元素节点进行抽象，抽象成 VNode（虚拟节点），这样方便后续对其进行各种操作；
+    - 因为对于直接操作 DOM 来说是有很多的限制的，比如 diff、clone 等等，但是使用 JavaScript 编程语言来操作这些，就变得非常的简单；
+    - 我们可以使用 JavaScript 来表达非常多的逻辑，而对于 DOM 本身来说是非常不方便的；
+  - 其次是方便实现跨平台，包括你可以将 VNode 节点渲染成任意你想要的节点
+    - 如渲染在 canvas、WebGL、SSR、Native（iOS、Android）上；
+    - 并且 Vue 允许你开发属于自己的渲染器（renderer），在其他的平台上渲染；
+- 虚拟 DOM 的渲染过程
+  ![虚拟DOM的渲染过程](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232249_Screenshot_20240919_230917.jpg)
