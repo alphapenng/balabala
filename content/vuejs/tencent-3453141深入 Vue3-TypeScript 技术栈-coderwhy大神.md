@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-22 14:27:10
+ * @LastEditTime: 2024-09-22 14:39:06
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -108,6 +108,7 @@
       - [Mini-Vue 实现](#mini-vue-实现)
   - [VueRouter 路由使用](#vuerouter-路由使用)
     - [认识 vue-router](#认识-vue-router)
+    - [router-link 的 v-slot](#router-link-的-v-slot)
 
 ## 开篇
 
@@ -2251,7 +2252,7 @@ function createApp(rootComponent) {
     - URL 的 hash 也就是锚点（#），本质上是改变 window.location 的 href 属性；
     - 我们可以通过直接赋值 location.hash 来改变 href，但是页面不发生刷新；
     - hash 的优势是兼容性更好，在老版 IE 中都可以运行，但是缺陷是有一个 #，显得不像一个真实的路径。
-    ![url的hash]()  
+    ![url的hash](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922143452_Screenshot_20240922_110431.jpg)  
 - HTML5 的 History
   - history 接口是 HTML5 新增的，它有六种模式改变 URL 而不刷新页面：
     - replaceState：替换原来的路径；
@@ -2260,7 +2261,7 @@ function createApp(rootComponent) {
     - go：向前或向后改变路径；
     - forward：向前改变路径；
     - back：向后改变路径；
-  ![html5的history]() 
+  ![html5的history](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922143551_Screenshot_20240922_112704.jpg) 
 
 ### 认识 vue-router
 
@@ -2272,7 +2273,7 @@ function createApp(rootComponent) {
     - 第二步：配置路由映射：组件和路径映射关系的 routes 数组；
     - 第三步：通过 createRouter 创建路由对象，并且传入 routes 和history 模式；
     - 第四步：使用路由：通过 `<router-link>` 和 `<router-view>` ；
-  ![路由的基本使用流程]()
+  ![路由的基本使用流程](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922143623_Screenshot_20240922_120433.jpg)
 - 路由的默认路径
   - 如何可以让**路径**默认跳转到**首页**，并且 `<router-view>` 渲染首页组件呢？
 
@@ -2325,7 +2326,7 @@ function createApp(rootComponent) {
 - 路由的其他属性
   - name 属性：路由记录独一无二的名称；
   - meta属性：自定义的数据；
-  ![路由的其他属性]()
+  ![路由的其他属性](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922143705_Screenshot_20240922_124831.jpg)
 - 动态路由基本匹配
 - 动态路由匹配
   - 很多时候我们需要将给定匹配模式的路由映射到同一个组件：
@@ -2415,7 +2416,7 @@ function createApp(rootComponent) {
     - `Not Found: user/hahah/123` `path: '/:pathMatch(.*)'`
 
 - 路由的嵌套
-  ![路由的嵌套]()
+  ![路由的嵌套](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922143804_Screenshot_20240922_135008.jpg)
 - 代码的页面跳转
   - 有时候我们希望通过代码来完成页面的跳转，比如点击的是一个按钮：
 
@@ -2442,6 +2443,8 @@ function createApp(rootComponent) {
       router.replace('/profile')
     }
     ```
+
+### router-link 的 v-slot
 
 - router-link 的 v-slot
 - 
