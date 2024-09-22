@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-19 23:23:19
+ * @LastEditTime: 2024-09-22 14:27:10
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -101,6 +101,13 @@
     - [认识 Teleport](#认识-teleport)
     - [认识 Vue 插件](#认识-vue-插件)
   - [Vue3 源码学习](#vue3-源码学习)
+    - [总体结构](#总体结构)
+    - [实现 Mini-Vue](#实现-mini-vue)
+      - [渲染系统实现](#渲染系统实现)
+      - [响应式系统](#响应式系统)
+      - [Mini-Vue 实现](#mini-vue-实现)
+  - [VueRouter 路由使用](#vuerouter-路由使用)
+    - [认识 vue-router](#认识-vue-router)
 
 ## 开篇
 
@@ -1940,6 +1947,8 @@
 
 ## Vue3 源码学习
 
+### 总体结构
+
 - 真实的 DOM 渲染
   - 我们传统的前端开发中，我们是编写自己 HTML，最终被渲染到浏览器上的，那么它是什么样的过程呢？
   ![传统DOM渲染](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232233_Screenshot_20240919_225610.jpg)
@@ -1953,3 +1962,486 @@
     - 并且 Vue 允许你开发属于自己的渲染器（renderer），在其他的平台上渲染；
 - 虚拟 DOM 的渲染过程
   ![虚拟DOM的渲染过程](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919232249_Screenshot_20240919_230917.jpg)
+- 三大核心系统
+  - 事实上 Vue 的源码包含三大核心：
+    - Compiler 模块：编译模板系统；
+    - Runtime 模块：也可以称之为 Renderer 模块，真正渲染的模块；
+    - Reactivity 模块：响应式系统；
+- 三大系统协同工作
+  ![三大系统协同工作](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170536_Screenshot_20240920_093041.jpg)
+
+### 实现 Mini-Vue
+
+- 这里我们实现一个简洁版的 Mini-Vue 框架，该 Vue 包括三个模块：
+  - 渲染系统模块（runtime -> vnode -> 真实dom）；
+  - 可响应式系统模块（reactive（vue2/vue3））；
+  - 应用程序入口模块（createApp(rootComponent).mount("#app")）；
+
+#### 渲染系统实现
+
+- 渲染系统，该模块主要包含三个功能：
+  - 功能一：h 函数，用于返回一个 VNode 对象；
+  - 功能二：mount 函数，用于将 VNode 挂载到 DOM 上；
+  - 功能三：patch 函数，用于对两个 VNode 进行对比，决定如何处理新的 VNode；
+  ![h函数](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170602_Screenshot_20240920_094544.jpg)
+  ![通过h函数来创建一个vnode](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170727_Screenshot_20240920_094650.jpg)
+  ![mount函数1](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170654_Screenshot_20240920_095607.jpg)
+  ![mount函数2](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170821_Screenshot_20240920_095616.jpg)
+  ![通过mount函数将vnode挂载到div#app上](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170856_Screenshot_20240920_100418.jpg)
+  ![patch函数1](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170926_Screenshot_20240920_101823.jpg)
+  ![patch函数2](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920170955_Screenshot_20240920_101836.jpg)
+  ![patch函数3](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920171120_Screenshot_20240920_104329.jpg)
+  ![patch函数4](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920171058_Screenshot_20240920_103935.jpg)
+  ![patch函数效果](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920171026_Screenshot_20240920_103522.jpg)
+
+#### 响应式系统
+
+```javascript
+// reactive_vue2实现.js
+class Dep {
+  constructor() {
+    this.subscribers = new Set();
+  }
+
+  addEffect(effect) {
+    this.subscribers.add(effect)
+  }
+
+  depend() {
+    if (activeEffect) {
+      this.subscribers.add(activeEffect)
+    }
+  }
+
+  notify() {
+    this.subscribers.forEach(effect => {
+      effect()
+    })
+  }
+}
+let activeEffect = null;
+
+function watchEffect(effect) {
+  activeEffect = effect;
+  effect();
+  activeEffect = null;
+}
+
+// Map({key: value})： key是一个字符串
+// WeakMap({key(对象): value})：key是一个对象，弱引用
+
+const targetMap = new WeakMap();
+function getDep(target, key) {
+  // 1.根据对象（target）取出对应的 Map 对象
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    depsMap = new Map();
+    targetMap.set(target, depsMap);
+  }
+
+  // 2.取出具体的 dep 对象
+  let dep = depsMap.get(key);
+  if (!dep) {
+    dep = new Map();
+    depsMap.set(key, dep);
+  }
+  return dep;
+}
+
+// vue2 对 raw 进行数据劫持
+function reactive(raw) {
+  Object.keys(raw).forEach(key => {
+    const dep = getDep(raw, key)
+    let value = raw[key]
+
+    Object.defineProperty(raw, key, {
+      get() {
+        dep.depend()
+        return value
+      },
+      set(newValue) {
+        if (value !== newValue) {
+          value = newValue
+          dep.notify()
+        }
+      }
+    })
+  })
+  return raw
+}
+
+// 测试代码
+const info = {counter: 100, name: "why"};
+const foo = {height: 1.88}
+
+// watchEffect1
+watchEffect(function () {
+  console.log("effect1", info.counter * 2, info.name);
+})
+
+// watchEffect2
+watchEffect(function () {
+  console.log("effect2", info.counter * info.counter);
+})
+
+// watchEffect3
+watchEffect(function () {
+  console.log("effect3", info.counter + 10, info.name);
+})
+
+// watchEffect4
+watchEffect(function () {
+  console.log("effect4", foo.height);
+})
+
+info.counter++;
+info.name = "lilei";
+```
+
+```javascript
+// reactive_vue3实现.js
+class Dep {
+  constructor() {
+    this.subscribers = new Set();
+  }
+
+  addEffect(effect) {
+    this.subscribers.add(effect)
+  }
+
+  depend() {
+    if (activeEffect) {
+      this.subscribers.add(activeEffect)
+    }
+  }
+
+  notify() {
+    this.subscribers.forEach(effect => {
+      effect()
+    })
+  }
+}
+let activeEffect = null;
+
+function watchEffect(effect) {
+  activeEffect = effect;
+  effect();
+  activeEffect = null;
+}
+
+// Map({key: value})： key是一个字符串
+// WeakMap({key(对象): value})：key是一个对象，弱引用
+
+const targetMap = new WeakMap();
+function getDep(target, key) {
+  // 1.根据对象（target）取出对应的 Map 对象
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    depsMap = new Map();
+    targetMap.set(target, depsMap);
+  }
+
+  // 2.取出具体的 dep 对象
+  let dep = depsMap.get(key);
+  if (!dep) {
+    dep = new Map();
+    depsMap.set(key, dep);
+  }
+  return dep;
+}
+
+// vue3 对 raw 进行数据劫持
+function reactive(raw) {
+  return new Proxy(raw, {
+    get(target, key) {
+      const dep = getDep(target, key)
+      dep.depend()
+      return target[key]
+    },
+    set(target, key, newValue) {
+      const dep = getDep(target, key)
+      if (target[key] !== newValue) {
+        target[key] = newValue
+        dep.notify()
+      }
+    }
+  });
+}
+
+// 测试代码
+const info = {counter: 100, name: "why"};
+const foo = {height: 1.88}
+
+// watchEffect1
+watchEffect(function () {
+  console.log("effect1", info.counter * 2, info.name);
+})
+
+// watchEffect2
+watchEffect(function () {
+  console.log("effect2", info.counter * info.counter);
+})
+
+// watchEffect3
+watchEffect(function () {
+  console.log("effect3", info.counter + 10, info.name);
+})
+
+// watchEffect4
+watchEffect(function () {
+  console.log("effect4", foo.height);
+})
+
+info.counter++;
+info.name = "lilei";
+```
+
+- **为什么 Vue3 选择 Proxy 呢？**
+  - Object.definedProperty 是劫持对象的属性时，如果新增元素：
+    - 那么 Vue2 需要再次调用 definedProperty，而 Proxy 劫持的是整个对象，不需要做特殊处理；(`{name, age}`新增 `height`，就需要调用 `Vue.$set()` 做处理)
+  - 修改对象的不同：
+    - 使用 defineProperty 时，我们修改原来的 obj 对象就可以触发拦截；
+    - **而使用 proxy，就必须修改代理对象，即 Proxy 的实例才可以触发拦截；**
+  - Proxy 能观察的类型比 defineProperty 更丰富
+    - has：in 操作符的捕获器；
+    - deleteProperty：delete 操作符的捕捉器；
+    - 等等其他操作；
+  - Proxy 作为新标准将受到浏览器厂商终点持续的性能优化；
+  - 缺点：Proxy 不兼容 IE，也没有 polyfill，defineProperty 能支持到 IE9
+
+#### Mini-Vue 实现
+
+1. 创建根组件
+![创建根组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920171208_Screenshot_20240920_164133.jpg)
+![onClick的function改箭头函数](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920171256_Screenshot_20240920_164443.jpg)
+2. 挂载根组件
+
+```javascript
+// index.js
+function createApp(rootComponent) {
+  return {
+    mount(selector) {
+      const container = document.querySelector(selector);
+      let isMounted = false;
+      let oldVNode = null;
+      
+      watchEffect(function() {
+        if (!isMounted) {
+          oldVNode = rootComponent.render();
+          mount(oldVNode, container);
+          isMounted = true;
+        } else {
+          const newVNode = rootComponent.render();
+          patch(oldVNode, newVNode);
+          oldVNode = newVNode;
+        }
+      })
+    }
+  }
+}
+```
+
+![挂载根组件](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240920171233_Screenshot_20240920_164157.jpg)
+
+## VueRouter 路由使用
+
+- URL 的 hash
+  - 前端路由是如何做到 URL 和内容进行映射呢？监听 URL 的改变。
+  - **URL 的 hash**
+    - URL 的 hash 也就是锚点（#），本质上是改变 window.location 的 href 属性；
+    - 我们可以通过直接赋值 location.hash 来改变 href，但是页面不发生刷新；
+    - hash 的优势是兼容性更好，在老版 IE 中都可以运行，但是缺陷是有一个 #，显得不像一个真实的路径。
+    ![url的hash]()  
+- HTML5 的 History
+  - history 接口是 HTML5 新增的，它有六种模式改变 URL 而不刷新页面：
+    - replaceState：替换原来的路径；
+    - pushState：使用新的路径；
+    - popState：路径的回退；
+    - go：向前或向后改变路径；
+    - forward：向前改变路径；
+    - back：向后改变路径；
+  ![html5的history]() 
+
+### 认识 vue-router
+
+- 安装 Vue Router：
+  - `npm install vue-router@4`
+- 路由的使用步骤
+  - 使用 vue-router 的步骤：
+    - 第一步：创建路由组件的组件；
+    - 第二步：配置路由映射：组件和路径映射关系的 routes 数组；
+    - 第三步：通过 createRouter 创建路由对象，并且传入 routes 和history 模式；
+    - 第四步：使用路由：通过 `<router-link>` 和 `<router-view>` ；
+  ![路由的基本使用流程]()
+- 路由的默认路径
+  - 如何可以让**路径**默认跳转到**首页**，并且 `<router-view>` 渲染首页组件呢？
+
+    ```javascript
+    const routes = [
+      {path: '/', redirect: '/home'},
+      {path: '/home', component: Home},
+      {path: '/about', component: About}
+    ]
+    ```
+  
+- history 模式
+  - 另外一种选择的模式是 history 模式：
+
+    ```javascript
+    import { createRouter, createWebHistory } from 'vue-router'
+
+    const router = createRouter({
+      routes,
+      history: createWebHistory()
+    })
+    ```
+
+- router-link
+  - router-link 事实上有很多属性可以配置：
+  - to 属性：
+    - 是一个字符串，或者是一个对象
+  - replace 属性：
+    - 设置 replace 属性的话，当点击时，会调用 router.replace()，而不是 router.push()；
+  - active-class 属性：
+    - 设置激活 a 元素后应用的 class，默认是 router-link-active；
+  - exact-active-class 属性：
+    - 链接精准激活后，应用于渲染的 `<a>` 的 class，默认是 router-link-exact-active；
+- 路由懒加载
+  - 当打包构建应用时，JavaScript 包会变得非常大，影响页面加载：
+    - 如果我们能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就会更加高效；
+    - 也可以提高首屏的渲染效率；
+  - 其实这里还是我们前面讲到过的 webpack 的分包知识，而 Vue Router 默认就支持动态来导入组件：
+    - 这是因为 component 可以传入一个组件，也可以接收一个函数，该函数需要放回一个 Promise；
+    - 而 import 函数就是返回一个 Promise；
+
+      ```javascript
+      const routes = [
+        {path: '/', redirect: '/home'},
+        {path: '/home', component: () => import('../pages/Home.vue')},
+        {path: '/about', component: () => import('../pages/About.vue')}
+      ]
+      ```
+
+- 路由的其他属性
+  - name 属性：路由记录独一无二的名称；
+  - meta属性：自定义的数据；
+  ![路由的其他属性]()
+- 动态路由基本匹配
+- 动态路由匹配
+  - 很多时候我们需要将给定匹配模式的路由映射到同一个组件：
+    - 例如，我们可能有一个 User 组件，它应该对所有用户进行渲染，但是用户的 ID 是不同的；
+    - 在 Vue Router 中，我们可以在路径中使用一个动态字段来实现，我们称之为路径参数；
+
+      ```javascript
+      {
+        path: '/user/:id',
+        component: () => import('../pages/User.vue')
+      },
+      ```
+
+    - 在 router-link 中进行如下跳转：
+
+      ``` javascript
+      <router-link to="/user/123">用户：123</router-link>
+      ```
+
+- 获取动态路由的值
+  - 那么在 User 中如何获取到对应的值呢？
+    - 在 template 中，直接通过 `$route.params` 获取值；
+      - 在 created 中，通过 `this.$route.params` 获取值；
+      - 在 setup 中，我们要使用 vue-router 库给我们提供的一个 hook useRoute；
+        - 该 Hook 会返回一个 Route 对象，对象中保存着当前路由相关的值；
+
+  ```html
+  <template>
+    <div>
+      <h1>User</h1>
+      <p>用户：{{$route.params.id}}</p>
+    </div>
+  </template>
+  ```
+
+  ```javascript
+  export default {
+    created() {
+      console.log(this.$route.params.id)
+    },
+    setup() {
+      const route = useRoute()
+      console.log(route)
+      console.log(route.params.id)
+    }
+  }
+  ```
+
+- 匹配多个参数
+
+  ```javascript
+  {
+    path: '/user/:id/info/:name',
+    component: () => import('../pages/User.vue')
+  }
+  ```
+
+- NotFound
+  - 对于那些没有匹配到的路由，我们通常会匹配到固定的某个页面
+    - 比如 NotFound 的错误页面中，这个时候我们可编写一个动态路由用于匹配所有的页面；
+
+    ```javascript
+    {
+      path: '/:pathMatch(.*)',
+      component: () => import('../pages/NotFound.vue')
+    } 
+    ```
+  
+  - 我们可以通过 `$route.params.pathMatch` 获取到传入的参数：
+
+    ```html
+    <h2>Not Found: {{ $route.params.pathMatch }}</h2>
+    ```
+
+- 匹配规则加 *
+  - 这里还另外一种写法：
+  
+    ```javascript
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('../pages/NotFound.vue')
+    } 
+    ```
+
+  - 它们的区别在于解析的时候，是否解析 /：
+    - `Not Found: ["user", "hahah", "123"]` `path: '/:pathMatch(.*)*'`
+    - `Not Found: user/hahah/123` `path: '/:pathMatch(.*)'`
+
+- 路由的嵌套
+  ![路由的嵌套]()
+- 代码的页面跳转
+  - 有时候我们希望通过代码来完成页面的跳转，比如点击的是一个按钮：
+
+    ```javascript
+    jumpToProfile() {
+      this.$router.push('/profile')
+    }
+    ``` 
+
+  - 当然，我们也可以传入一个对象：
+
+    ```javascript
+    jumpToProfile() {
+      this.$router.push({path: '/profile'})
+    }
+    ```
+
+  - 如果是在 setup 中编写的代码，那么我们可以通过 useRouter 来获取：
+
+    ```javascript
+    const router = useRouter()
+
+    const jumpToProfile = () => {
+      router.replace('/profile')
+    }
+    ```
+
+- router-link 的 v-slot
+- 
