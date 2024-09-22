@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-22 14:39:06
+ * @LastEditTime: 2024-09-22 23:02:06
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -109,6 +109,12 @@
   - [VueRouter 路由使用](#vuerouter-路由使用)
     - [认识 vue-router](#认识-vue-router)
     - [router-link 的 v-slot](#router-link-的-v-slot)
+    - [router-view 的 v-slot](#router-view-的-v-slot)
+    - [动态添加路由](#动态添加路由)
+    - [动态删除路由](#动态删除路由)
+    - [路由的其他方法补充](#路由的其他方法补充)
+    - [路由导航守卫](#路由导航守卫)
+  - [Vuex 的状态管理](#vuex-的状态管理)
 
 ## 开篇
 
@@ -2446,5 +2452,219 @@ function createApp(rootComponent) {
 
 ### router-link 的 v-slot
 
-- router-link 的 v-slot
-- 
+- 在 vue-router3.x 的时候，router-link 有一个 tag 属性，可以决定 router-link 到底渲染成什么元素：
+  - 但是在 vue-router4.x 开始，该属性被移除了；
+  - 而给我们提供了更加具有灵活性的 v-slot 的方式来定制渲染的内容；
+- **v-slot 如何使用呢？**
+- 首先，我们需要使用 custom 表示我们整个元素要自定义
+  - 如果不写，那么自定义的内容会被包裹在一个 a 元素中；
+- 其次，我们使用 v-slot 来作用域插槽来获取内部传给我们的值：
+  - href：解析后的 URL；
+  - route：解析后的规范化的 route 对象；
+  - navigate：触发导航的函数；
+  - isActive：是否匹配的状态；
+  - isExactActive：是否是精准匹配的状态；
+
+  ```javascript
+  <router-link to="/about" v-slot="{ href, route, navigate, isActive, isExactActive }"
+    <p @click="navigate">跳转about</p>
+    <div>
+      <p>href: {{ href }}</p>
+      <p>route: {{ route }}</p>
+      <p>isActive: {{ isActive }}</p>
+      <p>isExactActive: {{ isExactActive }}</p>
+    </div>
+  </router-link>
+  ```
+
+### router-view 的 v-slot
+
+- router-view 也提供给我们一个插槽，可以用于 `<transition>` 和 `<keep-alive>` 组件来包裹你的路由组件：
+  - Component：要渲染的组件；
+  - route：解析出的标准化路由对象；
+
+  ```javascript
+  <router-view v-slot="{ Component }">
+    <transition name="why">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </transition>
+  </router-view>
+  ```
+
+  ```css
+  .router-link-active {
+    color: red;
+  }
+
+  .why-enter-from,
+  .why-leave-to {
+    opacity: 0;
+  }
+
+  .why-enter-active,
+  .why-leave-active {
+    transition: opacity 1s ease-in;
+  }
+  ```
+
+### 动态添加路由
+
+- 某些情况下我们可能需要动态的来添加路由：
+  - 比如根据用户不同的权限，注册不同的路由；
+  - 这个时候我们可以使用一个方法 addRoute；
+- 如果我们是为 route 添加一个 children 路由，那么可以传入对应的 name：
+
+  ```javascript
+  // 动态添加一个路由
+  const categoryRoute = {
+    path: '/category',
+    component: () => import('../pages/Category.vue')
+  }
+
+  router.addRoute(categoryRoute)
+  ```
+
+  ```javascript
+  const homeMomentRoute = {
+    path: 'moment',
+    component: () => import('../pages/HomeMoment.vue')
+  }
+
+  router.addRoute('home', homeMomentRoute)
+  ```
+
+### 动态删除路由
+
+- 删除路由有以下三种方式：
+  - 方式一：添加一个 name 相同的路由；
+
+    ```javascript
+    router.addRoute({ path: '/about', name: 'about', component: About })
+    // 这将会删除之前已经添加的路由，因为他们具有相同的名字且名字必须是唯一的
+    router.addRoute({ path: '/other', name: 'about', component: Home })
+    ```
+
+  - 方式二：使用 removeRoute 方法，传入路由的名称；
+
+    ```javascript
+    router.addRoute({ path: '/about', name: 'about', component: About})
+    // 删除路由
+    router.removeRoute('about')
+    ```
+
+  - 方式三：通过 addRoute 方法的返回值回调；
+
+    ```javascript
+    const removeRoute = router.addRoute({ path: '/about', name: 'about', component: About})
+    // 删除路由如果存在的话
+    removeRoute()
+    ```
+
+### 路由的其他方法补充
+
+- 路由的其他方法补充：
+  - router.hasRoute()：检查路由是否存在；
+  - router.getRoutes()：获取一个包含所有路由记录的数组。
+
+### 路由导航守卫
+
+- vue-router 提供的导航守卫主要用来通过跳转或取消的方式守卫导航。
+- **全局的前置守卫 beforeEach 是在导航触发时会被回调的：**
+- 它有两个参数：
+  - to：即将进入的路由 Route 对象；
+  - from：即将离开的路由 Route 对象；
+- 它有返回值：
+  - false：取消当前导航；
+  - 不返回或者 undefined：进行默认导航；
+  - 返回一个路由地址：
+    - 可以是一个 string 类型的路径；
+    - 可以是一个对象，对象中包含 path、query、params 等信息；
+  - 可选的第三个参数：next
+    - 在 Vue2 中我们是通过 next 函数来决定如何进行跳转的；
+    - 但是在 Vue3 中我们是通过返回值来控制的，不再推荐使用 next 函数，这是因为开发中很容易调用多次 next；
+- 登录守卫功能
+  - 比如我们完成一个功能，只有登录后才能看到其他页面：
+
+  ```javascript
+  router.beforeEach((to, from) => {
+    console.log(to)
+    console.log(from)
+
+    if (to.path !== '/login') {
+      const token = window.localStorage.getItem('token')
+      if (!token) {
+        return {
+          path: '/login'
+        }
+      }
+    }
+  })
+  ```
+
+  ```javascript
+  export default {
+    setup() {
+      const router = useRouter()
+
+      const login = () => {
+        window.localStorage.setItem('token', '123')
+        router.push({
+          path: '/home'
+        })
+      }
+
+      return {
+        login
+      }
+    }
+  }
+  ```
+
+- 其他导航守卫
+  - Vue 还提供了很多的其他守卫函数，目的都是在某一个时刻给予我们回调，让我们可以更好的控制程序的流程或者功能；
+    - <https://next.router.vuejs.org/zh/guide/advanced/navigation-guards.html>
+  - 我们一起来看一下**完整的导航解析流程：**
+    - 导航被触发
+    - 在失活的组件里调用 beforeRouteLeave 守卫
+    - 调用全局的 beforeEach 守卫
+    - 在重用的组件里调用 beforeRouteUpdate 守卫（2.2.+）
+    - 在路由配置里调用 beforeEnter
+    - 解析异步路由组件
+    - 在被激活的组件里调用 beforeRouteEnter
+    - 调用全局的 beforeResolve 守卫（2.5+）
+    - 导航被确认
+    - 调用全局的 afterEach 钩子
+    - 触发 DOM 更新
+    - 调用 beforeRouteEnter 守卫中传给 next 的回调函数，创建好的组件实例会作为回调函数的参数传入
+
+## Vuex 的状态管理
+
+- 在开发中，我们的应用程序需要处理各种各样的数据，这些数据需要保存在我们应用程序中的某一个位置，对于这些数据的管理我们就称之为是**状态管理**。
+- 在前面我们是如何管理自己的状态呢？
+  - 在 Vue 开发中，我们使用组件化的开发方式；
+  - 而在组件中我们定义 data 或者在 setup 中返回使用的数据，这些数据我们称之为 state；
+  - 在模块 template 中我们可以使用这些数据，模块最终会被渲染成 DOM，我们称之为 View；
+  - 在模块中我们会产生一些行为事件，处理这些行为事件时，有可能会修改 state，这些行为事件我们称之为 actions；
+- 复杂的状态管理
+  - JavaScript 开发的应用程序，已经变得越来越复杂了：
+    - JavaScript 需要管理的状态越来越多，越来越复杂；
+    - 这些状态包括服务器返回的数据、缓存数据、用户操作产生的数据等等；
+    - 也包括一些 UI 的状态，比如某些元素是否被选中，是否显示加载动效，当前分页；
+  - 当我们的应用遇到**多个组件共享状态**时，单向数据流的简洁性很容易被破坏：
+    - 多个视图依赖于同一状态；
+    - 来自不同视图的行为需要变更同一状态；
+  - 我们是否可以通过组件数据的传递来完成呢？
+    - 对于一些简单的状态，确实可以通过 props 的传递或者 Provide 的方式来共享状态；
+    - 但是对于复杂的状态管理来说，显然单纯通过传递和共享的方式是不足以解决问题的，比如兄弟组件如何共享数据呢？
+- 管理不断变化的 state 本身是非常困难的：
+  - 状态之间相互会存在依赖，一个状态的变化会引起另一个状态的变化，View 页面也有可能会引起状态的变化；
+  - 当应用程序复杂时，state 在什么时候，因为什么原因而发生了变化，发生了怎么样的变化，会变得非常难以控制和追踪；
+- 因此，我们是否可以考虑将组件的内部状态抽离出来，以一个全局单例的方式来管理呢？
+  - 这这种模式下，我们的组件树构成了一个巨大的“视图 View”；
+  - 不管在树的哪个位置，任何组件都能获取状态或者触发行为；
+  - 通过定义和隔离状态管理中的各个概念，并通过强制性的规则来维护视图和状态间的独立性，我们的代码便会变得更加结构化和易于维护、跟踪；
+- 这就是 Vuex 背后的基本思想，它借鉴了 Flux、Redux、Elm（纯函数语言，redux 有借鉴它的思想）
+  ![Vuex原理](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922230155_Screenshot_20240922_230006.jpg)
+  
