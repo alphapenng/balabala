@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-22 23:02:06
+ * @LastEditTime: 2024-09-24 19:34:45
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -115,6 +115,16 @@
     - [路由的其他方法补充](#路由的其他方法补充)
     - [路由导航守卫](#路由导航守卫)
   - [Vuex 的状态管理](#vuex-的状态管理)
+    - [Vuex 的基本使用](#vuex-的基本使用)
+    - [单一状态树](#单一状态树)
+    - [组件获取状态](#组件获取状态)
+    - [getters 的基本使用](#getters-的基本使用)
+    - [Mutation 基本使用](#mutation-基本使用)
+    - [actions 的基本使用](#actions-的基本使用)
+    - [module 的基本使用](#module-的基本使用)
+    - [nextTick](#nexttick)
+    - [historyApiFallback](#historyapifallback)
+  - [TypeScript 语法精讲（一）](#typescript-语法精讲一)
 
 ## 开篇
 
@@ -1918,6 +1928,7 @@
     - 在 Vue3 中我们可以通过**计算属性（computed）** 或者 **自定义一个方法（methods）** 来完成；
     - 其实我们还可以通过一个**自定义的指令**来完成；
     ![自定义指令案例](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240919231937_Screenshot_20240919_220232.jpg)
+    ![v-format的bug修复](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240924193337_Screenshot_20240924_182503.jpg)
 
 ### 认识 Teleport
 
@@ -2641,6 +2652,8 @@ function createApp(rootComponent) {
 
 ## Vuex 的状态管理
 
+### Vuex 的基本使用
+
 - 在开发中，我们的应用程序需要处理各种各样的数据，这些数据需要保存在我们应用程序中的某一个位置，对于这些数据的管理我们就称之为是**状态管理**。
 - 在前面我们是如何管理自己的状态呢？
   - 在 Vue 开发中，我们使用组件化的开发方式；
@@ -2667,4 +2680,615 @@ function createApp(rootComponent) {
   - 通过定义和隔离状态管理中的各个概念，并通过强制性的规则来维护视图和状态间的独立性，我们的代码便会变得更加结构化和易于维护、跟踪；
 - 这就是 Vuex 背后的基本思想，它借鉴了 Flux、Redux、Elm（纯函数语言，redux 有借鉴它的思想）
   ![Vuex原理](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240922230155_Screenshot_20240922_230006.jpg)
+
+- vuex 的基本使用
+  ![vuex的基本使用index.js](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240923221953_Screenshot_20240923_220017.jpg)
+  ![vuex的基本使用app.vue](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240923222019_Screenshot_20240923_220044.jpg)
+
+### 单一状态树
+
+- Vuex 使用**单一状态树**：
+  - 用一个对象就包含了全部的应用层级状态；
+  - 采用的是 SSOT，Single Source of Truth，也可以翻译成单一数据源；
+  - 这也意味着，每个应用将仅仅包含一个 store 实例；
+  - 单状态树和模块化并不冲突，后面我们会讲到 module 的概念；
+- 单一状态树的优势：
+  - 如果你的状态信息是保存到多个 store 对象中的，那么之后的管理和维护等等都会变得特别困难；
+  - 所以 Vuex 也使用了单一状态树来管理应用层级的全部状态；
+  - 单一状态树能够让我们最直接的方式找到某个状态的片段，而且在之后的维护和调试过程中，也可以非常方便的管理和维护；
+
+### 组件获取状态
+
+- 在前面我们已经学习过如何在组件中获取状态了
+- 当然，如果觉得那种方式有点繁琐（表达式过长），我们可以使用计算属性：
+
+  ```javascript
+  computed() {
+    counter() {
+      return this.$store.state.counter
+    }
+  },
+  ```
+
+- 但是，如果我们有很多个状态都需要获取的话，可以使用 mapState 的辅助函数：
+  - mapState 方式一：对象类型；
+  - mapState 方式二：数组类型；
+  - 也可以使用展开运算符和原有的 computed 混合在一起；
+- 在 setup 中使用 mapState
+  - 在 setup 中如果我们单个获取状态是非常简单的：
+    - 通过 useStore 拿到 store 后去获取某个状态即可；
+    - 但是如果我们需要使用 mapState 的功能呢？
+  - 默认情况下，Vuex 并没有提供非常方便的使用 mapState 的方式，这里我们进行了一个函数的封装：
+
+  ```javascript
+  // hooks/useState.js
+  import { computed } from 'vue'
+  import { mapState, useStore } from 'vuex'
+
+  export function useState(mapper) {
+    // 拿到 store 对象
+    const store = useStore()
+
+    // 获取到对应的对象的 Functions：{name: function, age: function}
+    const storeStateFns = mapState(mapper)
+
+    // 对数据进行转换 
+    const storeState = {}
+    Object.keys(storeStateFns).forEach(fnKey => {
+      const fn = storeStateFns[fnKey].bind({$store: store})
+      storeState[fnKey] = computed(fn)
+    })
+    
+    return storeState
+  }
+  ```
+
+  ```javascript
+  # pages/Home.vue
+  <script>
+    import { useState } from '../hooks/useState'
+
+    export default {
+      setup() {
+        const storeState = useState(["counter", "name", "age", "height"])
+        const storeState2 = useState({
+          sCounter: state => state.counter,
+          sName: state => state.name
+        })
+
+        return {
+          ...storeState,
+          ...storeState2
+        }
+      }
+    }
+  </script>
+  ```
+
+### getters 的基本使用
+
+- 某些属性我们可能需要经过变化后来使用，这个时候可以使用 getters：
+
+  ```javascript
+  // store/index.js
+  const store = createStore({
+    state() {
+      return {
+        counter: 0,
+        name: "coderwhy",
+        age: 18,
+        height: 1.88,
+        books: [
+          {name: "vuejs", count: 2, price: 110},
+          {name: "react", count: 3, price: 120},
+          {name: "webpack", count: 4, price: 130},
+        ]
+      }
+    },
+    getters: {
+      totalPrice(state) {
+        let totalPrice = 0;
+        for (const book of state.books) {
+          totalPrice += book.count * book.price
+        }
+        return totalPrice
+      }
+    }
+  })
+  ```
+
+  ```html
+  // pages/Home.vue
+  <div>
+    <h2>{{ $store.getters.totalPrice }}</h2>
+  </div>
+  ```
+
+- getters 第二个参数
+
+  ```javascript
+  // store/index.js
+  getters: {
+    totalPrice(state, getters) {
+      let totalPrice = 0;
+      for (const book of state.books) {
+        totalPrice += book.count * book.price;
+      }
+
+      return totalPrice + ", " + getters.myName;
+    },
+    myName(state) {
+      return state.name;
+    },
+  },
+  ```
+
+- getters 的返回函数
+
+  ```javascript
+  //store/index.js
+  getters: {
+    totalPrice(state) {
+      return (price) => {
+        let totalPrice = 0;
+        for (const book of state.books) {
+          if (book.price < price) continue
+          totalPrice += book.count * book.price
+        }
+
+        return totalPrice
+      }
+    }
+  }
+  ```
+
+- mapGetters 的辅助函数
+  - 这里我们也可以使用 mapGetters 的辅助函数
+
+    ```javascript
+    // pages/Home.vue
+    computed: {
+      ...mapGetters(["totalPrice", "myName"]),
+      ...mapGetters({
+        finalPrice: "totalPrice",
+        finalName: "myName",
+      }),
+    },
+    ```
+
+  - 在 setup 中使用
+
+    ```javascript
+    // hooks/useGetters.js
+    import { useStore, mapGetters } from 'vuex';
+    import { computed } from 'vue';
+
+    export function userGetters(mapper) {
+      const store = useStore();
+
+      const stateFns = mapGetters(mapper)
+
+      const state = {}
+      Object.keys(stateFns).forEach(fnKey => {
+        state[fnKey] = computed(stateFns[fnKey].bind({$store: store}))
+      })
+
+      return state
+    }
+    ```
+
+### Mutation 基本使用
+
+- 更改 Vuex 的 store 中的状态的唯一方法是提交 mutation：
+
+  ```javascript
+  // store/index.js
+  mutations: {
+    increment(state) {
+      state.counter++
+    },
+    decrement(state) {
+      state.counter--
+    }
+  },
+  ```
+
+- Mutation 携带数据
+  - 很多时候我们在提交 mutation 的时候，会携带一些数据，这个时候我们可以使用参数：
+
+    ```javascript
+    mutations: {
+      addNumber(state, payload) {
+        state.counter += payload
+      }
+    },
+    ```
+
+  - payload 为对象类型
+
+    ```javascript
+    addNumber(state, payload) {
+      state.counter += payload.count
+    }
+    ```
+
+  - 对象风格的提交方式
+
+    ```javascript
+    $store.commit({
+      type: "addNumber",
+      count: 100`
+    })
+    ```
+
+- Mutation 常量类型
+  - 定义常量：mutation-type.js
+
+    ```javascript
+    // store/mutation-type.js
+    export const ADD_NUMBER = 'ADD_NUMBER'
+    ```
+
+  - 定义 mutation
+
+    ```javascript
+    // store/index.js
+    import { ADD_NUMBER } from './mutation-type'  
+
+    [ADD_NUMBER](state, payload) {
+      state.counter += payload.count
+    }
+    ```
+
+  - 提交 mutation
+
+    ```javascript
+    $store.commit({
+      type: ADD_NUMBER,
+      count: 100
+    })
+    ```
+
+- mapMutations 辅助函数
+  - 我们也可以借助于辅助函数，帮助我们快速映射到对应的方法中：
+
+    ```javascript
+    // pages/Home.vue
+    methods: {
+      ...mapMutations({
+        addNumber: ADD_NUMBER,
+      }),
+      ...mapMutations(["increment", "decrement"]),
+    },
+    ```
+
+  - 在 setup 中使用也是一样的：
+
+    ```javascript
+    const mutations = mapMutations(['increment', 'decrement']);
+    const mutations2 = mapMutations({
+      addNumber: ADD_NUMBER
+    })
+    ```
+
+### actions 的基本使用
+
+- action 类似于 mutation， 不同在于：
+  - action 提交的是 mutation，而不是直接变更状态；
+  - action 可以包含任意异步操作；
+
+  ```javascript
+  mutations: {
+    increment(state) {
+      state.counter++
+    }
+  },
+  actions: {
+    increment(context) {
+      context.commit("increment")
+    }
+  },
+  ```
+
+- 这里有一个非常重要的参数 context：
+  - context 是一个和 store 实例均有相同方法和属性的 context 对象；
+  - 所以我们可以从其中获取到 commit 方法来提交 mutation，或者通过 context.state 和 context.getters 来获取 state 和 getters；
+  - 但是为什么它不是 store 对象呢？
+- actions 的分发操作
+  - 如何使用 action 呢？进行 action 的分发：
+    - 分发使用的是 store 上的 dispatch 函数；
+
+    ```javascript
+    add() {
+      this.$store.dispatch("increment"),
+    },
+    ```
   
+  - 同样的，它也可以携带我们的参数：
+
+    ```javascript
+    add() {
+      this.$store.dispatch("increment", { count: 100 });
+    },
+    ```
+
+  - 也可以以对象的形式进行分发：
+
+    ```javascript
+    add() {
+      this.$store.dispatch({
+        type: "increment",
+        count: 100,
+      });
+    },
+    ```
+
+- actions 的辅助函数
+  - action 也有对应的辅助函数：
+    - 对象类型的写法；
+    - 数组类型的写法；
+
+    ```javascript
+    methods: {
+      ...mapActions(["increment", "decrement"]),
+      ...mapActions({
+        add: "increment",
+        sub: "decrement"
+      })
+    },
+    ```
+
+    ```javascript
+    setup() {
+      const actions1 = mapActions(["decrement"]);
+      const actions2 = mapActions({
+        add: "increment",
+        sub: "decrement"
+      })
+    }
+    ```
+
+- actions 的异步操作
+  - action 通常是异步的，那么如何知道 action 什么时候结束呢？
+    - 我们可以通过让 action 返回 promise，在 promise 的 then 中来处理完成后的操作；
+
+    ```javascript
+    actions: {
+      increment(context) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            context.commit("increment")
+            resolve("异步完成")
+          }, 1000);
+        })
+      }
+    }
+    ```
+
+    ```javascript
+    const store = useStore();
+    const increment = () => {
+      store.dispatch("increment").then(res => {
+        console.log(res, "异步完成")；
+      })
+    }
+    ```
+
+### module 的基本使用
+
+- 什么是 module？
+  - 由于使用单一状态树，应用的所有状态会集中到一个比较大的对象，当应用变得非常复杂时，store 对象就有可能变得相当臃肿；
+  - 为了解决以上问题，Vuex 允许我们将 store 分割成**模块（module）**；
+  - 每个模块拥有自己的 state、mutation、action、getter、甚至是嵌套子模块；
+
+  ```javascript
+  const moduleA = {
+    state: () => ({}),
+    mutations: {},
+    actions: {},
+    getters: {}
+  }
+
+  const moduleB = {
+    state: () => ({}),
+    mutations: {},
+    actions: {}
+  }
+  ```
+
+  ```javascript
+  const store = createStore({
+    modules: {
+      a: moduleA,
+      b: moduleB
+    }
+  })
+
+  store.state.a // -> moduleA 的状态
+  store.state.b // -> moduleB 的状态
+  ```
+
+- module 的局部状态
+  - 对于模块内部的 mutation 和 getter，接收的第一个参数是**模块的局部状态对象**：
+
+  ```javascript
+  mutations: {
+    changeName(state) {
+      state.name = "coderwhy"
+    }
+  },
+  getters: {
+    info(state, getters, rootState) {
+      return `name: ${state.name} age: ${state.age} height: ${state.height}`
+    }
+  }
+  ```
+
+  ```javascript
+  actions: {
+    changeNameAction({state, commit, rootstate}) {
+      commit("changeName", "kobe")
+    }
+  }
+  ```
+
+- module 的命名空间
+  - 默认情况下，模块内部的 action 和 mutation 仍然是注册在**全局的命名空间**中的：
+    - 这样使得多个模块能够对同一个 action 或 mutation 作出响应；
+    - getter 同样也默认注册在全局命名空间；
+  - 如果我们希望模块具有更高的封装度和复用性，可以添加 namespaced: true 的方式使其成为带命名空间的模块：
+    - 当模块被注册后，它的所有 getter、action 及 mutation 都会自动根据模块注册的路径调整命名；
+
+  ```javascript
+  namespaced: true,
+  // 访问：$store.state.user.xxx
+  state() {
+    return {
+      name: "why",
+      age: 18,
+      height: 1.88
+    }
+  },
+  mutations: {
+    // 访问：$store.commit("user/changeName")
+    changeName(state) {
+      state.name = "coderwhy"
+    }
+  },
+  ```
+
+  ```javascript
+  getters: {
+    // 访问：$store.getters["user/info"]
+    // 这里会有四个参数：
+    info(state, getters, rootState, rootGetters) {
+      return `name: ${state.name} age: ${state.age} height: ${state.height}`
+    }
+  },
+  actions: {
+    // 这里一共有六个参数
+    changeNameAction({commit, dispatch, state, rootState, getters, rootGetters}) {
+      commit("changeName", "kobe")
+    }
+  }
+  ```
+
+- module 修改或派发根组件
+  - 如果我们希望在 action 中修改 root 中的 state， 那么有如下的方式：
+
+  ```javascript
+  // 这里一共有六个参数
+  changeNameAction({commit, dispatch, state, rootState, getters, rootGetters}) {
+    commit("changeName", "kobe");
+
+    commit("changeRootName", null, {root: true});
+    commit("changeRootNameAction", null, {root: true})
+  }
+  ```
+
+- module 的辅助函数
+  - 如果辅助函数有三种使用方法：
+    - 方式一：通过完整的模块空间名称来查找；
+    - 方式二：第一个参数传入模块空间名称，后面写上要使用的属性；
+    - 方式三：通过 createNamespacedHelpers 生成一个模块的辅助函数；
+
+  ```javascript
+  computed: {
+    ...mapState({
+      a: (state) => state.some.nested.module.a,
+      b: (state) => state.some.nested.module.b,
+    }),
+  },
+  methods: {
+    ...mapActions([
+      "some/nested/module/foo", // -> this['some/nested/module/foo']()
+      "some/nested/module/bar", // -> this['some/nested/module/bar']()
+    ]),
+  },
+  ```
+
+  ```javascript
+  computed: {
+    ...mapState("some/nested/module", {
+      a: (state) => state.a,
+      b: (state) => state.b,
+    }),
+  },
+  methods: {
+    ...mapActions("some/nested/module", [
+      "foo", // -> this.foo()
+      "bar", // -> this.bar()
+    ]),
+  },
+  ```
+
+  ```javascript
+  const { mapState, mapActions } = createNamespacedHelpers('some/nested/module')
+
+  export default {
+    computed: {
+      // 在 'some/nested/module' 中查找
+      ...mapState({
+        a: state => state.a,
+        b: state => state.b
+      })
+    },
+    methods: {
+      // 在 'some/nested/module' 中查找
+      ...mapActions([
+        'foo',
+        'bar'
+      ])
+    }
+  },
+  ```
+
+- 对 useState 和 useGetters 修改
+
+  ```javascript
+  export function useState(mapper, moduleId) {
+    let stateFn = mapState;
+    if (moduleId) {
+      stateFn = createNamespacedHelpers(moduleId).mapState
+    }
+
+    return useUtil(mapper, stateFn)
+  }
+  ```
+
+  ```javascript
+  export function userGetters(mapper, moduleId) {
+    let mapModuleGetter = mapGetters;
+    if (moduleId) {
+      mapModuleGetter = createNamespacedHelpers(moduleId).mapGetters
+    }
+
+    return useUtil(mapper, mapModuleGetter)
+  } 
+  ```
+
+### nextTick
+
+- 官方解释：将回调推迟到下一个 DOM 更新周期之后执行。在更改了一些数据以等待 DOM 更新后立即使用它。
+- 比如我们有下面的要求：
+  - 点击一个按钮，我们会修改在 h2 中显示的 message；
+  - message 被修改后，获取 h2 的高度；
+- 实现上面的案例我们有三种方式：
+  - 方式一：在点击按钮后立即获取到 h2 的高度（错误的做法）
+  - 方式二：在 update 生命周期函数中获取 h2 的高度（但是其他数据更新，也会执行该操作）
+  - 方式三：使用 nextTick 函数；
+- nextTick 是如何做到的呢？
+  ![nextTick_demo](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240924193514_Screenshot_20240924_184328.jpg) 
+
+### historyApiFallback
+
+- historyApiFallback 是开发中一个非常常见的属性，它主要的作用是解决 SPA 页面在路由跳转之后，进行页面刷新时，返回 404 的错误；
+- boolean 值：默认是 false
+  - 如果设置为 true，那么在刷新时，返回 404 错误时，会自动返回 index.html 的内容；
+- object 类型的值，可以配置 rewrites 属性：
+  - 可以配置 from 来匹配路径，决定要跳转到哪一个页面；
+- 事实上 devServer 中实现 historyApiFallback 功能是通过 connect-history-api-fallback 库的：
+  - 可以查看 connect-history-api-fallback 文档
+
+## TypeScript 语法精讲（一）
+
