@@ -13,10 +13,9 @@
       - [安装 Oh-My-Zsh](#安装-oh-my-zsh)
       - [配置 Oh-My-Zsh](#配置-oh-my-zsh)
       - [配置 Windows Terminal](#配置-windows-terminal)
-    - [GitHub 凭据](#github-凭据)
-      - [创建你的个人访问令牌](#创建你的个人访问令牌)
-      - [Git 凭据管理器](#git-凭据管理器)
-      - [存储令牌](#存储令牌)
+      - [在 Windows 和 WSL 之间共享 Git 凭据](#在-windows-和-wsl-之间共享-git-凭据)
+        - [创建你的个人访问令牌](#创建你的个人访问令牌)
+        - [添加令牌至 Git 凭据管理器](#添加令牌至-git-凭据管理器)
     - [WSL](#wsl)
       - [先决条件](#先决条件)
       - [安装 WSL 2](#安装-wsl-2)
@@ -36,12 +35,6 @@
       - [映射你的 Linux 驱动器](#映射你的-linux-驱动器)
       - [固定代码目录](#固定代码目录)
       - [重启 WSL](#重启-wsl)
-    - [配置 Windows PowerShell](#配置-windows-powershell)
-    - [Windows 终端](#windows-终端)
-      - [安装 Windows 终端](#安装-windows-终端)
-      - [终端设置](#终端设置)
-        - [默认配置文件](#默认配置文件)
-        - [开始目录](#开始目录)
     - [在 WSL 中配置 Git](#在-wsl-中配置-git)
       - [姓名](#姓名)
       - [电子邮件](#电子邮件)
@@ -57,6 +50,12 @@
         - [autojump](#autojump)
         - [zsh-vi-mode](#zsh-vi-mode)
         - [zsh\_codex](#zsh_codex)
+    - [配置 Windows PowerShell](#配置-windows-powershell)
+    - [Windows 终端](#windows-终端)
+      - [安装 Windows 终端](#安装-windows-终端)
+      - [终端设置](#终端设置)
+        - [默认配置文件](#默认配置文件)
+        - [开始目录](#开始目录)
     - [安装 Python](#安装-python)
       - [版本控制](#版本控制)
     - [安装 Node.js](#安装-nodejs)
@@ -195,9 +194,35 @@ Windows Terminal 是一个新式主机应用程序，相较于 Cmd 或 Windows P
 
     ![wt配置git_bash](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic202411072316324.png)
 
-### GitHub 凭据
+#### 在 Windows 和 WSL 之间共享 Git 凭据
 
-#### 创建你的个人访问令牌
+首先下载适用于 Windows 的 Git [gitforwindows.org/](https://gitforwindows.org) 并在安装步骤中选择 [Git Credential Manager (GCM) 作为凭据帮助程序](https://github.com/GitCredentialManager/git-credential-manager)。
+
+![git_bash_setup](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic202411101154509.png)
+
+如果你使用 HTTPS 克隆存储库，则可以与 WSL 共享此存储库，以便您输入的密码在双方都保留。
+
+⚠️ 请注意，这不适用于使用 SSH 密钥。⚠️
+
+只需按照以下步骤操作：
+
+0. 通过在 Windows 命令提示符或 PowerShell 中运行以下命令，在 Windows 上配置凭据管理器：
+
+    ```bash
+    git config --global credential.helper wincred
+    ```
+
+1. 配置 WSL 以使用相同的凭据帮助程序，但在 WSL 终端中运行以下命令（假设您 windows 上 git>= v2.39.0）：
+
+    ```bash
+    git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
+    ```
+
+要了解以前版本的路径 git，请参考 <https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git>
+
+现在，WSL 可以使用您在 Windows 端使用 Git 时输入的任何密码，反之亦然。
+
+##### 创建你的个人访问令牌
 
 GitHub 已删除在远程存储库中工作时使用传统密码的功能。你现在需要创建个人访问令牌。
 
@@ -205,21 +230,9 @@ GitHub 已删除在远程存储库中工作时使用传统密码的功能。你�
 
 按照 [these docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) 获取有关创建个人令牌的分步说明。
 
-#### Git 凭据管理器
+##### 添加令牌至 Git 凭据管理器
 
 一旦你第一次输入令牌，它就可以通过 [Git 凭据管理器（GCM）](https://github.com/GitCredentialManager/git-credential-manager) 存储，因此你不必每次都对自己进行身份验证。
-
-你可以同时在 WSL 和 Windows 中安装 Git。[适用于 Windows 的 Git](https://gitforwindows.org/) 包括 GCM，是安装它的首选方式。
-
-你还可以下载 [Windows 的最新安装程序](https://github.com/GitCredentialManager/git-credential-manager/releases/latest) 来安装 GCM 独立版。
-
-#### 存储令牌
-
-安装 Git Credential Manager 后，你可以将其设置为与 WSL 一起使用。打开你的 WSL 终端并输入以下命令：
-
-```bash
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
-```
 
 ### WSL
 
@@ -465,114 +478,6 @@ wsl.exe --shutdown
 wsl.exe
 ```
 
-### 配置 Windows PowerShell
-
-1. [powershell github core](https://github.com/PowerShell/PowerShell)
-2. 设置 Windows Terminal 默认启动为 PowerShell7
-3. [安装 oh-my-posh](https://gist.github.com/xiaopeng163/0fe4225a56ff97cd47e25a4b8a6f36ec)
-
-    ```powershell
-    Install-Module oh-my-posh -Scope CurrentUser -SkipPublisherCheck
-    Install-Module posh-git -Scope CurrentUser
-    Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
-    ```
-
-4. 引入配置 `notepad.exe $PROFILE`
-
-    ```powershell
-    Import-Module posh-git
-    Import-Module oh-my-posh
-    Set-PoshPrompt -Theme dracula
-    ```
-
-5. [安装字体](https://ohmyposh.dev/docs/config-fonts)
-6. 安装文件图标库
-
-    ```powershell
-    Install-Module -Name Terminal-Icons -Repository PSGallery
-    ```
-
-7. 使用图标
-
-    ```powershell
-    Import-Module -Name Terminal-Icons
-    ```
-
-8. 命令行自动补全和提示
-
-    ```powershell
-    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-    ```
-
-9. 配置 vim 在 powershell 中打开
-
-    - find vim path
-
-        git 是自带 vim 的`path = C:\Program Files\Git\usr\bin\vim`
-
-    - vimrc 配置
-
-        ```powershell
-        set encoding=utf-8
-        set termencoding=utf-8
-        set fileencoding=utf-8
-        set fileencodings=ucs-bom,utf-8,chinese,cp936
-        ```
-
-    - ps profile 配置
-
-        ```powershell
-        # There's usually much more than this in my profile!
-        $SCRIPTPATH = "C:\Program Files\Git\usr\bin"
-        $VIMPATH    = $SCRIPTPATH + "\vim.exe"
-
-        Set-Alias vi   $VIMPATH
-        Set-Alias vim  $VIMPATH
-
-        # for editing your PowerShell profile
-        Function Edit-Profile
-        {
-        	vim $profile
-        }
-
-        # for editing your Vim settings
-        Function Edit-Vimrc
-        {
-        	vim $home\_vimrc
-        }
-        ```
-
-### Windows 终端
-
-#### 安装 Windows 终端
-
-[Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/install)
-
-#### 终端设置
-
-我建议快速设置的几件事是**默认配置文件**和你的**起始主目录**。这些设置使启动 Windows 终端将直接打开到我们用户主目录中的 WSL。
-
-##### 默认配置文件
-
-Windows 终端默认启动时会打开 PowerShell 或命令提示符 shell，以下是如何将其切换到 WSL：
-
-1. 从 Windows 终端中选择 `˅` 图标并转到设置菜单
-2. 在启动部分，你将找到默认配置文件下拉列表，选择 Ubuntu。在它下面，选择 Windows 终端作为默认终端应用程序
-
-##### 开始目录
-
-默认的 Ubuntu 终端将打开到根目录。为了更快地找到你的文件，我们可以将其打开到你的主目录中。
-
-1. 在设置菜单的配置文件部分下，单击 Ubuntu
-2. 在常规选项卡上，你将找到一个起始目录输入
-3. 输入以下将“用户名”替换为你的 Ubuntu 用户名
-4. 你可以不选中 `Use parent process directory` 框
-5. 如果它仍在打开你的 / 目录，请将位于 `Starting directory` 输入框正上方的 `Command line` 设置更改为以下内容： `wsl.exe-d Ubuntu`
-
-还有更多设置需要探索，还有一个 JSON 文件可以编辑以进行更高级的自定义。
-
-查看 [this guide](https://www.ubuntupit.com/best-windows-terminal-themes-and-color-schemes/) 了解一些流行的 Windows 终端主题以及如何安装它们。
-
 ### 在 WSL 中配置 Git
 
 Git 应该预装在大多数（如果不是所有的话）WSL Linux 发行版上。为确保你拥有最新版本，请在基于 Ubuntu 或 Debian 的发行版中使用以下命令：
@@ -743,6 +648,113 @@ autojump 是为了进行目录快速跳转而准备的，它记录用户的目�
     ```
 
 5. 开始新的终端会话，编写想要 AI 执行的操作或变量名然后按下 `^X`，AI 将执行你的操作。
+### 配置 Windows PowerShell
+
+1. [powershell github core](https://github.com/PowerShell/PowerShell)
+2. 设置 Windows Terminal 默认启动为 PowerShell7
+3. [安装 oh-my-posh](https://gist.github.com/xiaopeng163/0fe4225a56ff97cd47e25a4b8a6f36ec)
+
+    ```powershell
+    Install-Module oh-my-posh -Scope CurrentUser -SkipPublisherCheck
+    Install-Module posh-git -Scope CurrentUser
+    Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
+    ```
+
+4. 引入配置 `notepad.exe $PROFILE`
+
+    ```powershell
+    Import-Module posh-git
+    Import-Module oh-my-posh
+    Set-PoshPrompt -Theme dracula
+    ```
+
+5. [安装字体](https://ohmyposh.dev/docs/config-fonts)
+6. 安装文件图标库
+
+    ```powershell
+    Install-Module -Name Terminal-Icons -Repository PSGallery
+    ```
+
+7. 使用图标
+
+    ```powershell
+    Import-Module -Name Terminal-Icons
+    ```
+
+8. 命令行自动补全和提示
+
+    ```powershell
+    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+    ```
+
+9. 配置 vim 在 powershell 中打开
+
+    - find vim path
+
+        git 是自带 vim 的`path = C:\Program Files\Git\usr\bin\vim`
+
+    - vimrc 配置
+
+        ```powershell
+        set encoding=utf-8
+        set termencoding=utf-8
+        set fileencoding=utf-8
+        set fileencodings=ucs-bom,utf-8,chinese,cp936
+        ```
+
+    - ps profile 配置
+
+        ```powershell
+        # There's usually much more than this in my profile!
+        $SCRIPTPATH = "C:\Program Files\Git\usr\bin"
+        $VIMPATH    = $SCRIPTPATH + "\vim.exe"
+
+        Set-Alias vi   $VIMPATH
+        Set-Alias vim  $VIMPATH
+
+        # for editing your PowerShell profile
+        Function Edit-Profile
+        {
+        	vim $profile
+        }
+
+        # for editing your Vim settings
+        Function Edit-Vimrc
+        {
+        	vim $home\_vimrc
+        }
+        ```
+
+### Windows 终端
+
+#### 安装 Windows 终端
+
+[Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/install)
+
+#### 终端设置
+
+我建议快速设置的几件事是**默认配置文件**和你的**起始主目录**。这些设置使启动 Windows 终端将直接打开到我们用户主目录中的 WSL。
+
+##### 默认配置文件
+
+Windows 终端默认启动时会打开 PowerShell 或命令提示符 shell，以下是如何将其切换到 WSL：
+
+1. 从 Windows 终端中选择 `˅` 图标并转到设置菜单
+2. 在启动部分，你将找到默认配置文件下拉列表，选择 Ubuntu。在它下面，选择 Windows 终端作为默认终端应用程序
+
+##### 开始目录
+
+默认的 Ubuntu 终端将打开到根目录。为了更快地找到你的文件，我们可以将其打开到你的主目录中。
+
+1. 在设置菜单的配置文件部分下，单击 Ubuntu
+2. 在常规选项卡上，你将找到一个起始目录输入
+3. 输入以下将“用户名”替换为你的 Ubuntu 用户名
+4. 你可以不选中 `Use parent process directory` 框
+5. 如果它仍在打开你的 / 目录，请将位于 `Starting directory` 输入框正上方的 `Command line` 设置更改为以下内容： `wsl.exe-d Ubuntu`
+
+还有更多设置需要探索，还有一个 JSON 文件可以编辑以进行更高级的自定义。
+
+查看 [this guide](https://www.ubuntupit.com/best-windows-terminal-themes-and-color-schemes/) 了解一些流行的 Windows 终端主题以及如何安装它们。
 
 ### 安装 Python
 
