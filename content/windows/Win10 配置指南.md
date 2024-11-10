@@ -7,13 +7,30 @@
 - [Win10 配置指南](#win10-配置指南)
   - [准备工作](#准备工作)
   - [开发人员设置](#开发人员设置)
+    - [git bash 安装并配置 Oh My Zsh](#git-bash-安装并配置-oh-my-zsh)
+      - [安装 Git Bash](#安装-git-bash)
+      - [安装 zsh](#安装-zsh)
+      - [安装 Oh-My-Zsh](#安装-oh-my-zsh)
+      - [配置 Oh-My-Zsh](#配置-oh-my-zsh)
+      - [配置 Windows Terminal](#配置-windows-terminal)
+    - [GitHub 凭据](#github-凭据)
+      - [创建你的个人访问令牌](#创建你的个人访问令牌)
+      - [Git 凭据管理器](#git-凭据管理器)
+      - [存储令牌](#存储令牌)
     - [WSL](#wsl)
       - [先决条件](#先决条件)
       - [安装 WSL 2](#安装-wsl-2)
       - [用户配置](#用户配置)
         - [更改默认安装的 Linux 发行版](#更改默认安装的-linux-发行版)
         - [设置 Linux 用户名和密码](#设置-linux-用户名和密码)
-        - [wsl 在开启防火墙的情况下使用主机代理](#wsl-在开启防火墙的情况下使用主机代理)
+        - [wsl 在开启防火墙的情况下使用主机代理（在 win11 中测试已失效，主机开启 tunnel 代理可跳过这步）](#wsl-在开启防火墙的情况下使用主机代理在-win11-中测试已失效主机开启-tunnel-代理可跳过这步)
+      - [使用 WSL 访问网络应用程序](#使用-wsl-访问网络应用程序)
+        - [标识 IP 地址](#标识-ip-地址)
+        - [默认网络模式：NAT](#默认网络模式nat)
+        - [镜像模式网络](#镜像模式网络)
+        - [DNS 隧道](#dns-隧道)
+        - [自动代理](#自动代理)
+        - [WSL 和防火墙](#wsl-和防火墙)
       - [更新 Linux](#更新-linux)
         - [查看更新 Linux 系统相关信息](#查看更新-linux-系统相关信息)
       - [映射你的 Linux 驱动器](#映射你的-linux-驱动器)
@@ -29,12 +46,8 @@
       - [姓名](#姓名)
       - [电子邮件](#电子邮件)
       - [用户名](#用户名)
-    - [GitHub 凭据](#github-凭据)
-      - [创建你的个人访问令牌](#创建你的个人访问令牌)
-      - [Git 凭据管理器](#git-凭据管理器)
-      - [存储令牌](#存储令牌)
     - [在 WSL 中配置 Zsh](#在-wsl-中配置-zsh)
-      - [安装 Zsh](#安装-zsh)
+      - [安装 Zsh](#安装-zsh-1)
       - [OhMyZsh](#ohmyzsh)
       - [cURL](#curl)
       - [安装 OhMyZsh](#安装-ohmyzsh)
@@ -82,7 +95,131 @@
 
 ## 开发人员设置
 
-[dev guide](https://github.com/Vets-Who-Code/windows-dev-guide/blob/main/README_cn.md)
+整个开环环境的配置参考的是这篇文章[dev guide](https://github.com/Vets-Who-Code/windows-dev-guide/blob/main/README_cn.md)，另外下文各个单独的配置项也有参考不同的文章，也会在相关的配置项里单独列出参考的文章。
+
+### git bash 安装并配置 Oh My Zsh
+
+此配置环节参考的是这篇[Windows 通过 Git Bash 配置 Oh My Zsh - Seepine's Blog](https://seepine.com/git/oh-my-zsh/)
+
+#### 安装 Git Bash
+
+在 Git 官网下载安装包默认下一步即可，建议全默认安装即可，不需要做任何修改包括安装路径。[https://git-scm.com/downloads](https://git-scm.com/downloads)
+
+#### 安装 zsh
+
+1. 下载 zsh
+
+    - 方式一，下载 [zsh-5.9-2-x86_64.pkg.zip](https://seepine.com/git/oh-my-zsh/zsh-5.9-2-x86_64.pkg.zip)，此 zip 是基于 zsh-5.9-2-x86_64 解压 zst 后再压缩为 zip，方便在 windows 环境下直接使用
+    - 方式二，官网下载最新版，此方式下载的文件为 zst 类型，还需要安装对应解压软件，zsh 最新版下载地址：<https://packages.msys2.org/package/zsh?repo=msys&variant=x86_64>，zst 解压软件下载地址：<https://peazip.github.io/>
+
+2. 安装 zsh
+
+    解压 zsh 包 `zsh-5.x-x-x86_64.pkg` 后有两个目录 `etc` 和 `usr`
+    将 `etc` 和 `usr` 复制到 Git 安装目录，即 `C:\Program Files\Git` ，此目录原本也有 `etc` 和 `usr`，复制时若提示文件冲突，选择覆盖即可。
+
+3. 设置 zsh 为默认终端
+
+    执行
+
+    ```bash
+    chsh -s $(which zsh)
+    ```
+
+    或者打开 Git Bash 终端，添加以下配置 `vi ~/.bashrc`
+
+    ```bash
+    if [ -t 1 ]; then
+        exec zsh
+    fi
+    ```
+
+#### 安装 Oh-My-Zsh
+
+需能够科学上网，然后执行命令 `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"` 直接一键安装即可
+
+#### 配置 Oh-My-Zsh
+
+所有配置即编辑 ~/.zshrc 文件即可
+
+1. 配置主题
+
+    更改为 ys，其他主题及效果可查看官网 [OhMyZsh Themes](https://github.com/ohmyzsh/ohmyzsh/wiki/Themes)
+
+    ```bash
+    ZSH_THEME="ys"
+    ```
+
+2. 下载常用插件
+
+    若网络不稳定，可在所有 Git 仓库前添加 <https://mirror.ghproxy.com/>
+    - zsh-syntax-highlighting 语法高亮
+
+        ```bash
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+        ```
+
+    - zsh-autosuggestions 自动补全
+
+        ```bash
+        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+        ```
+
+3. 配置插件
+
+    编辑 `~/.zshrc` 文件，添加以下配置
+
+    ```bash
+    plugins=(
+        git
+        zsh-syntax-highlighting
+        zsh-autosuggestions
+    )
+    ```
+
+4. 使配置生效
+
+    ```bash
+    source ~/.bashrc
+    ```
+
+#### 配置 Windows Terminal
+
+Windows Terminal 是一个新式主机应用程序，相较于 Cmd 或 Windows Power，可自定义程度更大，支持多页签等，更加便捷易用。
+因此可配置 Windows Terminal 默认打开即为 Git Bash
+
+1. 安装
+
+    自行下载即可，可以商店直接安装，也可以看微软官网安装文档，甚至 Windows11 貌似已经自带<https://learn.microsoft.com/zh-cn/windows/terminal/install>
+
+2. 配置
+
+    ![wt配置git_bash](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic202411072316324.png)
+
+### GitHub 凭据
+
+#### 创建你的个人访问令牌
+
+GitHub 已删除在远程存储库中工作时使用传统密码的功能。你现在需要创建个人访问令牌。
+
+> 当使用 [GitHub API](https://docs.github.com/en/rest/overview/other-authentication-methods#via-oauth-and-personal-access-tokens)powershellpwoersheowershellpwowershellpowershell 或 [命令行](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#using-a-token-on-the-command-line) 时，个人访问令牌（PAT）是使用密码对 GitHub 进行身份验证的替代方案。
+
+按照 [these docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) 获取有关创建个人令牌的分步说明。
+
+#### Git 凭据管理器
+
+一旦你第一次输入令牌，它就可以通过 [Git 凭据管理器（GCM）](https://github.com/GitCredentialManager/git-credential-manager) 存储，因此你不必每次都对自己进行身份验证。
+
+你可以同时在 WSL 和 Windows 中安装 Git。[适用于 Windows 的 Git](https://gitforwindows.org/) 包括 GCM，是安装它的首选方式。
+
+你还可以下载 [Windows 的最新安装程序](https://github.com/GitCredentialManager/git-credential-manager/releases/latest) 来安装 GCM 独立版。
+
+#### 存储令牌
+
+安装 Git Credential Manager 后，你可以将其设置为与 WSL 一起使用。打开你的 WSL 终端并输入以下命令：
+
+```bash
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
 
 ### WSL
 
@@ -141,13 +278,154 @@ wsl --install
 
 系统将提示你输入新的 UNIX 密码，然后确认该密码。 在被告知密码已成功更新后，请使用以下命令在 PowerShell 内关闭 WSL：`exit`。
 
-##### wsl 在开启防火墙的情况下使用主机代理
+##### wsl 在开启防火墙的情况下使用主机代理（在 win11 中测试已失效，主机开启 tunnel 代理可跳过这步）
 
 在宿主机 PowerShell 内运行：
 
 ```powershell
 New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
 ```
+
+#### 使用 WSL 访问网络应用程序
+
+使用网络应用和 WSL 时需要了解一些注意事项。 默认情况下，WSL 使用基于 NAT 的体系结构。建议尝试新的镜像网络模式以获得最新的功能和改进。使用网络应用和 WSL 时需要了解一些注意事项。
+
+##### 标识 IP 地址
+
+确定 IP 地址（用于通过 WSL 运行的 Linux 分发）时，需要考虑两种场景：
+
+场景一：从 Windows 主机的角度来看，你想要查询通过 WSL2 运行的 Linux 分发的 IP 地址，使 Windows 主机上的程序可连接到分发（实例）中运行的服务器程序。
+
+Windows 主机可使用命令：
+
+```cmd
+wsl -d <DistributionName> hostname -I
+```
+
+如果查询默认分发，则可省略指定该分发的此部分命令：`-d <DistributionName>`。 请务必使用大写 `-I` 标志，而不是小写 `-i`。
+
+在后台，主机命令 `wsl.exe` 启动目标实例并执行 Linux 命令 `hostname -I`。 然后，此命令将 WSL 实例的 IP 地址打印到 `STDOUT`。 `STDOUT` 文本内容随后被中继回 wsl.exe。 最后，wsl.exe 显示该命令行的输出。
+
+典型的输出可能为：
+
+```cmd
+172.30.98.229
+```
+
+场景二：通过 WSL2（实例）在 Linux 分发中运行的程序想知道 Windows 主机的 IP 地址，使 Linux 程序可连接到 Windows 主机服务器程序。
+
+WSL2 Linux 用户可使用命令：
+
+```bash
+ip route show | grep -i default | awk '{ print $3}'
+```
+
+典型的输出可能为：
+
+```bash
+172.30.96.1
+```
+
+因此，在本示例中，`172.30.96.1` 是 Windows 的主机 IP 地址。
+
+##### 默认网络模式：NAT
+
+默认情况下，WSL 使用基于 NAT（网络地址转换）的网络体系结构。 使用基于 NAT 的网络体系结构时，请牢记以下注意事项：
+
+- 从 Windows (localhost) 访问 Linux 网络应用
+
+    如果要在 Linux 分发版中构建网络应用（例如，在 NodeJS 或 SQL server 上运行的应用），可以使用 localhost 从 Windows 应用（如 Microsoft Edge 或 Chrome Internet 浏览器）访问它（就像往常一样）。
+
+- 从 Linux（主机 IP）访问 Windows 网络应用
+
+    如果要从 Linux 分发版（即 Ubuntu）访问 Windows 上运行的网络应用（例如，在 NodeJS 或 SQL 服务器上运行的应用），则需要使用主机的 IP 地址。 虽然这不是一种常见方案，但你可以执行以下步骤来使其可行。
+
+- 通过远程 IP 地址进行连接
+
+    当使用远程 IP 地址连接到应用程序时，它们将被视为来自局域网 (LAN) 的连接。 这意味着你需要确保你的应用程序可以接受 LAN 连接。
+
+    例如，你可能需要将应用程序绑定到 0.0.0.0 而非 127.0.0.1。 以使用 Flask 的 Python 应用为例，可以通过以下命令执行此操作：app.run(host='0.0.0.0')。 进行这些更改时请注意安全性，因为这将允许来自你的 LAN 的连接。
+
+- 从局域网 (LAN) 访问 WSL 2 分发版
+
+    当使用 WSL 1 分发版时，如果计算机设置为可供 LAN 访问，那么在 WSL 中运行的应用程序也可供在 LAN 中访问。
+
+    这不是 WSL 2 中的默认情况。 WSL 2 有一个带有其自己独一无二的 IP 地址的虚拟化以太网适配器。 目前，若要启用此工作流，你需要执行与常规虚拟机相同的步骤。 （我们正在寻找改善此体验的方法。）
+
+    下面是使用 Netsh 接口 portproxy Windows 命令添加端口代理的示例，该代理侦听主机端口并将该端口代理连接到 WSL 2 VM 的 IP 地址。
+
+    ```powershell
+    netsh interface portproxy add v4tov4 listenport=<yourPortToForward> listenaddress=0.0.0.0 connectport=<yourPortToConnectToInWSL> connectaddress=(wsl hostname -I)
+    ```
+
+    在此示例中，需要更新 `<yourPortToForward>` 到端口号，例如 `listenport=4000`。 `listenaddress=0.0.0.0` 表示将接受来自任何 IP 地址的传入请求。 侦听地址指定要侦听的 IPv4 地址，可以更改为以下值：IP 地址、计算机 NetBIOS 名称或计算机 DNS 名称。 如果未指定地址，则默认值为本地计算机。 需要将 `<yourPortToConnectToInWSL>` 值更新为希望 WSL 连接的端口号，例如 `connectport=4000`。 最后，`connectaddress` 值必须是通过 WSL 2 安装的 Linux 分发版的 IP 地址（WSL 2 VM 地址），可通过输入命令：`wsl.exe hostname -I` 找到。
+
+    因此，此命令可能如下所示：
+
+    ```powershell
+    netsh interface portproxy add v4tov4 listenport=4000 listenaddress=0.0.0.0 connectport=4000 connectaddress=192.168.101.100
+    ```
+
+##### 镜像模式网络
+
+在运行 Windows 11 22H2 及更高版本的计算机上，可以在 [.wslconfig 文件中的 [wsl2] 下设置 networkingMode=mirrored](https://learn.microsoft.com/zh-cn/windows/wsl/wsl-config#configuration-settings-for-wslconfig)，以启用镜像模式网络。 启用此功能会将 WSL 更改为全新的网络体系结构，其目标是将 Windows 上的网络接口 “镜像” 到 Linux 中，以添加新的网络功能并提高兼容性。
+
+以下是启用此模式的当前优势：
+
+- IPv6 支持
+- 使用 localhost 地址 `127.0.0.1` 从 Linux 内部连接到 Windows 服务器。 不支持 IPv6 localhost 地址 `::1`
+- 改进了 VPN 的网络兼容性
+- 多播支持
+- 直接从局域网 (LAN) 连接到 WSL
+
+使用管理员权限在 PowerShell 窗口中运行以下命令，以[配置 Hyper-V 防火墙](https://learn.microsoft.com/zh-cn/windows/security/operating-system-security/network-security/windows-firewall/hyper-v-firewall)设置，从而允许入站连接：`Set-NetFirewallHyperVVMSetting -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -DefaultInboundAction Allow` 或 `New-NetFirewallHyperVRule -Name "MyWebServer" -DisplayName "My Web Server" -Direction Inbound -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol TCP -LocalPorts 80`。
+
+其中获取 WSL GUID 的方式
+
+Hyper-V 防火墙规则按 VMCreatorId 启用。 若要获取 VMCreatorId，请使用 cmdlet：
+
+```powershell
+Get-NetFirewallHyperVVMCreator
+```
+
+输出包含具有唯一标识符 `VMCreatorId` 和 `friendly name` 属性的 VmCreator 对象类型。 例如，以下输出显示了 WSL 的属性：
+
+```powershell
+Get-NetFirewallHyperVVMCreator
+VMCreatorId : {40E0AC32-46A5-438A-A0B2-2B479E8F2E90}
+FriendlyName : WSL
+```
+
+验证 Hyper-V 防火墙设置
+
+Hyper-V 防火墙具有通常应用于 VMCreatorId 的设置。 使用 Get-NetFirewallHyperVVMSetting cmdlet 检查设置。 例如，可以使用 命令获取应用于 WSL 的策略：
+
+```powershell
+Get-NetFirewallHyperVVMSetting -PolicyStore ActiveStore -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}'
+```
+
+防火墙规则
+
+可以从 PowerShell 枚举和创建 Hyper-V 防火墙规则。 若要查看规则，请使用 Get-NetFirewallHyperVRule cmdlet。 例如，若要查看仅与 WSL 相关的防火墙规则，请使用以下命令：
+
+```powershell
+Get-NetFirewallHyperVRule -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}'
+```
+
+##### DNS 隧道
+
+在运行 Windows 11 22H2 及更高版本的计算机上，在 .wslconfig 文件中的 [wsl2] 下设置 dnsTunneling=true 可使 WSL 使用虚拟化功能来应答来自 WSL 内的 DNS 请求，而不是通过网络数据包请求它们。 此功能旨在提高与 VPN 和其他复杂网络设置的兼容性。
+
+##### 自动代理
+
+在运行 Windows 11 22H2 及更高版本的计算机上，在 .wslconfig 文件中的 [wsl2] 下设置 autoProxy=true 会强制 WSL 使用 Windows 的 HTTP 代理信息。 如果已在 Windows 中设置了代理，启用此功能会使该代理也在 WSL 中自动进行设置。
+
+##### WSL 和防火墙
+
+在运行 Windows 11 22H2 及更高版本以及运行 WSL 2.0.9 及更高版本的计算机上，Hyper-V 防火墙功能将默认打开。 这将确保：
+
+- 请参阅[具有高级安全性的 Windows Defender 防火墙](https://learn.microsoft.com/zh-cn/windows/security/operating-system-security/network-security/windows-firewall/windows-firewall-with-advanced-security)，详细了解将自动应用于 WSL 的 Windows 安全功能。
+- 请参阅[配置 Hyper-V 防火墙](https://learn.microsoft.com/zh-cn/windows/security/operating-system-security/network-security/windows-firewall/hyper-v-firewall)，详细了解如何在本地应用这些规则和设置，以及如何通过 Intune 之类的在线工具这样做。
 
 #### 更新 Linux
 
@@ -329,33 +607,7 @@ git config --global user.username "GitHub username"
 
 确保你输入的是 `user.username` 而不是 `user.name`，否则你将覆盖你的姓名并且你将无法正确同步到你的 GitHub 帐户。
 
-你可以通过键入 `git config--global user.name` 等来仔细检查你的任何设置。要进行任何更改，只需再次键入必要的命令，如上例所示。
-
-### GitHub 凭据
-
-#### 创建你的个人访问令牌
-
-GitHub 已删除在远程存储库中工作时使用传统密码的功能。你现在需要创建个人访问令牌。
-
-> 当使用 [GitHub API](https://docs.github.com/en/rest/overview/other-authentication-methods#via-oauth-and-personal-access-tokens)powershellpwoersheowershellpwowershellpowershell 或 [命令行](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#using-a-token-on-the-command-line) 时，个人访问令牌（PAT）是使用密码对 GitHub 进行身份验证的替代方案。
-
-按照 [these docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) 获取有关创建个人令牌的分步说明。
-
-#### Git 凭据管理器
-
-一旦你第一次输入令牌，它就可以通过 [Git 凭据管理器（GCM）](https://github.com/GitCredentialManager/git-credential-manager) 存储，因此你不必每次都对自己进行身份验证。
-
-你可以同时在 WSL 和 Windows 中安装 Git。[适用于 Windows 的 Git](https://gitforwindows.org/) 包括 GCM，是安装它的首选方式。
-
-你还可以下载 [Windows 的最新安装程序](https://github.com/GitCredentialManager/git-credential-manager/releases/latest) 来安装 GCM 独立版。
-
-#### 存储令牌
-
-安装 Git Credential Manager 后，你可以将其设置为与 WSL 一起使用。打开你的 WSL 终端并输入以下命令：
-
-```bash
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
-```
+你可以通过键入 `git config --global user.name` 等来仔细检查你的任何设置。要进行任何更改，只需再次键入必要的命令，如上例所示。
 
 ### 在 WSL 中配置 Zsh
 

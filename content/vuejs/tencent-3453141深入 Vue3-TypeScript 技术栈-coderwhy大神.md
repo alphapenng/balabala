@@ -4,7 +4,7 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-09-24 19:34:45
+ * @LastEditTime: 2024-10-29 11:05:22
  * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
@@ -125,6 +125,40 @@
     - [nextTick](#nexttick)
     - [historyApiFallback](#historyapifallback)
   - [TypeScript 语法精讲（一）](#typescript-语法精讲一)
+    - [类型带来的问题](#类型带来的问题)
+    - [TypeScript 的编译环境](#typescript-的编译环境)
+    - [TypeScript 的运行环境](#typescript-的运行环境)
+    - [JavaScript 和 TypeScript 的数据类型](#javascript-和-typescript-的数据类型)
+      - [JavaScript 类型 - number 类型](#javascript-类型---number-类型)
+      - [JavaScript 类型 - boolean 类型](#javascript-类型---boolean-类型)
+      - [JavaScript 类型 - string 类型](#javascript-类型---string-类型)
+      - [JavaScript 类型 - Array 类型](#javascript-类型---array-类型)
+      - [JavaScript 类型 - object 类型](#javascript-类型---object-类型)
+      - [JavaScript 类型 - Symbol 类型](#javascript-类型---symbol-类型)
+      - [JavaScript 类型 - undefined 和 null 类型](#javascript-类型---undefined-和-null-类型)
+      - [TypeScript 类型 - any 类型](#typescript-类型---any-类型)
+      - [TypeScript 类型 - unknown 类型](#typescript-类型---unknown-类型)
+      - [TypeScript 类型 - void 类型](#typescript-类型---void-类型)
+      - [TypeScript 类型 - never 类型](#typescript-类型---never-类型)
+      - [TypeScript 类型 - tuple 类型](#typescript-类型---tuple-类型)
+    - [TypeScript 类型补充](#typescript-类型补充)
+      - [函数的参数类型](#函数的参数类型)
+      - [函数的返回值类型](#函数的返回值类型)
+      - [匿名函数的参数类型](#匿名函数的参数类型)
+      - [对象类型](#对象类型)
+      - [可选类型](#可选类型)
+      - [联合类型](#联合类型)
+      - [类型别名](#类型别名)
+      - [类型断言 as](#类型断言-as)
+      - [非空类型断言!](#非空类型断言)
+      - [可选链的使用](#可选链的使用)
+      - [?? 和 !! 的作用](#-和--的作用)
+      - [字面量类型](#字面量类型)
+      - [字面量推理](#字面量推理)
+      - [类型缩小](#类型缩小)
+      - [TypeScript 函数类型](#typescript-函数类型)
+      - [函数的重载](#函数的重载)
+      - [类的继承](#类的继承)
 
 ## 开篇
 
@@ -1611,7 +1645,7 @@
       - 因为 props 有直接**作为参数传递到 setup 函数**中，所以我们可以**直接通过参数**来使用即可；
     - 另外一个参数是 context，我们也称之为是一个 **SetupContext**，它里面**包含三个属性**：
       - **attrs**：**包含了父组件传递过来的所有非 props 的特性**；
-      - **slots**：**包含了父组件传递过来的所有插槽（这个在以渲染函数返回时会用作用，后面会讲到）**；
+      - **slots**：**包含了父组件传递过来的所有插槽（这个在以渲染函数返回时会用到，后面会讲到）**；
       - **emit**：**当我们组件内部需要发出事件时会用到 emit（因为我们不能访问 this，所以不可以通过 this.$emit 发出事件）**；
       ![setup的context参数](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917194811_dZNGud.png)
       ![setup的context参数解构](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240917195124_fUPWjS.png)
@@ -1646,7 +1680,7 @@
       - 但是在 **setup 函数内部**，它依然是一个 **ref引用**，所以对其进行操作时，我们依然需要**使用 ref.value 的方式**；
       ![ref自动解包](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130235_Screenshot_20240918_085229.jpg)
   - 认识 readonly
-    - 我们通过 **reactive 或者 ref 可以获取到一个响应式的对象，但是某些情况下，我们**传入给其他地方（组件）**的这个响应式对象希望**在另一个地方（组件）被使用**，但是**不能被修改**，这个时候**如何防止这种情况的出现**呢？
+    - 我们通过 **reactive 或者 ref 可以获取到一个响应式的对象**，但是某些情况下，我们**传入给其他地方（组件）**的这个响应式对象希望**在另一个地方（组件）被使用**，但是**不能被修改**，这个时候**如何防止这种情况的出现**呢？
       - Vue3 为我们提供了 **readonly 的方法**；
       - **readonly 会返回原生对象的只读代理**（也就是它依然是一个 Proxy，这是一个 **proxy 的 set 方法被劫持**，并且不能对其进行修改）；
       ![readonly原理](https://alphapenng-1305651397.cos.ap-shanghai.myqcloud.com/uPic/20240918130317_Screenshot_20240918_090558.jpg)
@@ -3292,3 +3326,591 @@ function createApp(rootComponent) {
 
 ## TypeScript 语法精讲（一）
 
+### 类型带来的问题
+
+- 首先你需要知道，编程开发中我们有一个共识：**错误出现的越早越好**
+  - 能在**写代码的时候**发现错误，就不要在**代码编译时**再发现（IDE 的优势就是在代码编写的过程中帮助我们发现错误）。
+  - 能在**代码编译期间**发现错误，就不要在**代码运行期间**再发现（类型检测就可以很好的帮助我们做到这一点）。
+  - 能在开发阶段发现错误，就不要在测试期间发现错误，能在测试期间发现错误，就不要在上线后发现错误。
+
+### TypeScript 的编译环境
+
+- TypeScript 的编译环境
+  - 在我们我们提到过，TypeScript 最终会编译成 JavaScript 来运行，所以我们需要搭建对应的环境：
+    - 我们需要在电脑上安装 TypeScript，这样就可以通过 TypeScript 的 Compiler 将其编译成 JavaScript；
+    - 所以，我们需要先进行全局的安装：
+
+      ```bash
+      # 安装命令
+      npm install -g typescript
+      # 查看版本
+      tsc -v
+      ```
+
+### TypeScript 的运行环境
+
+- 方式一：webpack 配置
+  - 自行查看对应的文章：<https://mp.weixin.qq.com/s/wnL1l-ERjTDykWM76l4Ajw>；
+- 方式二：安装 `ts-node`
+  - `npm install ts-node -g`
+  - `npm install tslib @types/node -g`
+  - `ts-node index.ts`
+
+### JavaScript 和 TypeScript 的数据类型
+
+#### JavaScript 类型 - number 类型
+
+- 数字类型是我们开发中经常使用的类型， TypeScript 和 JavaScript 一样，不区分整数类型（int）和浮点型（double），统一为 number 类型。
+
+#### JavaScript 类型 - boolean 类型
+
+#### JavaScript 类型 - string 类型
+
+#### JavaScript 类型 - Array 类型
+
+- 数组类型的定义也非常简单，有两种方式：
+
+  ```javascript
+  // 方式一
+  let arr: number[] = [1, 2, 3]
+  // 方式二
+  let arr: Array<number> = [1, 2, 3]
+  ```
+
+#### JavaScript 类型 - object 类型
+
+#### JavaScript 类型 - Symbol 类型
+
+- 在 ES5 中，我们是不可以在对象中添加相同的属性名称的，比如下面的做法：
+
+  ```javascript
+  const person = {
+    identity: "程序员",
+    identity: "老师",
+  }
+  ```
+
+- 通常我们的做法是定义两个不同的属性名字：比如 identity1 和 identity2。
+- 但是我们也可以通过 symobol 来定义相同的名称，因为 Symbol 函数返回的是不同的值：
+
+  ```javascript
+  const s1: symbol = Symbol("identity")
+  const s2: symbol = Symbol("identity")
+
+  const person = {
+    [s1]: "程序员",
+    [s2]: "老师",
+  }
+  ```
+
+#### JavaScript 类型 - undefined 和 null 类型
+
+- 在 JavaScript 中，undefined 和 null 是两个基本数据类型。
+- 在 TypeScript 中，我们可以使用 null 和 undefined 来定义这两个类型：
+
+  ```javascript
+  let n: null = null
+  let u: undefined = undefined
+  ```
+
+#### TypeScript 类型 - any 类型
+
+- 在某些情况下，我们确实无法确定一个变量的类型，并且可能它会发生一些变化，这个时候我们可以使用 any 类型（类似于 Dart 中的 dynamic）。
+- any 类型有点像一种讨巧的 TypeScript 手段：
+  - 我们可以对 any 类型的变量进行任何的操作，包括获取不存在的属性、方法；
+  - 我们给一个 any 类型的变量赋值任何的值，比如数字、字符串的值；
+
+  ```javascript
+  let a: any = "why";
+  a = 123;
+  a = true;
+
+  const aArray: any[] = ["why", 18, 1.88];
+  ```
+
+- 如果对于某些情况的处理过于繁琐不希望添加规定的类型注解，或者在引入一些第三方库时，缺失了类型注解，这个时候我们可以使用 any：
+  - 包括在 Vue 源码中，也会使用到 any 来进行某些类型的适配；
+
+#### TypeScript 类型 - unknown 类型
+
+- unknown 是 TypeScript 中比较特殊的一种类型，它用于描述类型不确定的变量。
+
+  ```javascript
+  function foo(): string {
+    return 'foo'
+  }
+  function bar(): number {
+    return 123
+  }
+
+  const flag = true
+  let result : unknown
+  
+  if (flag) {
+    result = foo()
+  } else {
+    result = bar()
+  }
+
+  if (typeof result === 'string') {
+    console.log(result.length)
+  }
+  ```
+
+#### TypeScript 类型 - void 类型
+
+- void 通常用来指定一个函数是没有返回值的，那么它的返回值就是 void 类型：
+  - 我们可以将 null 和 undefined 赋值给 void 类型，也就是函数可以返回 null 或者 undefined
+  - 这个函数我们没有写任何类型，那么它默认返回值的类型就是 void，我们也可以显式的来指定返回值是 void；
+
+#### TypeScript 类型 - never 类型
+
+- never 表示永远不会发生值的类型，比如一个函数：
+  - 如果一个函数中是一个死循环或者抛出一个异常，那么这个函数会返回东西吗？
+  - 不会，那么写 void 类型或者其他类型作为返回值类型都不合适，我们就可以使用 never 类型；
+
+  ```javascript
+  function loopFun(): never {
+    while (true) {
+      // 死循环
+    }
+  }
+
+  function loopErr(): never {
+    throw new Error('error')
+  }
+  ```
+
+  ```javascript
+  function handleMessage(message: number | string) {
+    switch (typeof message) {
+      case 'string':
+        console.log('foo')
+        break
+      case 'number':
+        console.log('bar')
+        break
+      default:
+        const check: never = message
+    }
+  }
+  ```
+
+  - never 有什么样的应用场景呢？这里我们举一个例子，但是它用到了联合类型，后面我们会讲到：
+
+#### TypeScript 类型 - tuple 类型
+
+- tuple 是元组类型，很多语言中也有这种数据类型，比如 Python、Swift 等。
+
+  ```javascript
+  function useState<T>(state: T): [T, (newState: T) => void]{
+    let currentState = state
+    const changeState = (newState: T) => {
+      currentState = newState
+    }
+
+    const tuple: [T, (newState: T) => void] = [currentState, changeState]
+    return tuple
+  }
+
+  const [counter, setCounter] = useState(10);
+  setCounter(20);
+
+  const [title, setTitle] = useState('why');
+  const [flag, setFlag] = useState(true);
+  ```
+
+### TypeScript 类型补充
+
+#### 函数的参数类型
+
+- 函数是 JavaScript 非常重要的组成部份，TypeScript 允许我们指定函数的参数和返回值的类型。
+
+#### 函数的返回值类型
+
+- 和变量的类型注解一样，我们通常情况下不需要返回类型的注解，TypeScript 可以自动推断出返回值的类型。
+  - 某些第三方库处于方便理解，会明确指定返回类型，但是这个看个人喜好；
+
+#### 匿名函数的参数类型
+
+- 匿名函数与函数声明会有一些不同：
+  - 当一个函数出现在 TypeScript 可以确定该函数会被如何调用的地方时；
+  - 该函数的参数会自动指定类型；
+
+    ```javascript
+    const names = ["abe", "cba", "nba"]
+    names.forEach((item) => {
+      console.log(item.toUpperCase())
+    })
+    ```
+
+  - 我们并没有指定 item 的类型，但是 item 是一个 string 类型：
+    - 这是因为 TypeScript 会根据 forEach 函数的类型以及数组的类型推断出 item 的类型；
+    - 这个过程称之为**上下文类型（Contextual Typing）**，因为函数执行的上下文可以帮助确定参数和返回值的类型；
+
+#### 对象类型
+
+#### 可选类型
+
+- 对象类型也可以指定哪些属性是可选的，可以在属性的后面添加一个？：
+
+  ```javascript
+  function printCoordinate(point: { x: number; y: number; z?: number }) {
+    console.log("x 坐标: " + point.x)
+    console.log("y 坐标: " + point.y)
+    if (point.z) {
+      console.log("z 坐标: " + point.z)
+    }
+  }
+
+  printCoordinate({ x: 100, y: 100 })
+  printCoordinate({ x: 100, y: 100, z: 100 })
+  ```
+
+#### 联合类型
+
+- TypeScript 的类型系统允许我们使用多种运算符，从现有类型中构建新类型。
+- 我们来使用第一种组合类型的方法：联合类型（Union Type）
+  - 联合类型是由两个或者多个其他类型组成的类型；
+  - 表示可以是这些类型中的任何一个值；
+  - 联合类型中的每一个类型被称之为联合成员（union's members）；
+
+#### 类型别名
+
+```javascript
+type Point = {
+  x: number
+  y: number
+}
+
+function printCoordinate(point: Point) {
+  console.log("x 坐标: " + point.x)
+  console.log("y 坐标: " + point.y)
+}
+
+function sumPoint(point: Point) {
+  console.log(point.x + point.y)
+}
+
+printCoordinate({ x: 100, y: 100 })
+sumPoint({ x: 100, y: 100 })
+```
+
+```javascript
+type ID = number | string
+
+function printID(id: ID) {
+  console.log("您的id", id)
+}
+```
+
+#### 类型断言 as
+
+- 有时候 TypeScript 无法获取具体的类型信息，这个时候我们需要使用类型断言（Type Assertions）。
+  - 比如我们通过 document.getElementById 获取到的元素，TypeScript 只知道它的类型是 HTMLElement，但并不知道它具体的类型；
+  
+  ```javascript
+  const myEl = document.getElementById("my-img") as HTMLImageElement
+  myEl.src = "xxx"
+  ```
+
+- TypeScript 只允许类型断言转换为**更具体**或者**不太具体**的类型版本，此规则可防止不可能的强制转换：
+
+  ```javascript
+  const name = "coderwhy" as number;
+  const name = ("coderwhy" as unknown) as number;
+  ```
+
+#### 非空类型断言!
+
+- 当我们编写下面的代码时，在执行 ts 的编译阶段会报错：
+  - 这是因为传入的 message 有可能是为 undefined 的，这个时候是不能执行方法的；
+
+    ```javascript
+    function printMessage(message?: string) {
+      console.log(message.toUpperCase())
+    }
+
+    printMessage("hello")
+    ```
+
+- 但是，我们确定传入的参数是有值的，这个时候我们可以使用非空类型断言：
+  - 非空断言使用的是 `!`，表示可以确定某个标识符是有值的，跳过 ts 在编译阶段对它的检测；
+
+    ```javascript
+    function printMessage(message?: string) {
+      console.log(message!.toUpperCase())
+    }
+
+    printMessage("hello")
+    ```
+
+#### 可选链的使用
+
+- 可选链事实上并不是 TypeScript 独有的特性，它是 ES11（ES2020）中增加的特性：
+  - 可选链使用可选链操作符（`?.`）来访问对象的属性或者方法；
+  - 它的作用是当对象的属性不存在时，会短路，直接返回 undefined，如果存在，那么才会继续执行；
+
+    ```javascript
+    type Info = {
+      name: string,
+      friend?: { 
+        name: string,
+        age?: number
+      }
+    }
+
+    const info: Info = {
+      name: 'coderwhy',
+      friend: {
+        name: 'kobe'
+        age: 18
+      }
+    }
+
+    console.log(info.friend?.age)
+    ```
+
+#### ?? 和 !! 的作用
+
+- 有时候我们还会看到 !! 和 ?? 操作符，这些都是做什么呢？
+- !! 操作符：
+  - 将一个其他类型转换成 boolean 类型；
+  - 类似于 Boolean （变量）的方式；
+- ?? 操作符：
+  - 它是 ES11 增加的新特性；
+  - **空值合并操作符（??）是一个逻辑运算符，当操作符的左侧是 ull 或者 undefined 时，返回其右侧操作数，否则返回左侧操作数；**
+  
+#### 字面量类型
+
+- 除了前面我们所讲过的类型之外，也可以使用字面量类型（literal types）：
+
+  ```javascript
+  let message: "Hello World" = "Hello World"
+  ```
+
+- 那么这样做有什么意义呢？
+  - 默认情况下这么做是没有太大的意义的，但是我们可以将多个类型联合在一起；
+
+  ```javascript
+  type Alignment = "left" | "right" | "center" 
+  function changeAlign(align: Alignment) {
+    console.log("修改方向：", align)
+  }
+
+  changeAlign("left")
+  ```
+
+#### 字面量推理
+
+- 我们来看下面的代码：
+
+  ```javascript
+  const info = {
+    url: "https://coderwhy.org/abc",
+    method: "GET"
+  }
+
+  function request(url: string, method: "GET" | "POST") {
+    console.log(url, method)
+  }
+
+  request(info.url, info.method)
+  ```
+
+- 这是因为我们的对象在进行字面量推理的时候，info 其实是一个 {url: string, method: string}，所以我们没办法将一个 string 赋值给一个字面量类型。
+
+  ```javascript
+  // 方式一：
+  request(info.url, info.method as "GET")
+
+  // 方式二：
+  const info = {
+    url: "https://coderwhy.org/abc",
+    method: "GET"
+  } as const
+  ```
+
+#### 类型缩小
+
+- 什么是类型缩小呢？
+  - 类型缩小的英文是 Type Narrowing；
+  - 我们可以通过类似于 typeof padding === "number" 的判断语句，来改变 TypeScript 的执行路径；
+  - 在给定的执行路径中，我们可以缩小比声明时更小的类型，这个过程称之为缩小；
+  - 而我们编写的 typeof padding === "number" 可以称之为**类型保护（type guards）**；
+- 常见的类型保护有如下几种：
+  - typeof
+  - 平等缩小（比如===、!==）
+  - instanceof
+  - in
+  - 等等……
+
+  ```javascript
+  // 1. typeof 的类型缩小
+  type IDType = number | string
+  function printID(id: IDType) {
+    if (typeof id === "string") {
+      console.log(id.toUpperCase())
+    } else {
+      console.log(id)
+    }
+  }
+
+  // 2. 平等的类型缩小（===、!==、switch）
+  type Direction = "left" | "right" | "top" | "bottom"
+  function printDirection(direction: Direction) {
+    if (direction === "left") {
+      console.log("向左")
+    } else if (direction === "right") {
+      console.log("向右")
+    } else if (direction === "top") {
+      console.log("向上")
+    } else {
+      console.log("向下")
+    }
+  }
+
+  function printDirection(direction: Direction) {
+    switch (direction) {
+      case "left":
+        console.log("向左")
+        break
+      case "right":
+        console.log("向右")
+        break
+      case "top":
+        console.log("向上")
+        break
+      default:
+        console.log("向下")
+    }
+  }
+
+  // 3. instanceof 的类型缩小
+  function printTime(time: string | Date) {
+    if (time instanceof Date) {
+      console.log(time.toLocaleTimeString())
+    } else {
+      console.log(time)
+    }
+  }
+
+  class Student {
+    studying() {
+      console.log("学习")
+    }
+  }
+
+  class Teacher {
+    teaching() {
+      console.log("讲课")
+    }
+  }
+
+  function work(person: Student | Teacher) {
+    if (person instanceof Student) {
+      person.studying()
+    } else {
+      person.teaching()
+    }
+  }
+
+  // 4. in
+  function printValue(value: number | string) {
+    if ("length" in value) {
+      console.log(value.length)
+    } else {
+      console.log(value)
+    }
+  }
+  ```
+
+#### TypeScript 函数类型
+
+- 在 JavaScript 开发中，函数是重要的组成部分，并且函数可以作为一等公民（可以作为参数，也可以作为返回值进行传递）。
+- 那么在使用函数的过程中，函数是否也可以有自己的类型呢？
+  - 我们可以编写函数类型的表达式（Function Type Expressions），来表示函数类型；
+
+#### 函数的重载
+
+- 在 TypeScript 中，如果我们编写了一个 add 函数，希望可以对字符串和数字类型进行相加，应该如何编写呢？
+
+  ```javascript
+  // 函数的重载：函数的名称相同，但是参数不同的几个函数，就是函数的重载
+  function add(num1: number, num2: number): number; // 没函数体
+  function add(num1: string, num2: string): string; // 没函数体
+
+  function add(num1: any, num2: any): any {
+    if (typeof num1 === 'string' && typeof num2 ==='string') {
+      return num1.length + num2.length
+    }
+    return num1 + num2
+  }
+
+  const result = add(20, 30)
+  const result2 = add("abc", "def")
+  console.log(result)
+  console.log(result2)
+
+  // 在函数的重载中，实现函数是不能直接被调用的
+  add({name: 'why'}, {age: 18})
+
+  export {}
+  ```
+
+- 联合类型和重载
+  - 我们现在有一个需求：定义一个函数，可以传入字符串或者数组，获他们它们的长度。
+  - 这里有两种实现方案：
+    - 方案一：使用联合类型来实现；
+    - 方案二：使用函数重载来实现；
+
+    ```javascript
+    function getLength(a: string|any[]) {
+      return a.length
+    }
+
+    function getLength(a: string): number;
+    function getLength(a: any[]): number;
+    function getLength(a: any): number {
+      return a.length
+    }
+    ```
+
+  - 在开发中我们选择使用哪一种呢？
+    - 在可能的情况下，尽量选择使用联合类型来实现；
+
+#### 类的继承
+
+```javascript
+class Person {
+  name: string = ""
+  age: number = 0
+
+  eating() {
+    console.log("eating")
+  }
+}
+
+class Student extends Person {
+  sno: number = 0
+
+  studying() {
+    console.log("studying")
+  }
+}
+
+class Teacher extends Person {
+  title: string = "" 
+
+  teaching() {
+    console.log("teaching")
+  }
+}
+
+const stu = new Student()
+stu.name = "coderwhy"
+stu.age = 10
+console.log(stu.name)
+console.log(stu.age)
+stu.eating()
+```
