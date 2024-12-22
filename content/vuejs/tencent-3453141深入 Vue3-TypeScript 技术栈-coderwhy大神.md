@@ -4,8 +4,8 @@
  * @Github: 
  * @Date: 2024-01-27 15:43:56
  * @LastEditors: alphapenng
- * @LastEditTime: 2024-10-29 11:05:22
- * @FilePath: /balabala/content/vuejs/tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
+ * @LastEditTime: 2024-12-22 22:32:29
+ * @FilePath: \balabala\content\vuejs\tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神.md
 -->
 # tencent-3453141深入 Vue3-TypeScript 技术栈-coderwhy大神
 
@@ -158,7 +158,19 @@
       - [类型缩小](#类型缩小)
       - [TypeScript 函数类型](#typescript-函数类型)
       - [函数的重载](#函数的重载)
+    - [TypeScript 类的使用](#typescript-类的使用)
       - [类的继承](#类的继承)
+      - [类的多态](#类的多态)
+      - [类的成员修饰符](#类的成员修饰符)
+      - [只读属性 readonly](#只读属性-readonly)
+      - [getters/setters](#getterssetters)
+      - [类的静态成员](#类的静态成员)
+      - [抽象类 abstract](#抽象类-abstract)
+      - [类的类型](#类的类型)
+    - [TypeScript 接口的使用](#typescript-接口的使用)
+      - [接口的声明](#接口的声明)
+      - [索引类型](#索引类型)
+      - [函数类型](#函数类型)
 
 ## 开篇
 
@@ -3679,7 +3691,7 @@ function printID(id: ID) {
   - 类似于 Boolean （变量）的方式；
 - ?? 操作符：
   - 它是 ES11 增加的新特性；
-  - **空值合并操作符（??）是一个逻辑运算符，当操作符的左侧是 ull 或者 undefined 时，返回其右侧操作数，否则返回左侧操作数；**
+  - **空值合并操作符（??）是一个逻辑运算符，当操作符的左侧是 null 或者 undefined 时，返回其右侧操作数，否则返回左侧操作数；**
   
 #### 字面量类型
 
@@ -3879,6 +3891,8 @@ function printID(id: ID) {
   - 在开发中我们选择使用哪一种呢？
     - 在可能的情况下，尽量选择使用联合类型来实现；
 
+### TypeScript 类的使用
+
 #### 类的继承
 
 ```javascript
@@ -3913,4 +3927,306 @@ stu.age = 10
 console.log(stu.name)
 console.log(stu.age)
 stu.eating()
+```
+
+```javascript
+class Person {
+  name: string
+  age: number
+
+  constructor(name: string, age: number) {
+    this.name = name
+    this.age = age
+  }
+
+  eating() {
+    console.log("eating")
+  }
+}
+
+class Student extends Person {
+  sno: number
+
+  constructor(name: string, age: number, sno: number) {
+    // 调用父类的构造器
+    super(name, age)
+    this.sno = sno
+  }
+
+  eating() {
+    super.eating()
+    console.log("student eating")
+  }
+
+  studying() {
+    console.log("studying")
+  }
+}
+
+const stu = new Student("why", 18, 111)
+console.log(stu.name)
+console.log(stu.age)
+console.log(stu.sno)
+stu.eating()
+```
+
+#### 类的多态
+
+```javascript
+class Animal {
+  action() {
+    console.log("animal running")
+  }
+}
+
+class Dog extends Animal {
+  action() {
+    console.log("dog running!!!")
+  }
+}
+
+class Fish extends Animal {
+  action() {
+    console.log("fish swimming!!!")
+  }
+}
+
+// animal: dog/fish
+// 多态的目的是为了写出更加具备通用性的代码
+function makeActions(animals: Animal[]) {
+  animals.forEach(animal => {
+    animal.action()
+  })
+}
+
+// 父类引用（类型）指向子类对象（实例）
+// const animal: Animal = new Dog()
+// animal.action()
+makeActions([new Dog(), new Fish()])
+```
+
+#### 类的成员修饰符
+
+- 在 TypeScript 中，类的属性和方法支持三种修饰符：public、private、protected
+  - public 修饰的是在任何地方可见、公有的属性或方法，默认编写的属性就是 public 的；
+  - private 修饰的是仅在同一类中可见、私有的属性或方法；
+  - protected 修饰的是仅在类自身及子类中可见、受保护的属性或方法；
+
+#### 只读属性 readonly
+
+```javascript
+class Person {
+  // 1. 只读属性是可以在构造器中赋值，赋值之后就不可以修改
+  // 2. 属性本身不能进行修改，但是如果它是对象类型，对象中的属性是可以修改
+  readonly name: string
+  age?: number
+  readonly friend?: Person
+  constructor(name: string, friend?: Person) {
+    this.name = name
+    this.friend = friend
+  }
+}
+
+const person = new Person("why", new Person("kobe"))
+console.log(person.name)
+console.log(person.friend)
+
+if (person.friend) {
+  person.friend.age = 30
+}
+```
+
+#### getters/setters
+
+```javascript
+class Person {
+  private _name: string
+  constructor(name: string) {
+    this._name = name
+  }
+
+  // 访问器 setter/getter
+  // setter
+  set name(newNme: string) {
+    this._name = newNme
+  }
+
+  get name() {
+    return this._name
+  }
+}
+
+const person = new Person("why")
+console.log(person.name)
+person.name = "123"
+```
+
+#### 类的静态成员
+
+```javascript
+class Person {
+  name: string = ""
+  age: number = 12
+}
+
+class Student {
+  static time: string = "20:00"
+
+  static attendClass() {
+    console.log("去学习~")
+  }
+}
+
+console.log(Student.time)
+Student.attendClass()
+```
+
+#### 抽象类 abstract
+
+- 我们知道，继承是多态使用的前提。
+  - 所以在定义很多通用的**调用接口时，我们通常会让调用者传入父类，通过多态来实现更加灵活的调用方式。**
+  - **但是，父类本身可能并不需要对某些方法进行具体的实现，所以父类中定义的方法，我们可以定义为抽象方法。**
+
+```javascript
+function makeArea(shape: Shape) {
+  return shape.getArea()
+}
+
+abstract class Shape {
+  abstract getArea(): number
+}
+
+class Rectangle extends Shape {
+  private width: number
+  private height: number
+
+  constructor(width: number, height: number) {
+    this.width = width
+    this.height = height
+  }
+
+  getArea() {
+    return this.width * this.height
+  }
+}
+
+class Circle extends Shape {
+  private radius: number
+
+  constructor(radius: number) {
+    this.radius = radius
+  }
+
+  getArea() {
+    return this.radius * this.radius * Math.PI
+  }
+}
+const rectangle = new Rectangle(10, 20)
+makeArea(rectangle)
+
+const circle = new Circle(10)
+makeArea(circle)
+```
+
+#### 类的类型
+
+```javascript
+class Person {
+  name: string = "123"
+  eating() {
+    console.log("eating")
+  }
+}
+
+const person = new Person()
+
+const person1: Person = {
+  name: "why",
+  eating() {
+    console.log("eating")
+}
+
+function printPerson(person: Person) {
+  console.log(person.name)
+}
+
+printPerson(new Person())
+printPerson({name: "why", eating() {console.log("eating")}})
+```
+
+### TypeScript 接口的使用
+
+#### 接口的声明
+
+```javascript
+// 通过类型（type）别名来声明对象类型
+// type InfoType = { name: string, age: number }
+
+// 另外一种方式声明对象类型：接口（interface）
+// 在其中可以定义可选类型
+// 也可以定义只读属性
+interface IInfoType {
+  readonly name: string
+  age: number
+  friend?: {
+    name: string
+  }
+}
+
+const info: IInfoType = {
+  name: "why",
+  age: 18,
+  friend: {
+    name: "kobe"
+  }
+}
+
+console.log(info.friend?.name)
+console.log(info.name)
+// info.name = "coderwhy"
+info.age = 20
+```
+
+#### 索引类型
+
+```javascript
+// 通过 interface 来定义索引类型
+interface IndexLanguage {
+  [index: number]: string
+}
+
+const frontLanguage: IndexLanguage = {
+  0: "html",
+  1: "css",
+  2: "javascript",
+  3: "vue"
+}
+
+interface ILanguageYear {
+  [index: string]: number
+}
+
+const languageYear: ILanguageYear = {
+  "c": 1972,
+  "c++": 1983,
+  "java": 1995,
+  "python": 1989
+}
+```
+
+#### 函数类型
+
+```javascript
+// type CalcFn = (n1: number, n2: number) => number
+interface CalcFn {
+  (n1: number, n2: number): number
+}
+
+function calc(num1: number, num2: number, calcFn: CalcFn) {
+  return calcFn(num1, num2)
+}
+
+const add: CalcFn = (n1, n2) => n1 + n2
+
+calc(10, 20, add)
 ```
