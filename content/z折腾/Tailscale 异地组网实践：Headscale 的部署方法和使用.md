@@ -4,8 +4,8 @@
  * @Github: 
  * @Date: 2022-10-10 22:56:20
  * @LastEditors: alphapenng
- * @LastEditTime: 2023-06-25 09:45:56
- * @FilePath: /balabala/content/zh-cn/posts/Tailscale 异地组网实践：Headscale 的部署方法和使用.md
+ * @LastEditTime: 2025-01-01 12:40:18
+ * @FilePath: \balabala\content\z折腾\Tailscale 异地组网实践：Headscale 的部署方法和使用.md
 -->
 
 # Tailscale 异地组网实践：Headscale 的部署方法和使用
